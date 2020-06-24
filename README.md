@@ -2,6 +2,15 @@
 
 VCS support for Neovim
 
+Basic support for:
+
+- [x] Git
+- [x] Subversion
+
+## Config
+
+- `<leader>vs` - VCS status
+
 ## Acknowledgments 💡
 
 Thanks goes to these people/projects for inspiration:

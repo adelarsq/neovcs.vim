@@ -1,63 +1,63 @@
 
-    " Function to get current root vcs dir
-    " Based on: https://github.com/airblade/vim-rooter/blob/master/plugin/rooter.vim
-    let g:my_rooter_patterns = ['.git', '.git/', '_darcs/', '.hg/', '.bzr/', '.svn/']
-    function! MySearchForRootDirectory()
-      let s:root_dir = getcwd(-1)
-      for s:pattern in g:my_rooter_patterns
-        let s:result = s:MyFindAncestor(s:root_dir, s:pattern)
-        if !empty(s:result)
-          return {'vcs': s:MyGetVCSType(s:pattern), 'dir': s:result}
-        endif
-      endfor
-      return ''
-    endfunction
+" Function to get current root vcs dir
+" Based on: https://github.com/airblade/vim-rooter/blob/master/plugin/rooter.vim
+let g:my_rooter_patterns = ['.git', '.git/', '_darcs/', '.hg/', '.bzr/', '.svn/']
+function! MySearchForRootDirectory()
+  let s:root_dir = getcwd(-1)
+  for s:pattern in g:my_rooter_patterns
+    let s:result = s:MyFindAncestor(s:root_dir, s:pattern)
+    if !empty(s:result)
+      return {'vcs': s:MyGetVCSType(s:pattern), 'dir': s:result}
+    endif
+  endfor
+  return ''
+endfunction
 
-    function! MyGetVCSType(pattern)
-        if a:pattern ==# '.git' || a:pattern ==# '.git/'
-            return 'git'
-        elseif a:pattern ==# '.svn/'
-            return 'svn'
-        else
-            return ''
-        endif
-    endfunction
-
-    function! MyFindAncestor(rootdir, pattern)
-      " let fd_dir = isdirectory(s:fd) ? s:fd : fnamemodify(s:fd, ':h')
-      let fd_dir = a:rootdir
-      let fd_dir_escaped = escape(fd_dir, ' ')
-      if s:IsDirectory(a:pattern)
-        let match = finddir(a:pattern, fd_dir_escaped.';')
-      else
-        let [_suffixesadd, &suffixesadd] = [&suffixesadd, '']
-        let match = findfile(a:pattern, fd_dir_escaped.';')
-        let &suffixesadd = _suffixesadd
-      endif
-      if empty(match)
+function! MyGetVCSType(pattern)
+    if a:pattern ==# '.git' || a:pattern ==# '.git/'
+        return 'git'
+    elseif a:pattern ==# '.svn/'
+        return 'svn'
+    else
         return ''
-      endif
-      if s:IsDirectory(a:pattern)
-        " If the directory we found (`match`) is part of the file's path
-        " it is the project root and we return it.
-        "
-        " Compare with trailing path separators to avoid false positives.
-        if stridx(fnamemodify(fd_dir, ':p'), fnamemodify(match, ':p')) == 0
-          return fnamemodify(match, ':p:h')
-    
-        " Else the directory we found (`match`) is a subdirectory of the
-        " project root, so return match's parent.
-        else
-          return fnamemodify(match, ':p:h:h')
-        endif
-    
-      else
-        return fnamemodify(match, ':p:h')
-      endif
-    endfunction
-    function! IsDirectory(pattern)
-      return a:pattern[-1:] == '/'
-    endfunction
+    endif
+endfunction
+
+function! MyFindAncestor(rootdir, pattern)
+  " let fd_dir = isdirectory(s:fd) ? s:fd : fnamemodify(s:fd, ':h')
+  let fd_dir = a:rootdir
+  let fd_dir_escaped = escape(fd_dir, ' ')
+  if s:IsDirectory(a:pattern)
+    let match = finddir(a:pattern, fd_dir_escaped.';')
+  else
+    let [_suffixesadd, &suffixesadd] = [&suffixesadd, '']
+    let match = findfile(a:pattern, fd_dir_escaped.';')
+    let &suffixesadd = _suffixesadd
+  endif
+  if empty(match)
+    return ''
+  endif
+  if s:IsDirectory(a:pattern)
+    " If the directory we found (`match`) is part of the file's path
+    " it is the project root and we return it.
+    "
+    " Compare with trailing path separators to avoid false positives.
+    if stridx(fnamemodify(fd_dir, ':p'), fnamemodify(match, ':p')) == 0
+      return fnamemodify(match, ':p:h')
+
+    " Else the directory we found (`match`) is a subdirectory of the
+    " project root, so return match's parent.
+    else
+      return fnamemodify(match, ':p:h:h')
+    endif
+
+  else
+    return fnamemodify(match, ':p:h')
+  endif
+endfunction
+function! IsDirectory(pattern)
+  return a:pattern[-1:] == '/'
+endfunction
 
 
 " VCS add current buffer
