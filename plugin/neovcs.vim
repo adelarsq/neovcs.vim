@@ -81,16 +81,6 @@ function! Commit()
     endif
 endfunction
 
-function! Status()
-    let s:vcs_name = lh#vcs#get_type(expand('%:p'))
-
-    if s:vcs_name ==# 'git'
-        FloatermNew git status
-    elseif s:vcs_name ==# 'svn'
-        FloatermNew svn status
-    endif
-endfunction
-
 function! AddFileToVCS()
     let s:filepath = expand('%:p')
     let s:vcs_name = lh#vcs#get_type(s:filepath)
@@ -107,8 +97,15 @@ function! AddFileToVCS()
     echo s:command
 endfunction
 
-
-
+function! VcsName()
+    if !empty(GitRoot())
+        return 'git'
+    elseif !empty(SvnRoot())
+        return 'svn'
+    else
+        return ''
+    endif
+endfunction
 
 function! VcsStatus()
     if !empty(GitRoot())
