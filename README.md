@@ -9,6 +9,7 @@ Basic support for:
 
 ## Config
 
+- `<leader>va` - add file to VCS
 - `<leader>vs` - VCS status
 
 ## Acknowledgments 💡

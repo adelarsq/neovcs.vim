@@ -59,18 +59,6 @@ function! IsDirectory(pattern)
   return a:pattern[-1:] == '/'
 endfunction
 
-
-" VCS add current buffer
-function! AddBuffer()
-	w
-    if s:vcs_name ==# 'git'
-        windo !git add %
-    elseif s:vcs_name ==# 'svn'
-        windo !svn add %
-    endif
-endfunction
-command! AddBuffer :call AddBuffer()
-
 function! Commit()
     let s:vcs_name = lh#vcs#get_type(expand('%:p'))
 
@@ -81,13 +69,12 @@ function! Commit()
     endif
 endfunction
 
-function! AddFileToVCS()
+function! VcsAddFile()
     let s:filepath = expand('%:p')
-    let s:vcs_name = lh#vcs#get_type(s:filepath)
     let s:command = ''
-    if s:vcs_name ==# 'git'
+    if !empty(GitRoot())
         let s:command = 'git add '.s:filepath
-    elseif s:vcs_name ==# 'svn'
+    elseif !empty(SvnRoot())
         let s:command = 'svn add '.s:filepath
     else
         echo 'O arquivo não está em um repositório'
@@ -172,5 +159,6 @@ function! GitRoot(...) abort
   return finddir('.git', path. ';')
 endfunction
 
+nnoremap <silent> <leader>va :call VcsAddFile()<CR>
 nnoremap <silent> <leader>vs :call VcsStatus()<CR>:copen<CR>
 
