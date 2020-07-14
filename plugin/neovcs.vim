@@ -119,37 +119,46 @@ endfunction
 
 function! GitStatus()
 
-    " Get the result of git show in a list
-    let flist = system('git ls-files -dmo')
-    let flist = split(flist, '\n')
+    let s:cmd = 'git ls-files -dmo'
+    echo s:cmd
 
-    " Create the dictionnaries used to populate the quickfix list
-    let list = []
-    for f in flist
-        let dic = {'filename': f, "lnum": 1}
-        call add(list, dic)
+    " Get the result of git
+    let s:flist = system(s:cmd)
+    let s:flist = split(s:flist, '\n')
+
+    " Create the dictionaries used to populate the quickfix list
+    let s:list = []
+    for s:f in s:flist
+        let s:dic = {'filename': s:f, "lnum": 1}
+        call add(s:list, s:dic)
     endfor
 
     " Populate the qf list
-    call setqflist(list)
+    call setqflist(s:list)
 
 endfunction
 
 function! SvnStatus()
 
-    " Get the result of git show in a list
-    let flist = system("svn status | awk '{print $2}'")
-    let flist = split(flist, '\n')
+    let s:cmd = "svn status | awk '{print $1\" \"$2}'"
+    echo s:cmd
 
-    " Create the dictionnaries used to populate the quickfix list
-    let list = []
-    for f in flist
-        let dic = {'filename': f, "lnum": 1}
-        call add(list, dic)
+    " Get the result of svn
+    let s:flist = system(s:cmd)
+    let s:flist = split(s:flist, '\n')
+
+    " Create the dictionaries used to populate the quickfix list
+    let s:list = []
+    for f in s:flist
+        let s:glist = split(f,' ')
+        let s:a = s:glist[0]
+        let s:b = s:glist[1]
+        let s:dic = {'filename': s:b, "text": s:a}
+        call add(s:list, s:dic)
     endfor
 
     " Populate the qf list
-    call setqflist(list)
+    call setqflist(s:list)
 
 endfunction
 
