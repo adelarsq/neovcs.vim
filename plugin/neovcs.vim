@@ -159,6 +159,16 @@ function! GitRoot(...) abort
   return finddir('.git', path. ';')
 endfunction
 
+function! VcsHelp()
+    echom "VCS Help:"
+    echom "- <leader>va - add file to VCS"
+    echom "- <leader>vA - add file to VCS (custom)"
+    echom "- <leader>vr - remove file from VCS"
+    echom "- <leader>vs - VCS status"
+    echom "- <leader>vh - VCS help"
+endfunction
+
 nnoremap <silent> <leader>va :call VcsAddFile()<CR>
 nnoremap <silent> <leader>vs :call VcsStatus()<CR>:copen<CR>
+nnoremap <silent> <leader>vh :call VcsHelp()<CR>
 

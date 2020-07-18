@@ -10,7 +10,10 @@ Basic support for:
 ## Config
 
 - `<leader>va` - add file to VCS
+- `<leader>vA` - add file to VCS (custom)
+- `<leader>vr` - remove file from VCS
 - `<leader>vs` - VCS status
+- `<leader>v?` - VCS help
 
 ## Acknowledgments 💡
 
