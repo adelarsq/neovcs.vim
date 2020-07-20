@@ -106,7 +106,7 @@ endfunction
 
 function! GitStatus()
 
-    let s:cmd = 'git ls-files -dmo'
+    let s:cmd = 'git status --porcelain'
     echo s:cmd
 
     " Get the result of git
@@ -115,8 +115,11 @@ function! GitStatus()
 
     " Create the dictionaries used to populate the quickfix list
     let s:list = []
-    for s:f in s:flist
-        let s:dic = {'filename': s:f, "lnum": 1}
+    for f in s:flist
+        let s:glist = split(f,' ')
+        let s:a = s:glist[0]
+        let s:b = s:glist[1]
+        let s:dic = {'filename': s:b, "text": s:a}
         call add(s:list, s:dic)
     endfor
 
