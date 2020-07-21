@@ -140,11 +140,20 @@ function! SvnStatus()
     " Create the dictionaries used to populate the quickfix list
     let s:list = []
     for f in s:flist
+        " if f == ''
+            " continue
+        " elseif stridx(f, '---') == 0
+            " continue
+        " endif
+
         let s:glist = split(f,' ')
-        let s:a = s:glist[0]
-        let s:b = s:glist[1]
-        let s:dic = {'filename': s:b, "text": s:a}
-        call add(s:list, s:dic)
+
+        if len(s:glist) == 2
+            let s:a = s:glist[0]
+            let s:b = s:glist[1]
+            let s:dic = {'filename': s:b, "text": s:a}
+            call add(s:list, s:dic)
+        endif
     endfor
 
     " Populate the qf list
