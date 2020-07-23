@@ -1,103 +1,75 @@
 
-" Function to get current root vcs dir
-" Based on: https://github.com/airblade/vim-rooter/blob/master/plugin/rooter.vim
-let g:my_rooter_patterns = ['.git', '.git/', '_darcs/', '.hg/', '.bzr/', '.svn/']
-function! MySearchForRootDirectory()
-  let s:root_dir = getcwd(-1)
-  for s:pattern in g:my_rooter_patterns
-    let s:result = s:MyFindAncestor(s:root_dir, s:pattern)
-    if !empty(s:result)
-      return {'vcs': s:MyGetVCSType(s:pattern), 'dir': s:result}
-    endif
-  endfor
-  return ''
-endfunction
-
-function! MyGetVCSType(pattern)
-    if a:pattern ==# '.git' || a:pattern ==# '.git/'
+function! VcsName()
+    if !empty(GitRoot())
         return 'git'
-    elseif a:pattern ==# '.svn/'
+    elseif !empty(SvnRoot())
         return 'svn'
+    elseif !empty(DarcsRoot())
+        return 'darcs'
+    elseif !empty(BazaarRoot())
+        return 'bazaar'
+    elseif !empty(MercurialRoot())
+        return 'mercurial'
     else
         return ''
     endif
 endfunction
 
-function! MyFindAncestor(rootdir, pattern)
-  " let fd_dir = isdirectory(s:fd) ? s:fd : fnamemodify(s:fd, ':h')
-  let fd_dir = a:rootdir
-  let fd_dir_escaped = escape(fd_dir, ' ')
-  if s:IsDirectory(a:pattern)
-    let match = finddir(a:pattern, fd_dir_escaped.';')
-  else
-    let [_suffixesadd, &suffixesadd] = [&suffixesadd, '']
-    let match = findfile(a:pattern, fd_dir_escaped.';')
-    let &suffixesadd = _suffixesadd
-  endif
-  if empty(match)
-    return ''
-  endif
-  if s:IsDirectory(a:pattern)
-    " If the directory we found (`match`) is part of the file's path
-    " it is the project root and we return it.
-    "
-    " Compare with trailing path separators to avoid false positives.
-    if stridx(fnamemodify(fd_dir, ':p'), fnamemodify(match, ':p')) == 0
-      return fnamemodify(match, ':p:h')
-
-    " Else the directory we found (`match`) is a subdirectory of the
-    " project root, so return match's parent.
-    else
-      return fnamemodify(match, ':p:h:h')
-    endif
-
-  else
-    return fnamemodify(match, ':p:h')
-  endif
-endfunction
-function! IsDirectory(pattern)
-  return a:pattern[-1:] == '/'
+function! MercurialRoot(...) abort
+  let path = a:0 == 0 ? expand('%:p:h') : a:1
+  return finddir('.hg', path. ';')
 endfunction
 
-function! Commit()
-    let s:vcs_name = lh#vcs#get_type(expand('%:p'))
+function! BazzarRoot(...) abort
+  let path = a:0 == 0 ? expand('%:p:h') : a:1
+  return finddir('.bzr', path. ';')
+endfunction
 
+function! DarcsRoot(...) abort
+  let path = a:0 == 0 ? expand('%:p:h') : a:1
+  return finddir('_darcs', path. ';')
+endfunction
+
+function! GitRoot(...) abort
+  let path = a:0 == 0 ? expand('%:p:h') : a:1
+  return finddir('.git', path. ';')
+endfunction
+
+function! SvnRoot(...) abort
+  let path = a:0 == 0 ? expand('%:p:h') : a:1
+  return finddir('.svn', path. ';')
+endfunction
+
+function! VcsCommit()
+    let s:vcs_name = VcsName()
     if s:vcs_name ==# 'git'
-        Gcommit
+        " :!git commit -m ""
     elseif s:vcs_name ==# 'svn'
-        VCCommit
+        " echo
     endif
 endfunction
 
 function! VcsAddFile()
     let s:filepath = expand('%:p')
     let s:command = ''
-    if !empty(GitRoot())
+    let s:vcs_name = VcsName()
+    if s:vcs_name ==# 'git'
         let s:command = 'git add '.s:filepath
-    elseif !empty(SvnRoot())
+    elseif s:vcs_name ==# 'svn'
         let s:command = 'svn add '.s:filepath
     else
-        echo 'O arquivo não está em um repositório'
+        echo 'Is this file in a repository?'
         return
     endif
     let s:systemcommand = system(s:command)
     echo s:command
 endfunction
 
-function! VcsName()
-    if !empty(GitRoot())
-        return 'git'
-    elseif !empty(SvnRoot())
-        return 'svn'
-    else
-        return ''
-    endif
-endfunction
-
 function! VcsStatus()
-    if !empty(GitRoot())
+    let s:vcs_name = VcsName()
+    if s:vcs_name == 'git'
         call GitStatus()
-    elseif !empty(SvnRoot())
+    elseif s:vcs_name == 'svn'
         call SvnStatus()
     else
         echom "VCS not supported"
@@ -161,26 +133,18 @@ function! SvnStatus()
 
 endfunction
 
-function! SvnRoot(...) abort
-  let path = a:0 == 0 ? expand('%:p:h') : a:1
-  return finddir('.svn', path. ';')
-endfunction
-
-function! GitRoot(...) abort
-  let path = a:0 == 0 ? expand('%:p:h') : a:1
-  return finddir('.git', path. ';')
-endfunction
-
 function! VcsHelp()
     echom "VCS Help:"
     echom "- <leader>va - add file to VCS"
     echom "- <leader>vA - add file to VCS (custom)"
+    echom "- <leader>vc - commit file"
     echom "- <leader>vr - remove file from VCS"
     echom "- <leader>vs - VCS status"
     echom "- <leader>vh - VCS help"
 endfunction
 
 nnoremap <silent> <leader>va :call VcsAddFile()<CR>
+nmap <leader>vc :call VcsCommit("")<left><left>
 nnoremap <silent> <leader>vs :call VcsStatus()<CR>:copen<CR>
 nnoremap <silent> <leader>vh :call VcsHelp()<CR>
 
