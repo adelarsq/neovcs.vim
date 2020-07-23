@@ -40,10 +40,10 @@ function! SvnRoot(...) abort
   return finddir('.svn', path. ';')
 endfunction
 
-function! VcsCommit()
+function! VcsCommit(...) abort
     let s:vcs_name = VcsName()
     if s:vcs_name ==# 'git'
-        " :!git commit -m ""
+        execute '!git commit -m "'.a:1.'"'
     elseif s:vcs_name ==# 'svn'
         " echo
     endif
@@ -136,11 +136,11 @@ endfunction
 function! VcsHelp()
     echom "VCS Help:"
     echom "- <leader>va - add file to VCS"
-    echom "- <leader>vA - add file to VCS (custom)"
+    " echom "- <leader>vA - add file to VCS (custom)"
     echom "- <leader>vc - commit file"
-    echom "- <leader>vr - remove file from VCS"
-    echom "- <leader>vs - VCS status"
-    echom "- <leader>vh - VCS help"
+    " echom "- <leader>vr - remove file from VCS"
+    echom "- <leader>vs - status"
+    echom "- <leader>vh - this help"
 endfunction
 
 nnoremap <silent> <leader>va :call VcsAddFile()<CR>
