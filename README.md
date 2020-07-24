@@ -10,7 +10,7 @@ Basic support for:
 ## Config
 
 - `<leader>va` - add file to VCS
-- `<leader>vA` - add file to VCS (custom)
+- `<leader>vA` - add all files to VCS
 - `<leader>vr` - remove file from VCS
 
 - `<leader>vs` - VCS status
@@ -25,4 +25,5 @@ Thanks goes to these people/projects for inspiration:
 
 - [juneedahamed/vc.vim](https://github.com/juneedahamed/vc.vim)
 - [LucHermitte/lh-vim-lib](https://github.com/LucHermitte/lh-vim-lib)
+
 
