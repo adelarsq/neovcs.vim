@@ -69,6 +69,25 @@ function! VcsAddFile(...)
     echo s:command
 endfunction
 
+function! VcsAddFiles(...)
+    let s:command = ''
+    let s:vcs_name = VcsName()
+    if s:vcs_name ==# 'git'
+        let s:command = 'git add *'
+    elseif s:vcs_name ==# 'svn'
+        if a:0 == 0
+            let s:command = 'svn add *'
+        else
+            let s:command = 'svn changelist '.a:1.' *'
+        endif
+    else
+        echo 'Is this file in a repository?'
+        return
+    endif
+    let s:systemcommand = system(s:command)
+    echo s:command
+endfunction
+
 function! VcsStatus()
     let s:vcs_name = VcsName()
     if s:vcs_name == 'git'
@@ -130,6 +149,7 @@ function! SvnStatus()
 
         if len(s:glist) == 2
             let s:a = s:glist[0]
+
             let s:b = s:glist[1]
             let s:dic = {'filename': s:b, "text": s:a}
             call add(s:list, s:dic)
@@ -144,7 +164,7 @@ endfunction
 function! VcsHelp()
     echom "VCS Help:"
     echom "- <leader>va - add file to VCS"
-    " echom "- <leader>vA - add file to VCS (custom)"
+    echom "- <leader>vA - add all files to VCS"
     echom "- <leader>vc - commit file"
     " echom "- <leader>vr - remove file from VCS"
     echom "- <leader>vs - status"
@@ -152,6 +172,7 @@ function! VcsHelp()
 endfunction
 
 nnoremap <silent> <leader>va :call VcsAddFile()<CR>
+nnoremap <silent> <leader>vA :call VcsAddFiles()<CR>
 nmap <leader>vc :call VcsCommit("","")<left><left><left><left><left>
 nnoremap <silent> <leader>vs :call VcsStatus()<CR>:copen<CR>
 nnoremap <silent> <leader>vh :call VcsHelp()<CR>
