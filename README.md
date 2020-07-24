@@ -4,8 +4,11 @@ VCS support for Neovim
 
 Basic support for:
 
-- [x] Git
-- [x] Subversion
+- [x] Git - name,status,commit,add file,remove file
+- [x] Subversion - name,status,commit,add file,remove file
+- [x] darcs - name
+- [x] bazaar - name
+- [x] mercurial - name
 
 ## Config
 
@@ -14,8 +17,6 @@ Basic support for:
 - `<leader>vr` - remove file from VCS
 
 - `<leader>vs` - VCS status
-
-- `<leader>vb` - change branch
 
 - `<leader>v?` - VCS help
 

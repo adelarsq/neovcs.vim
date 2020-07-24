@@ -165,6 +165,7 @@ function! VcsHelp()
     echom "VCS Help:"
     echom "- <leader>va - add file to VCS"
     echom "- <leader>vA - add all files to VCS"
+    " echom "- <leader>vb - change branch"
     echom "- <leader>vc - commit file"
     " echom "- <leader>vr - remove file from VCS"
     echom "- <leader>vs - status"
