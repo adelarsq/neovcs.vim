@@ -45,18 +45,22 @@ function! VcsCommit(...) abort
     if s:vcs_name ==# 'git'
         execute '!git commit -m "'.a:1.'"'
     elseif s:vcs_name ==# 'svn'
-        " echo
+        execute '!svn commit --changelist '.a:1.' -m "'.a:2.'"'
     endif
 endfunction
 
-function! VcsAddFile()
+function! VcsAddFile(...)
     let s:filepath = expand('%:p')
     let s:command = ''
     let s:vcs_name = VcsName()
     if s:vcs_name ==# 'git'
         let s:command = 'git add '.s:filepath
     elseif s:vcs_name ==# 'svn'
-        let s:command = 'svn add '.s:filepath
+        if a:0 == 0
+            let s:command = 'svn add '.s:filepath
+        else
+            let s:command = 'svn changelist '.a:1.' '.s:filepath
+        endif
     else
         echo 'Is this file in a repository?'
         return
@@ -87,11 +91,15 @@ function! GitStatus()
 
     " Create the dictionaries used to populate the quickfix list
     let s:list = []
-    for f in s:flist
-        let s:glist = split(f,' ')
+    for s:f1 in s:flist
+        let s:f2 = trim(s:f1)
+        echom s:f2
+        let s:glist = split(s:f2)
+        echom s:glist
         let s:a = s:glist[0]
         let s:b = s:glist[1]
         let s:dic = {'filename': s:b, "text": s:a}
+        echom s:dic
         call add(s:list, s:dic)
     endfor
 
@@ -144,7 +152,7 @@ function! VcsHelp()
 endfunction
 
 nnoremap <silent> <leader>va :call VcsAddFile()<CR>
-nmap <leader>vc :call VcsCommit("")<left><left>
+nmap <leader>vc :call VcsCommit("","")<left><left><left><left><left>
 nnoremap <silent> <leader>vs :call VcsStatus()<CR>:copen<CR>
 nnoremap <silent> <leader>vh :call VcsHelp()<CR>
 
