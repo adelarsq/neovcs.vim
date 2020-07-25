@@ -4,7 +4,7 @@ VCS support for Neovim
 
 Basic support for:
 
-- [x] Git - name,status,commit,add file,remove file
+- [x] Git - name,blame,log,status,commit,add file,remove file
 - [x] Subversion - name,status,commit,add file,remove file
 - [x] darcs - name
 - [x] bazaar - name
