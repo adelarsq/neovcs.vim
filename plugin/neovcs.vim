@@ -88,18 +88,32 @@ function! VcsAddFiles(...)
     echo s:command
 endfunction
 
-function! VcsStatus()
+function! VcsBlame()
     let s:vcs_name = VcsName()
     if s:vcs_name == 'git'
-        call GitStatus()
-    elseif s:vcs_name == 'svn'
-        call SvnStatus()
+        call VcsGitBlame()
     else
         echom "VCS not supported"
     endif
 endfunction
 
-function! GitStatus()
+function! VcsGitBlame()
+    let s:cmd = 'git blame '
+    echo s:cmd
+endfunction
+
+function! VcsStatus()
+    let s:vcs_name = VcsName()
+    if s:vcs_name == 'git'
+        call VcsStatusGit()
+    elseif s:vcs_name == 'svn'
+        call VcsStatusSvn()
+    else
+        echom "VCS not supported"
+    endif
+endfunction
+
+function! VcsStatusGit()
 
     let s:cmd = 'git status --porcelain'
     echo s:cmd
@@ -127,7 +141,7 @@ function! GitStatus()
 
 endfunction
 
-function! SvnStatus()
+function! VcsStatusSvn()
 
     let s:cmd = "svn status | awk '{print $1\" \"$2}'"
     echo s:cmd
@@ -161,6 +175,36 @@ function! SvnStatus()
 
 endfunction
 
+function! VcsUpdateSend()
+    let s:vcs_name = VcsName()
+    if s:vcs_name == 'git'
+        call VcsUpdateSendGit()
+    else
+        echom "VCS not supported"
+    endif
+endfunction
+
+function! VcsUpdateSendGit()
+    let s:cmd = "git push"
+    echo s:cmd
+    let s:flist = system(s:cmd)
+endfunction
+
+function! VcsUpdateReceive()
+    let s:vcs_name = VcsName()
+    if s:vcs_name == 'git'
+        call VcsUpdateReceiveGit()
+    else
+        echom "VCS not supported"
+    endif
+endfunction
+
+function! VcsUpdateReceiveGit()
+    let s:cmd = "git pull"
+    echo s:cmd
+    let s:flist = system(s:cmd)
+endfunction
+
 function! VcsHelp()
     echom "VCS Help:"
     echom "- <leader>va - add file to VCS"
@@ -169,12 +213,18 @@ function! VcsHelp()
     echom "- <leader>vc - commit file"
     " echom "- <leader>vr - remove file from VCS"
     echom "- <leader>vs - status"
+    echom "- <leader>vu - update send changes"
+    echom "- <leader>vU - send receive changes"
     echom "- <leader>vh - this help"
+    " <leader>vl :VcsBlame<CR>
+    " <leader>vL :VcsLog<CR>
 endfunction
 
 nnoremap <silent> <leader>va :call VcsAddFile()<CR>
 nnoremap <silent> <leader>vA :call VcsAddFiles()<CR>
 nmap <leader>vc :call VcsCommit("","")<left><left><left><left><left>
 nnoremap <silent> <leader>vs :call VcsStatus()<CR>:copen<CR>
+nnoremap <silent> <leader>vu :call VcsUpdateSend()<CR>
+nnoremap <silent> <leader>vU :call VcsUpdateReceive()<CR>
 nnoremap <silent> <leader>vh :call VcsHelp()<CR>
 

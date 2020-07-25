@@ -18,7 +18,10 @@ Basic support for:
 
 - `<leader>vs` - VCS status
 
-- `<leader>v?` - VCS help
+- `<leader>vu` - update send changes
+- `<leader>vU` - send receive changes
+
+- `<leader>vh` - VCS help
 
 ## Acknowledgments 💡
 
