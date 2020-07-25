@@ -16,6 +16,8 @@ Basic support for:
 - `<leader>vA` - add all files to VCS
 - `<leader>vr` - remove file from VCS
 
+- `<leader>vl` - blame
+- `<leader>vL` - log
 - `<leader>vs` - VCS status
 
 - `<leader>vu` - update send changes

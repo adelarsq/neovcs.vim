@@ -91,15 +91,31 @@ endfunction
 function! VcsBlame()
     let s:vcs_name = VcsName()
     if s:vcs_name == 'git'
-        call VcsGitBlame()
+        call VcsBlameGit()
     else
         echom "VCS not supported"
     endif
 endfunction
 
-function! VcsGitBlame()
+function! VcsBlameGit()
     let s:cmd = 'git blame '
     echo s:cmd
+    let s:systemcommand = system(s:command)
+endfunction
+
+function! VcsLog()
+    let s:vcs_name = VcsName()
+    if s:vcs_name == 'git'
+        call VcsLogGit()
+    else
+        echom "VCS not supported"
+    endif
+endfunction
+
+function! VcsLogGit()
+    let s:cmd = 'git log '
+    echo s:cmd
+    let s:systemcommand = system(s:command)
 endfunction
 
 function! VcsStatus()
@@ -212,17 +228,19 @@ function! VcsHelp()
     " echom "- <leader>vb - change branch"
     echom "- <leader>vc - commit file"
     " echom "- <leader>vr - remove file from VCS"
+    echom "- <leader>vl - blame"
+    echom "- <leader>vL - log"
     echom "- <leader>vs - status"
     echom "- <leader>vu - update send changes"
     echom "- <leader>vU - send receive changes"
     echom "- <leader>vh - this help"
-    " <leader>vl :VcsBlame<CR>
-    " <leader>vL :VcsLog<CR>
 endfunction
 
 nnoremap <silent> <leader>va :call VcsAddFile()<CR>
 nnoremap <silent> <leader>vA :call VcsAddFiles()<CR>
-nmap <leader>vc :call VcsCommit("","")<left><left><left><left><left>
+nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left>
+nnoremap <silent> <leader>vl :call VcsBlame()<CR>
+nnoremap <silent> <leader>vL :call VcsLog()<CR>
 nnoremap <silent> <leader>vs :call VcsStatus()<CR>:copen<CR>
 nnoremap <silent> <leader>vu :call VcsUpdateSend()<CR>
 nnoremap <silent> <leader>vU :call VcsUpdateReceive()<CR>
