@@ -236,7 +236,7 @@ function! VcsHelp()
     echom "- <leader>vh - this help"
 endfunction
 
-nnoremap <silent> <leader>va :call VcsAddFile()<CR>
+nmap              <leader>va :call VcsAddFile("")<left><left>
 nnoremap <silent> <leader>vA :call VcsAddFiles()<CR>
 nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left>
 nnoremap <silent> <leader>vl :call VcsBlame()<CR>
