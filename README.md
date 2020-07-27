@@ -25,6 +25,10 @@ Basic support for:
 
 - `<leader>vh` - VCS help
 
+## Todo
+
+- Hightlight itens on quickfix with diferent colors
+
 ## Acknowledgments 💡
 
 Thanks goes to these people/projects for inspiration:
