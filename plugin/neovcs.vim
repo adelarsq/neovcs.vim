@@ -45,7 +45,7 @@ function! VcsCommit(...) abort
     if s:vcs_name ==# 'git'
         execute '!git commit -m "'.a:1.'"'
     elseif s:vcs_name ==# 'svn'
-        execute '!svn commit --changelist '.a:1.' -m "'.a:2.'"'
+        execute '!svn commit --changelist '.a:2.' -m "'.a:1.'"'
     endif
 endfunction
 
