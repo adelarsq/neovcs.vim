@@ -12,6 +12,8 @@ Basic support for:
 
 ## Config
 
+- `<leader>v` - VCS help
+
 - `<leader>va` - add file to VCS
 - `<leader>vA` - add all files to VCS
 - `<leader>vr` - remove file from VCS
@@ -25,7 +27,6 @@ Basic support for:
 - `<leader>vu` - update send changes
 - `<leader>vU` - send receive changes
 
-- `<leader>v?` - VCS help
 
 ## Todo
 
