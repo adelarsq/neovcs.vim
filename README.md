@@ -16,6 +16,8 @@ Basic support for:
 - `<leader>vA` - add all files to VCS
 - `<leader>vr` - remove file from VCS
 
+- `<leader>vh` - hunk diff
+
 - `<leader>vl` - blame
 - `<leader>vL` - log
 - `<leader>vs` - VCS status
@@ -23,7 +25,7 @@ Basic support for:
 - `<leader>vu` - update send changes
 - `<leader>vU` - send receive changes
 
-- `<leader>vh` - VCS help
+- `<leader>v?` - VCS help
 
 ## Todo
 

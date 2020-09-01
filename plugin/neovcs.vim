@@ -88,6 +88,27 @@ function! VcsAddFiles(...)
     echo s:command
 endfunction
 
+function! VcsRmFile(...)
+    let s:filepath = expand('%:p')
+    let s:command = ''
+    let s:vcs_name = VcsName()
+    if s:vcs_name ==# 'git'
+        let s:command = 'git rm '.s:filepath
+    elseif s:vcs_name ==# 'svn'
+        if a:0 == 0
+            let s:command = 'svn rm '.s:filepath
+        else
+            " TODO
+            let s:command = 'svn changelist '.a:1.' '.s:filepath
+        endif
+    else
+        echo 'Is this file in a repository?'
+        return
+    endif
+    let s:systemcommand = system(s:command)
+    echo s:command
+endfunction
+
 function! VcsBlame()
     let s:vcs_name = VcsName()
     if s:vcs_name == 'git'
@@ -223,26 +244,31 @@ endfunction
 
 function! VcsHelp()
     echom "VCS Help:"
+    echom "- <leader>v - this help"
     echom "- <leader>va - add file to VCS"
     echom "- <leader>vA - add all files to VCS"
     " echom "- <leader>vb - change branch"
     echom "- <leader>vc - commit file"
-    " echom "- <leader>vr - remove file from VCS"
+    echom "- <leader>vh - hunk diff"
+    echom "- <leader>vH - hunk undo"
     echom "- <leader>vl - blame"
     echom "- <leader>vL - log"
+    echom "- <leader>vr - rm file to VCS"
     echom "- <leader>vs - status"
     echom "- <leader>vu - update send changes"
     echom "- <leader>vU - send receive changes"
-    echom "- <leader>vh - this help"
 endfunction
 
+nnoremap <silent> <leader>v  :call VcsHelp()<CR>
 nmap              <leader>va :call VcsAddFile("")<left><left>
 nnoremap <silent> <leader>vA :call VcsAddFiles()<CR>
 nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left>
+nnoremap <silent> <leader>vh :SignifyHunkDiff<CR>
+nnoremap <silent> <leader>vH :SignifyHunkUndo<CR>
 nnoremap <silent> <leader>vl :call VcsBlame()<CR>
 nnoremap <silent> <leader>vL :call VcsLog()<CR>
+nnoremap <silent> <leader>vr :call VcsRmFile("")<left><left>
 nnoremap <silent> <leader>vs :call VcsStatus()<CR>:copen<CR>
 nnoremap <silent> <leader>vu :call VcsUpdateSend()<CR>
 nnoremap <silent> <leader>vU :call VcsUpdateReceive()<CR>
-nnoremap <silent> <leader>vh :call VcsHelp()<CR>
 
