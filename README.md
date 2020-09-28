@@ -20,6 +20,8 @@ Basic support for:
 
 - `<leader>vh` - hunk diff
 
+- `<leader>vm` - mark conflict as resolved for current file
+
 - `<leader>vl` - blame
 - `<leader>vL` - log
 - `<leader>vs` - VCS status

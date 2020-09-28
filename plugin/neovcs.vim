@@ -124,6 +124,22 @@ function! VcsBlameGit()
     let s:systemcommand = system(s:command)
 endfunction
 
+function! VcsResolve()
+    let s:vcs_name = VcsName()
+    if s:vcs_name == 'svn'
+        call VcsResolveSvn()
+    else
+        echom "VCS not supported"
+    endif
+endfunction
+
+function! VcsResolveSvn()
+    let s:filepath = expand('%:p')
+    let s:cmd = 'svn resolve '.s:filepath
+    echo s:cmd
+    let s:systemcommand = system(s:command)
+endfunction
+
 function! VcsLog()
     let s:vcs_name = VcsName()
     if s:vcs_name == 'git'
@@ -251,6 +267,7 @@ function! VcsHelp()
     echom "- <leader>vc - commit file"
     echom "- <leader>vh - hunk diff"
     echom "- <leader>vH - hunk undo"
+    echom "- <leader>vm - mark conflict as resolved for current file"
     echom "- <leader>vl - blame"
     echom "- <leader>vL - log"
     echom "- <leader>vr - rm file to VCS"
@@ -265,6 +282,7 @@ nnoremap <silent> <leader>vA :call VcsAddFiles()<CR>
 nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left>
 nnoremap <silent> <leader>vh :SignifyHunkDiff<CR>
 nnoremap <silent> <leader>vH :SignifyHunkUndo<CR>
+nnoremap <silent> <leader>vm :call VcsResolve()<CR>
 nnoremap <silent> <leader>vl :call VcsBlame()<CR>
 nnoremap <silent> <leader>vL :call VcsLog()<CR>
 nnoremap <silent> <leader>vr :call VcsRmFile("")<left><left>
