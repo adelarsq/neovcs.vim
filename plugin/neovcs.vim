@@ -270,7 +270,7 @@ function! VcsHelp()
     echom "- <leader>vm - mark conflict as resolved for current file"
     echom "- <leader>vl - blame"
     echom "- <leader>vL - log"
-    echom "- <leader>vr - rm file to VCS"
+    echom "- <leader>vr - remove file"
     echom "- <leader>vs - status"
     echom "- <leader>vu - update send changes"
     echom "- <leader>vU - send receive changes"
