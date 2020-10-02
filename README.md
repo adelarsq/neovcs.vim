@@ -22,6 +22,8 @@ Basic support for:
 
 - `<leader>vm` - mark conflict as resolved for current file
 
+- `<leader>vo` - open repository on browser TODO
+
 - `<leader>vl` - blame
 - `<leader>vL` - log
 - `<leader>vs` - VCS status

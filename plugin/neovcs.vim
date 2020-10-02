@@ -49,6 +49,36 @@ function! VcsCommit(...) abort
     endif
 endfunction
 
+function! VcsOpenUrl()
+    let s:vcs_name = VcsName()
+    if s:vcs_name == 'git'
+        call VcsOpenUrlGit()
+    elseif s:vcs_name == 'svn'
+        call VcsOpenUrlSvn()
+    else
+        echom "VCS not supported"
+    endif
+endfunction
+
+function! VcsOpenUrlGit()
+    let s:cmd = 'git config --get remote.origin.url'
+    echo s:cmd
+    let s:result = system(s:cmd)
+    let s:split = split(s:result, '\n')
+    let s:openurl = 'OpenBrowser '.s:split[0]
+    execute s:openurl
+endfunction
+
+function! VcsOpenUrlSvn()
+    " https://serverfault.com/questions/310300/how-to-get-the-url-of-the-current-svn-repo
+    let s:cmd = 'svn info --show-item repos-root-url'
+    echo s:cmd
+    let s:result = system(s:cmd)
+    let s:split = split(s:result, '\n')
+    let s:openurl = 'OpenBrowser '.s:split[0]
+    execute s:openurl
+endfunction
+
 function! VcsAddFile(...)
     let s:filepath = expand('%:p')
     let s:command = ''
@@ -260,11 +290,12 @@ endfunction
 
 function! VcsHelp()
     echom "VCS Help:"
-    echom "- <leader>v - this help"
+    echom "- <leader>v  - this help"
     echom "- <leader>va - add file to VCS"
     echom "- <leader>vA - add all files to VCS"
     " echom "- <leader>vb - change branch"
     echom "- <leader>vc - commit file"
+    echom "- <leader>vo - open URL"
     echom "- <leader>vh - hunk diff"
     echom "- <leader>vH - hunk undo"
     echom "- <leader>vm - mark conflict as resolved for current file"
@@ -282,6 +313,7 @@ nnoremap <silent> <leader>vA :call VcsAddFiles()<CR>
 nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left>
 nnoremap <silent> <leader>vh :SignifyHunkDiff<CR>
 nnoremap <silent> <leader>vH :SignifyHunkUndo<CR>
+nnoremap <silent> <leader>vo :call VcsOpenUrl()<CR>
 nnoremap <silent> <leader>vm :call VcsResolve()<CR>
 nnoremap <silent> <leader>vl :call VcsBlame()<CR>
 nnoremap <silent> <leader>vL :call VcsLog()<CR>
