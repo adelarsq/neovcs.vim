@@ -4,11 +4,11 @@ VCS support for Neovim
 
 Basic support for:
 
-- [x] Git - name,blame,log,status,commit,add file,remove file
-- [x] Subversion - name,status,commit,add file,remove file
-- [x] darcs - name
-- [x] bazaar - name
-- [x] mercurial - name
+- [x] [Git](https://git-scm.com)
+- [x] [Subversion](https://subversion.apache.org)
+- [x] [Darcs](http://darcs.net)
+- [x] [Bazaar](https://bazaar.canonical.com)
+- [x] [Mercurial](https://www.mercurial-scm.org)
 
 ## Config
 
@@ -31,6 +31,10 @@ Basic support for:
 - `<leader>vu` - update send changes
 - `<leader>vU` - send receive changes
 
+## Commands
+
+- `VcsName()` - get the VCS name. Can be used on status line plugins to show
+    the VCS name for the current repository
 
 ## Todo
 
