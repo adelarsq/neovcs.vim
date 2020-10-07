@@ -28,8 +28,8 @@ Basic support for:
 - `<leader>vL` - log
 - `<leader>vs` - VCS status
 
-- `<leader>vu` - update send changes
-- `<leader>vU` - send receive changes
+- `<leader>vu` - receive changes
+- `<leader>vU` - send changes
 
 ## Commands
 

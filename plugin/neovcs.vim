@@ -277,6 +277,8 @@ function! VcsUpdateReceive()
     let s:vcs_name = VcsName()
     if s:vcs_name == 'git'
         call VcsUpdateReceiveGit()
+    elseif s:vcs_name == 'svn'
+        call VcsUpdateReceiveSvn()
     else
         echom "VCS not supported"
     endif
@@ -284,6 +286,12 @@ endfunction
 
 function! VcsUpdateReceiveGit()
     let s:cmd = "git pull"
+    echo s:cmd
+    let s:flist = system(s:cmd)
+endfunction
+
+function! VcsUpdateReceiveSvn()
+    let s:cmd = "svn update"
     echo s:cmd
     let s:flist = system(s:cmd)
 endfunction
@@ -319,6 +327,6 @@ nnoremap <silent> <leader>vl :call VcsBlame()<CR>
 nnoremap <silent> <leader>vL :call VcsLog()<CR>
 nnoremap <silent> <leader>vr :call VcsRmFile("")<left><left>
 nnoremap <silent> <leader>vs :call VcsStatus()<CR>:copen<CR>
-nnoremap <silent> <leader>vu :call VcsUpdateSend()<CR>
-nnoremap <silent> <leader>vU :call VcsUpdateReceive()<CR>
+nnoremap <silent> <leader>vu :call VcsUpdateReceive()<CR>
+nnoremap <silent> <leader>vU :call VcsUpdateSend()<CR>
 
