@@ -49,6 +49,13 @@ function! VcsCommit(...) abort
     endif
 endfunction
 
+function! VcsDiff(...) abort
+    let s:vcs_name = VcsName()
+    if s:vcs_name ==# 'svn'
+        execute '!svn diff -r'.a:1
+    endif
+endfunction
+
 function! VcsOpenUrl()
     let s:vcs_name = VcsName()
     if s:vcs_name == 'git'
@@ -319,6 +326,7 @@ nnoremap <silent> <leader>v  :call VcsHelp()<CR>
 nmap              <leader>va :call VcsAddFile("")<left><left>
 nnoremap <silent> <leader>vA :call VcsAddFiles()<CR>
 nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left>
+nmap              <leader>vd :call VcsDiff("")<left><left>
 nnoremap <silent> <leader>vK :SignifyHunkDiff<CR>
 nnoremap <silent> <leader>vm :call VcsResolve()<CR>
 " nnoremap <silent> <leader>vn ...

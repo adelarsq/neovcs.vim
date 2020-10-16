@@ -17,6 +17,8 @@ Basic support for:
 - `<leader>va` - add file to VCS
 - `<leader>vA` - add all files to VCS
 
+- `<leader>vd` - diff revision
+
 - `<leader>vK` - hunk diff
 
 - `<leader>vm` - mark conflict as resolved for current file
