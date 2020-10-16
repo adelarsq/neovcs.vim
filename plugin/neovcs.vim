@@ -319,14 +319,15 @@ nnoremap <silent> <leader>v  :call VcsHelp()<CR>
 nmap              <leader>va :call VcsAddFile("")<left><left>
 nnoremap <silent> <leader>vA :call VcsAddFiles()<CR>
 nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left>
-nnoremap <silent> <leader>vh :SignifyHunkDiff<CR>
-nnoremap <silent> <leader>vH :SignifyHunkUndo<CR>
-nnoremap <silent> <leader>vo :call VcsOpenUrl()<CR>
+nnoremap <silent> <leader>vK :SignifyHunkDiff<CR>
 nnoremap <silent> <leader>vm :call VcsResolve()<CR>
+" nnoremap <silent> <leader>vn ...
+nnoremap <silent> <leader>vo :call VcsOpenUrl()<CR>
 nnoremap <silent> <leader>vl :call VcsBlame()<CR>
 nnoremap <silent> <leader>vL :call VcsLog()<CR>
-nnoremap <silent> <leader>vr :call VcsRmFile("")<left><left>
 nnoremap <silent> <leader>vs :call VcsStatus()<CR>:copen<CR>
 nnoremap <silent> <leader>vu :call VcsUpdateReceive()<CR>
 nnoremap <silent> <leader>vU :call VcsUpdateSend()<CR>
+nnoremap <silent> <leader>vx :SignifyHunkUndo<CR>
+nnoremap <silent> <leader>vX :call VcsRmFile("")<left><left>
 
