@@ -12,22 +12,20 @@ Basic support for:
 
 ## Mappings
 
-```
-- <leader>v - VCS help
-- <leader>va - add file
-- <leader>vA - add all files
-- <leader>vc - commit
-- <leader>vo - open URL
-- <leader>vh - hunk diff
-- <leader>vm - mark conflict as resolved for current file
-- <leader>vl - blame
-- <leader>vL - log
-- <leader>vs - status
-- <leader>vu - receive changes from remote
-- <leader>vU - send changes to remote
-- <leader>vx - hunk undo
-- <leader>vX - remove file
-```
+- `<leader>v` - VCS help
+- `<leader>va` - add file
+- `<leader>vA` - add all files
+- `<leader>vc` - commit
+- `<leader>vo` - open URL
+- `<leader>vh` - hunk diff
+- `<leader>vm` - mark conflict as resolved for current file
+- `<leader>vl` - blame
+- `<leader>vL` - log
+- `<leader>vs` - status
+- `<leader>vu` - receive changes from remote
+- `<leader>vU` - send changes to remote
+- `<leader>vx` - hunk undo
+- `<leader>vX` - remove file
 
 ## Commands
 
