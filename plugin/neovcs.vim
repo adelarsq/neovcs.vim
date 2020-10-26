@@ -181,6 +181,8 @@ function! VcsLog()
     let s:vcs_name = VcsName()
     if s:vcs_name == 'git'
         call VcsLogGit()
+    elseif s:vcs_name == 'svn'
+        call VcsLogSvn()
     else
         echom "VCS not supported"
     endif
@@ -188,6 +190,12 @@ endfunction
 
 function! VcsLogGit()
     let s:cmd = 'git log '
+    echo s:cmd
+    let s:systemcommand = system(s:command)
+endfunction
+
+function! VcsLogSvn()
+    let s:cmd = 'svn log '
     echo s:cmd
     let s:systemcommand = system(s:command)
 endfunction
@@ -306,20 +314,20 @@ endfunction
 function! VcsHelp()
     echom "VCS Help:"
     echom "- <leader>v  - this help"
-    echom "- <leader>va - add file to VCS"
-    echom "- <leader>vA - add all files to VCS"
+    echom "- <leader>va - add file"
+    echom "- <leader>vA - add all files"
     " echom "- <leader>vb - change branch"
-    echom "- <leader>vc - commit file"
+    echom "- <leader>vc - commit"
     echom "- <leader>vo - open URL"
     echom "- <leader>vh - hunk diff"
-    echom "- <leader>vH - hunk undo"
     echom "- <leader>vm - mark conflict as resolved for current file"
     echom "- <leader>vl - blame"
     echom "- <leader>vL - log"
-    echom "- <leader>vr - remove file"
     echom "- <leader>vs - status"
-    echom "- <leader>vu - update send changes"
-    echom "- <leader>vU - send receive changes"
+    echom "- <leader>vu - receive changes from remote"
+    echom "- <leader>vU - send changes to remote"
+    echom "- <leader>vx - hunk undo"
+    echom "- <leader>vX - remove file"
 endfunction
 
 nnoremap <silent> <leader>v  :call VcsHelp()<CR>
