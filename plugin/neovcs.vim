@@ -335,7 +335,7 @@ nmap              <leader>va :call VcsAddFile("")<left><left>
 nnoremap <silent> <leader>vA :call VcsAddFiles()<CR>
 nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left>
 nmap              <leader>vd :call VcsDiff("")<left><left>
-nnoremap <silent> <leader>vK :SignifyHunkDiff<CR>
+nnoremap <silent> <leader>vh :SignifyHunkDiff<CR>
 nnoremap <silent> <leader>vm :call VcsResolve()<CR>
 " nnoremap <silent> <leader>vn ...
 nnoremap <silent> <leader>vo :call VcsOpenUrl()<CR>

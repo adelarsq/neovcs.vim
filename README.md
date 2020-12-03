@@ -12,7 +12,7 @@ Basic support for:
 
 ## Mappings
 
-- `<leader>v` - VCS help
+- `<leader>v` - help
 - `<leader>va` - add file
 - `<leader>vA` - add all files
 - `<leader>vc` - commit
