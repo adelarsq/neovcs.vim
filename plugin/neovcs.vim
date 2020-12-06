@@ -20,7 +20,7 @@ function! MercurialRoot(...) abort
   return finddir('.hg', path. ';')
 endfunction
 
-function! BazzarRoot(...) abort
+function! BazaarRoot(...) abort
   let path = a:0 == 0 ? expand('%:p:h') : a:1
   return finddir('.bzr', path. ';')
 endfunction
