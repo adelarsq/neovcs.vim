@@ -224,13 +224,10 @@ function! VcsStatusGit()
     let s:list = []
     for s:f1 in s:flist
         let s:f2 = trim(s:f1)
-        echom s:f2
         let s:glist = split(s:f2)
-        echom s:glist
         let s:a = s:glist[0]
         let s:b = s:glist[1]
         let s:dic = {'filename': s:b, "text": s:a}
-        echom s:dic
         call add(s:list, s:dic)
     endfor
 
