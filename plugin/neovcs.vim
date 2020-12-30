@@ -15,6 +15,38 @@ function! VcsName()
     endif
 endfunction
 
+function! VcsNamePath()
+    " TODO create better detection
+    let cwdRoot = getcwd()
+
+    let gitRoot = GitRoot()
+    if !empty(gitRoot)
+        return ['git', cwdRoot]
+    endif
+
+    let svnRoot = SvnRoot()
+    if !empty(svnRoot)
+        return ['svn', cwdRoot]
+    endif
+
+    let darcsRoot = DarcsRoot()
+    if !empty(darcsRoot)
+        return ['darcs', cwdRoot]
+    endif
+
+    let bazaarRoot = BazaarRoot()
+    if !empty(bazaarRoot)
+        return ['bazaar', cwdRoot]
+    endif
+
+    let mercurialRoot = MercurialRoot()
+    if !empty(mercurialRoot)
+        return ['mercurial', cwdRoot]
+    endif
+
+    return []
+endfunction
+
 function! MercurialRoot(...) abort
   let path = a:0 == 0 ? expand('%:p:h') : a:1
   return finddir('.hg', path. ';')
@@ -270,6 +302,147 @@ function! VcsStatusSvn()
 
 endfunction
 
+function! VcsStatusLine()
+
+    let s:vcs_name_path = VcsNamePath()
+
+    if empty(s:vcs_name_path)
+        return ''
+    endif
+
+    let s:vcs_name = s:vcs_name_path[0]
+    let s:root_dir = s:vcs_name_path[1]
+
+    let s:cd_root_dir = 'cd '.s:root_dir
+
+    " Get local file changes
+
+    let [s:added, s:modified, s:removed] = sy#repo#get_stats()
+
+    let s:symbols = ['+', '-', '~']
+    let s:stats = [s:added, s:removed, s:modified]
+    let s:hunkline = ''
+    for s:i in range(3)
+        let s:hunkline .= printf('%s%s', s:symbols[s:i], s:stats[s:i])
+    endfor
+    let s:hunkline .= ' '
+    if !empty(s:hunkline)
+        let s:hunkline = printf('%s', s:hunkline[:-2])
+    endif
+
+    " Shows conflits on current file
+    let s:mark_conflits = '≠'
+    let s:light_line_vcs_conflits = ''
+    if s:vcs_name ==# 'git'
+        let s:light_line_vcs_conflits = s:mark_conflits . VcsGitConflictMarker()
+    elseif s:vcs_name ==# 'svn'
+        let s:light_line_vcs_conflits = s:mark_conflits . VcsGitConflictMarker()
+    else
+        let g:light_line_vcs_conflits = s:mark_conflits.'0'
+    endif
+
+    " Get local repository changes
+    let s:mark_local = '↑'
+    let g:light_line_vcs_status_local = ''
+
+    if s:vcs_name ==# 'git'
+        let s:status_update_list = systemlist('git for-each-ref --format="%(HEAD) %(refname:short) %(push:track)" refs/heads | grep -o "[0-9]\+"')
+        if len(s:status_update_list) > 0
+            let g:light_line_vcs_status_local = s:mark_local.s:status_update_list[0]
+        else
+            let g:light_line_vcs_status_local = s:mark_local.'0'
+        endif
+    elseif s:vcs_name ==# 'svn'
+        let s:commands = s:cd_root_dir.'; svn status'
+        let s:status_update_list_local = systemlist(s:commands)
+        if len(s:status_update_list_local) > 0
+            let g:light_line_vcs_status_local = s:mark_local.len(s:status_update_list_local)
+        else
+            let g:light_line_vcs_status_local = s:mark_local.'0'
+        endif
+    else
+        let g:light_line_vcs_status_local = s:mark_local.'0'
+    endif
+
+    " Get remote changes
+    let s:mark_behind = '↓'
+    let g:light_line_vcs_status_behind = ''
+
+    if s:vcs_name ==# 'git'
+        let s:commands = s:cd_root_dir.'; git for-each-ref --format="%(HEAD) %(refname:short) %(push:track)" refs/heads | grep -o "[0-9]\+"'
+        let s:status_update_list = systemlist(s:commands)
+        if len(s:status_update_list) > 0
+            let g:light_line_vcs_status_behind = s:mark_behind.s:status_update_list[0]
+        else
+            let g:light_line_vcs_status_behind = s:mark_behind.'0'
+        endif
+    elseif s:vcs_name ==# 'svn'
+        let s:commands = s:cd_root_dir.'; svn status -u | grep "        \*"'
+        let s:status_update_list = systemlist(s:commands)
+        if len(s:status_update_list) > 0
+            let g:light_line_vcs_status_behind = s:mark_behind.len(s:status_update_list)
+        else
+            let g:light_line_vcs_status_behind = s:mark_behind.'0'
+        endif
+    else
+        let g:light_line_vcs_status_behind = s:mark_behind.'0'
+    endif
+
+    " Shows conflits on current repository
+    let s:mark_repository_conflits = '≠'
+    let s:light_line_vcs_repository_conflits = ''
+    if s:vcs_name ==# 'git'
+        " Based on: https://stackoverflow.com/questions/3065650/whats-the-simplest-way-to-list-conflicted-files-in-git
+        let s:commands = s:cd_root_dir.'; git diff --name-only --diff-filter=U '
+        let s:status_conflicts_repository = systemlist(s:commands)
+        let g:light_line_vcs_repository_conflits = len(s:status_conflicts_repository).'0'
+    elseif s:vcs_name ==# 'svn'
+        let s:commands = s:cd_root_dir.'; svn status|grep "Text conflicts"|sed ''s/[^0-9]*//g'' '
+        let s:status_conflicts_repository = systemlist(s:commands)
+        if len(s:status_conflicts_repository) > 0
+            let g:light_line_vcs_repository_conflits = s:mark_repository_conflits.s:status_conflicts_repository[0]
+        else
+            let g:light_line_vcs_repository_conflits = s:mark_repository_conflits.'0'
+        endif
+    else
+        let g:light_line_vcs_repository_conflits = s:mark_repository_conflits.'0'
+    endif
+
+    " Get name branch
+
+    let s:mark_vcs = '  '
+    let s:vcs_name_branch = ''
+
+    if s:vcs_name ==# 'git'
+        " TODO add branch support
+        let s:vcs_name_branch = s:vcs_name
+    elseif s:vcs_name ==# 'svn'
+        let s:commands = s:cd_root_dir."; svn info | grep '^URL:' | egrep -o '(tags|branches)/[^/]+|trunk' | egrep -o '[^/]+$' "
+        let s:vcs_name_branch = s:vcs_name.' '.systemlist(s:commands)[0]
+    endif
+
+    return
+        \ s:mark_vcs
+        \ . s:hunkline
+        \ . s:light_line_vcs_conflits
+        \ . ' '
+        \ . g:light_line_vcs_status_local
+        \ . g:light_line_vcs_status_behind
+        \ . g:light_line_vcs_repository_conflits
+        \ . ' '
+        \ . s:vcs_name_branch
+
+endfunction
+
+" Shows conflits marker
+" Source: https://github.com/vim-airline/vim-airline/blob/master/autoload/airline/extensions/whitespace.vim
+function! VcsGitConflictMarker()
+    " Checks for git conflict markers
+    let annotation = '\%([0-9A-Za-z_.:]\+\)\?'
+    let pattern = '^\%(\%(<\{7} '.annotation. '\)\|\%(=\{7\}\)\|\%(>\{7\} '.annotation.'\)\)$'
+    return search(pattern, 'nw')
+endfunction
+
 function! VcsUpdateSend()
     let s:vcs_name = VcsName()
     if s:vcs_name == 'git'
@@ -321,6 +494,7 @@ function! VcsHelp()
     echom "- <leader>vl - blame"
     echom "- <leader>vL - log"
     echom "- <leader>vs - status"
+    echom "- <leader>vS - echo status line"
     echom "- <leader>vu - receive changes from remote"
     echom "- <leader>vU - send changes to remote"
     echom "- <leader>vx - hunk undo"
@@ -339,6 +513,7 @@ nnoremap <silent> <leader>vo :call VcsOpenUrl()<CR>
 nnoremap <silent> <leader>vl :call VcsBlame()<CR>
 nnoremap <silent> <leader>vL :call VcsLog()<CR>
 nnoremap <silent> <leader>vs :call VcsStatus()<CR>:copen<CR>
+nnoremap <silent> <leader>vS :echo VcsStatusLine()<CR>
 nnoremap <silent> <leader>vu :call VcsUpdateReceive()<CR>
 nnoremap <silent> <leader>vU :call VcsUpdateSend()<CR>
 nnoremap <silent> <leader>vx :SignifyHunkUndo<CR>
