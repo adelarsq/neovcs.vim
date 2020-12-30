@@ -32,6 +32,7 @@ Basic support for:
 
 - `VcsName()` - get the VCS name. Can be used on status line plugins to show
     the VCS name for the current repository
+- `VcsStatusLine()` - get the repository status to use on status lines
 
 ## Todo
 
