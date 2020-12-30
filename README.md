@@ -22,6 +22,7 @@ Basic support for:
 - `<leader>vl` - blame
 - `<leader>vL` - log
 - `<leader>vs` - status
+- `<leader>vS` - echo status line
 - `<leader>vu` - receive changes from remote
 - `<leader>vU` - send changes to remote
 - `<leader>vx` - hunk undo
