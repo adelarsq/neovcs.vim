@@ -488,8 +488,9 @@ function! VcsHelp()
     echom "- <leader>vA - add all files"
     " echom "- <leader>vb - change branch"
     echom "- <leader>vc - commit"
+    echom "- <leader>vd - hunk diff"
+    echom "- <leader>vD - file diff"
     echom "- <leader>vo - open URL"
-    echom "- <leader>vh - hunk diff"
     echom "- <leader>vm - mark conflict as resolved for current file"
     echom "- <leader>vl - blame"
     echom "- <leader>vL - log"
@@ -505,8 +506,8 @@ nnoremap <silent> <leader>v  :call VcsHelp()<CR>
 nmap              <leader>va :call VcsAddFile("")<left><left>
 nnoremap <silent> <leader>vA :call VcsAddFiles()<CR>
 nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left>
-nmap              <leader>vd :call VcsDiff("")<left><left>
-nnoremap <silent> <leader>vh :SignifyHunkDiff<CR>
+nnoremap <silent> <leader>vd :SignifyHunkDiff<CR>
+nmap              <leader>vD :call VcsDiff("")<left><left>
 nnoremap <silent> <leader>vm :call VcsResolve()<CR>
 " nnoremap <silent> <leader>vn ...
 nnoremap <silent> <leader>vo :call VcsOpenUrl()<CR>

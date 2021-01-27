@@ -16,8 +16,9 @@ Basic support for:
 - `<leader>va` - add file
 - `<leader>vA` - add all files
 - `<leader>vc` - commit
+- `<leader>vd` - hunk diff
+- `<leader>vD` - file diff
 - `<leader>vo` - open URL
-- `<leader>vh` - hunk diff
 - `<leader>vm` - mark conflict as resolved for current file
 - `<leader>vl` - blame
 - `<leader>vL` - log
