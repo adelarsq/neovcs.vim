@@ -72,7 +72,17 @@ function! SvnRoot(...) abort
   return finddir('.svn', path. ';')
 endfunction
 
-function! GitBranchName() abort
+function! VcsBranchName() abort
+    let s:vcs_name = VcsName()
+    if s:vcs_name ==# 'git'
+        return VcsGitBranchName()
+    else
+        echom "VCS not supported"
+        return ''
+    endif
+endfunction
+
+function! VcsGitBranchName() abort
     let branch = systemlist('git branch')[0]
     let branchSplit = split(branch,' ')[1]
     return branchSplit
@@ -109,7 +119,7 @@ function! VcsOpenLineUrlGit()
     let s:result = system(s:cmd)
     let s:split = split(s:result, '\n')
 
-    let s:branch = GitBranchName()
+    let s:branch = VcsGitBranchName()
 
     let s:relativeFilePath = expand('%:P')
 
