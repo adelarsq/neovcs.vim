@@ -18,7 +18,8 @@ Basic support for:
 - `<leader>vc` - commit
 - `<leader>vd` - hunk diff
 - `<leader>vD` - file diff
-- `<leader>vo` - open URL
+- `<leader>vo` - open URL for current line
+- `<leader>vO` - open URL for repository
 - `<leader>vm` - mark conflict as resolved for current file
 - `<leader>vl` - blame
 - `<leader>vL` - log

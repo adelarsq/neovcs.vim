@@ -72,6 +72,12 @@ function! SvnRoot(...) abort
   return finddir('.svn', path. ';')
 endfunction
 
+function! GitBranchName() abort
+    let branch = systemlist('git branch')[0]
+    let branchSplit = split(branch,' ')[1]
+    return branchSplit
+endfunction
+
 function! VcsCommit(...) abort
     let s:vcs_name = VcsName()
     if s:vcs_name ==# 'git'
@@ -86,6 +92,34 @@ function! VcsDiff(...) abort
     if s:vcs_name ==# 'svn'
         execute '!svn diff -r'.a:1
     endif
+endfunction
+
+function! VcsOpenLineUrl()
+    let s:vcs_name = VcsName()
+    if s:vcs_name == 'git'
+        call VcsOpenLineUrlGit()
+    else
+        echom "VCS not supported"
+    endif
+endfunction
+
+function! VcsOpenLineUrlGit()
+    let s:cmd = 'git config --get remote.origin.url'
+    " echo s:cmd
+    let s:result = system(s:cmd)
+    let s:split = split(s:result, '\n')
+
+    let s:branch = GitBranchName()
+
+    let s:relativeFilePath = expand('%:P')
+
+    let s:line = line('.')
+
+    let s:url = s:split[0].'/blob/'.s:branch.'/'.s:relativeFilePath.'#L'.s:line
+
+    let s:openurl = 'OpenBrowser '.s:url
+
+    execute s:openurl
 endfunction
 
 function! VcsOpenUrl()
@@ -490,7 +524,8 @@ function! VcsHelp()
     echom "- <leader>vc - commit"
     echom "- <leader>vd - hunk diff"
     echom "- <leader>vD - file diff"
-    echom "- <leader>vo - open URL"
+    echom "- <leader>vo - open current line URL"
+    echom "- <leader>vO - open repository URL"
     echom "- <leader>vm - mark conflict as resolved for current file"
     echom "- <leader>vl - blame"
     echom "- <leader>vL - log"
@@ -510,7 +545,8 @@ nnoremap <silent> <leader>vd :SignifyHunkDiff<CR>
 nmap              <leader>vD :call VcsDiff("")<left><left>
 nnoremap <silent> <leader>vm :call VcsResolve()<CR>
 " nnoremap <silent> <leader>vn ...
-nnoremap <silent> <leader>vo :call VcsOpenUrl()<CR>
+nnoremap <silent> <leader>vo :call VcsOpenLineUrl()<CR>
+nnoremap <silent> <leader>vO :call VcsOpenUrl()<CR>
 nnoremap <silent> <leader>vl :call VcsBlame()<CR>
 nnoremap <silent> <leader>vL :call VcsLog()<CR>
 nnoremap <silent> <leader>vs :call VcsStatus()<CR>:copen<CR>
