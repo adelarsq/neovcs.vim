@@ -417,18 +417,20 @@ function! VcsStatusLine()
     let g:light_line_vcs_status_behind = ''
 
     if s:vcs_name ==# 'git'
-        let s:commands = s:cd_root_dir.'; git for-each-ref --format="%(HEAD) %(refname:short) %(push:track)" refs/heads | grep -o "[0-9]\+"'
-        let s:status_update_list = systemlist(s:commands)
-        if len(s:status_update_list) > 0
-            let g:light_line_vcs_status_behind = s:mark_behind.s:status_update_list[0]
-        else
-            let g:light_line_vcs_status_behind = s:mark_behind.'0'
-        endif
+        " TODO
+        " let s:commands = s:cd_root_dir.'; git for-each-ref --format="%(HEAD) %(refname:short) %(push:track)" refs/heads | grep -o "[0-9]\+"'
+        " let s:status_behind = systemlist(s:commands)
+        " if len(s:status_behind) > 0
+            " let g:light_line_vcs_status_behind = s:mark_behind.s:status_behind[0]
+        " else
+            " let g:light_line_vcs_status_behind = s:mark_behind.'0'
+        " endif
+        let g:light_line_vcs_status_behind = s:mark_behind.'?'
     elseif s:vcs_name ==# 'svn'
         let s:commands = s:cd_root_dir.'; svn status -u | grep "        \*"'
-        let s:status_update_list = systemlist(s:commands)
-        if len(s:status_update_list) > 0
-            let g:light_line_vcs_status_behind = s:mark_behind.len(s:status_update_list)
+        let s:status_behind = systemlist(s:commands)
+        if len(s:status_behind) > 0
+            let g:light_line_vcs_status_behind = s:mark_behind.len(s:status_behind)
         else
             let g:light_line_vcs_status_behind = s:mark_behind.'0'
         endif
