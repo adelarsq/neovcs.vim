@@ -15,6 +15,7 @@ Basic support for:
 - `<leader>v` - help
 - `<leader>va` - add file
 - `<leader>vA` - add all files
+- `<leader>vb` - show branchs
 - `<leader>vc` - commit
 - `<leader>vd` - hunk diff
 - `<leader>vD` - file diff

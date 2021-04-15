@@ -206,6 +206,19 @@ function! VcsAddFiles(...)
     echo s:command
 endfunction
 
+function! VcsShowBranchs()
+    let s:command = ''
+    let s:vcs_name = VcsName()
+    if s:vcs_name ==# 'git'
+        let s:command = 'git branch'
+    else
+        echo 'Is this file in a repository?'
+        return
+    endif
+    let s:systemcommand = system(s:command)
+    echo s:command
+endfunction
+
 function! VcsRmFile(...)
     let s:filepath = expand('%:p')
     let s:command = ''
@@ -542,7 +555,7 @@ function! VcsHelp()
     echom "- <leader>v  - this help"
     echom "- <leader>va - add file"
     echom "- <leader>vA - add all files"
-    " echom "- <leader>vb - change branch"
+    echom "- <leader>vb - show branchs"
     echom "- <leader>vc - commit"
     echom "- <leader>vd - hunk diff"
     echom "- <leader>vD - file diff"
@@ -562,6 +575,7 @@ endfunction
 nnoremap <silent> <leader>v  :call VcsHelp()<CR>
 nmap              <leader>va :call VcsAddFile("")<left><left>
 nnoremap <silent> <leader>vA :call VcsAddFiles()<CR>
+nmap              <leader>vb :call VcsShowBranchs("")<left><left>
 nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left>
 nnoremap <silent> <leader>vd :SignifyHunkDiff<CR>
 nmap              <leader>vD :call VcsDiff("")<left><left>
