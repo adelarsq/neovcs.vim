@@ -439,7 +439,7 @@ function! VcsStatusLine()
         " Based on: https://stackoverflow.com/questions/3065650/whats-the-simplest-way-to-list-conflicted-files-in-git
         let s:commands = s:cd_root_dir.'; git diff --name-only --diff-filter=U '
         let s:status_conflicts_repository = systemlist(s:commands)
-        let g:light_line_vcs_repository_conflits = len(s:status_conflicts_repository).'0'
+        let g:light_line_vcs_repository_conflits = s:mark_repository_conflits.len(s:status_conflicts_repository)
     elseif s:vcs_name ==# 'svn'
         let s:commands = s:cd_root_dir.'; svn status|grep "Text conflicts"|sed ''s/[^0-9]*//g'' '
         let s:status_conflicts_repository = systemlist(s:commands)
@@ -459,7 +459,7 @@ function! VcsStatusLine()
 
     if s:vcs_name ==# 'git'
         " TODO add branch support
-        let s:vcs_name_branch = s:vcs_name
+        let s:vcs_name_branch = s:vcs_name.' '
     elseif s:vcs_name ==# 'svn'
         let s:commands = s:cd_root_dir."; svn info | grep '^URL:' | egrep -o '(tags|branches)/[^/]+|trunk' | egrep -o '[^/]+$' "
         let s:vcs_name_branch = s:vcs_name.' '.systemlist(s:commands)[0]
@@ -554,7 +554,6 @@ nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left
 nnoremap <silent> <leader>vd :SignifyHunkDiff<CR>
 nmap              <leader>vD :call VcsDiff("")<left><left>
 nnoremap <silent> <leader>vm :call VcsResolve()<CR>
-" nnoremap <silent> <leader>vn ...
 nnoremap <silent> <leader>vo :call VcsOpenLineUrl()<CR>
 nnoremap <silent> <leader>vO :call VcsOpenUrl()<CR>
 nnoremap <silent> <leader>vl :call VcsBlame()<CR>
