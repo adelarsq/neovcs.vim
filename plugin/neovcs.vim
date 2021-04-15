@@ -1,7 +1,8 @@
 
-if !exists('g:loaded_neovcs')
-    let g:loaded_neovcs=1
+if exists('g:loaded_neovcs')
+    finish
 endif
+let g:loaded_neovcs=1
 
 function! VcsName()
     if !empty(GitRoot())
