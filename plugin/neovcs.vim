@@ -1,4 +1,8 @@
 
+if !exists('g:loaded_neovcs')
+    let g:loaded_neovcs=1
+endif
+
 function! VcsName()
     if !empty(GitRoot())
         return 'git'
@@ -454,19 +458,24 @@ function! VcsStatusLine()
 
     " Get name branch
 
-    let s:mark_vcs = '  '
+    let s:mark_vcs = ''
     let s:vcs_name_branch = ''
 
-    if s:vcs_name ==# 'git'
-        " TODO add branch support
-        let s:vcs_name_branch = s:vcs_name.' '
-    elseif s:vcs_name ==# 'svn'
-        let s:commands = s:cd_root_dir."; svn info | grep '^URL:' | egrep -o '(tags|branches)/[^/]+|trunk' | egrep -o '[^/]+$' "
-        let s:vcs_name_branch = s:vcs_name.' '.systemlist(s:commands)[0]
+    if !exists("b:vcs_name_branch")
+        if s:vcs_name ==# 'git'
+            let s:vcs_name_branch = s:vcs_name.' '.VcsGitBranchName()
+        elseif s:vcs_name ==# 'svn'
+            let s:commands = s:cd_root_dir."; svn info | grep '^URL:' | egrep -o '(tags|branches)/[^/]+|trunk' | egrep -o '[^/]+$' "
+            let s:vcs_name_branch = s:vcs_name.' '.systemlist(s:commands)[0]
+        endif
+        let b:vcs_name_branch = s:vcs_name_branch
+    else
+        let s:vcs_name_branch = b:vcs_name_branch
     endif
 
     return
         \ s:mark_vcs
+        \ . ' '
         \ . s:hunkline
         \ . s:light_line_vcs_conflits
         \ . ' '
