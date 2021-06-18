@@ -584,7 +584,7 @@ nnoremap <silent> <leader>vo :call VcsOpenLineUrl()<CR>
 nnoremap <silent> <leader>vO :call VcsOpenUrl()<CR>
 nnoremap <silent> <leader>vl :call VcsBlame()<CR>
 nnoremap <silent> <leader>vL :call VcsLog()<CR>
-nnoremap <silent> <leader>vs :call VcsStatus()<CR>:copen<CR>
+nnoremap <silent> <leader>vs :call VcsStatus()<CR>:bel copen<CR>
 nnoremap <silent> <leader>vS :echo VcsStatusLine()<CR>
 nnoremap <silent> <leader>vu :call VcsUpdateReceive()<CR>
 nnoremap <silent> <leader>vU :call VcsUpdateSend()<CR>
