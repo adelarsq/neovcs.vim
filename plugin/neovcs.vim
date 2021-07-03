@@ -96,8 +96,20 @@ endfunction
 function! VcsCommit(...) abort
     let s:vcs_name = VcsName()
     if s:vcs_name ==# 'git'
+        if a:1 == ''
+            echom "Please add a commit message"
+            return ''
+        endif
         execute '!git commit -m "'.a:1.'"'
     elseif s:vcs_name ==# 'svn'
+        if a:1 == ''
+            echom "Please add a commit message"
+            return ''
+        endif
+        if a:2 == ''
+            echom "Please add a changelist name"
+            return ''
+        endif
         execute '!svn commit --changelist '.a:2.' -m "'.a:1.'"'
     endif
 endfunction
