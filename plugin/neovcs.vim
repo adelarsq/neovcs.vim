@@ -106,6 +106,8 @@ function! VcsDiff(...) abort
     let s:vcs_name = VcsName()
     if s:vcs_name ==# 'svn'
         execute '!svn diff -r'.a:1
+    else
+        echom "VCS not supported"
     endif
 endfunction
 

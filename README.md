@@ -13,13 +13,17 @@ Basic support for:
 ## Mappings 🗺
 
 - `<leader>v` - help
-- `<leader>va` - add file
+- `<leader>va` - add file. Parameters:
+    - `1` Changelist name (just for SVN at moment)
 - `<leader>vA` - add all files
 - `<leader>vb` - blame line
 - `<leader>vB` - blame file
-- `<leader>vc` - commit
+- `<leader>vc` - commit. Parameters:
+    - `1` Commit message 
+    - `2` Changelist name (just for SVN at moment)
 - `<leader>vd` - hunk diff
-- `<leader>vD` - file diff
+- `<leader>vD` - file diff. Parameters:
+    - `1` Revision (just for SVN at moment)
 - `<leader>vo` - open URL for current line
 - `<leader>vO` - open URL for repository
 - `<leader>vm` - mark conflict as resolved for current file
