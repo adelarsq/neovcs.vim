@@ -334,7 +334,7 @@ endfunction
 function! VcsUndoLastCommitGit()
     let s:cmd = 'git reset --soft HEAD~1'
     echo s:cmd
-    let s:systemcommand = system(s:command)
+    let s:systemcommand = system(s:cmd)
 endfunction
 
 function! VcsRevertLastCommit()
@@ -349,7 +349,7 @@ endfunction
 function! VcsRevertLastCommitGit()
     let s:cmd = 'git revert HEAD'
     echo s:cmd
-    let s:systemcommand = system(s:command)
+    let s:systemcommand = system(s:cmd)
 endfunction
 
 function! VcsStatus()
