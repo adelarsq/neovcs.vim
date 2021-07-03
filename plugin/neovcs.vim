@@ -308,6 +308,36 @@ function! VcsLogSvn()
     let s:systemcommand = system(s:command)
 endfunction
 
+function! VcsUndoLastCommit()
+    let s:vcs_name = VcsName()
+    if s:vcs_name == 'git'
+        call VcsUndoLastCommitGit()
+    else
+        echom "VCS not supported"
+    endif
+endfunction
+
+function! VcsUndoLastCommitGit()
+    let s:cmd = 'git reset --soft HEAD~1'
+    echo s:cmd
+    let s:systemcommand = system(s:command)
+endfunction
+
+function! VcsRevertLastCommit()
+    let s:vcs_name = VcsName()
+    if s:vcs_name == 'git'
+        call VcsRevertLastCommitGit()
+    else
+        echom "VCS not supported"
+    endif
+endfunction
+
+function! VcsRevertLastCommitGit()
+    let s:cmd = 'git revert HEAD'
+    echo s:cmd
+    let s:systemcommand = system(s:command)
+endfunction
+
 function! VcsStatus()
     let s:vcs_name = VcsName()
     if s:vcs_name == 'git'
@@ -578,6 +608,8 @@ function! VcsHelp()
     echom "- <leader>vO - open repository URL"
     echom "- <leader>vm - mark conflict as resolved for current file"
     echom "- <leader>vL - log"
+    echom "- <leader>vr - undo last commit"
+    echom "- <leader>vR - revert last commit"
     echom "- <leader>vs - status"
     echom "- <leader>vS - echo status line"
     echom "- <leader>vt - show branchs"
@@ -599,6 +631,8 @@ nnoremap <silent> <leader>vm :call VcsResolve()<CR>
 nnoremap <silent> <leader>vo :call VcsOpenLineUrl()<CR>
 nnoremap <silent> <leader>vO :call VcsOpenUrl()<CR>
 nnoremap <silent> <leader>vL :call VcsLog()<CR>
+nnoremap <silent> <leader>vr :call VcsUndoLastCommit()<CR>
+nnoremap <silent> <leader>vR :call VcsRevertLastCommit()<CR>
 nnoremap <silent> <leader>vs :call VcsStatus()<CR>:bel copen<CR>
 nnoremap <silent> <leader>vS :echo VcsStatusLine()<CR>
 nmap              <leader>vt :call VcsShowBranchs("")<left><left>

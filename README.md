@@ -24,6 +24,8 @@ Basic support for:
 - `<leader>vO` - open URL for repository
 - `<leader>vm` - mark conflict as resolved for current file
 - `<leader>vL` - log
+- `<leader>vr` - undo last commit
+- `<leader>vR` - revert last commit
 - `<leader>vs` - status
 - `<leader>vS` - echo status line
 - `<leader>vt` - show branchs
