@@ -6,9 +6,9 @@ Basic support for:
 
 - [x] [Git](https://git-scm.com)
 - [x] [Subversion](https://subversion.apache.org)
-- [x] [Darcs](http://darcs.net)
-- [x] [Bazaar](https://bazaar.canonical.com)
-- [x] [Mercurial](https://www.mercurial-scm.org)
+- [x] [Darcs](http://darcs.net) - just VCS name for now
+- [x] [Bazaar](https://bazaar.canonical.com) - just VCS name for now
+- [x] [Mercurial](https://www.mercurial-scm.org) - just VCS name for now
 
 ## Mappings 🗺
 

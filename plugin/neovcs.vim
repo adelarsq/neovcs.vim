@@ -609,7 +609,7 @@ function! VcsUpdateReceiveSvn()
 endfunction
 
 function! VcsHelp()
-    echom "VCS Help:"
+    echom "VCS Help: "
     echom "- <leader>v  - this help"
     echom "- <leader>va - add file"
     echom "- <leader>vA - add all files"
