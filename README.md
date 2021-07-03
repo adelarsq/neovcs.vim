@@ -49,8 +49,12 @@ Basic support for:
 
 - [ ] Convert all code to Lua
 - [ ] Telescope integration
-- [ ] Hightlight itens on quickfix with diferent colors
 - [ ] Show commit for current line. Based on [1](https://www.reddit.com/r/vim/comments/i50pce/how_to_show_commit_that_introduced_current_line/).
+- [ ] Hightlight itens on quickfix with diferent colors
+- [ ] Support all commands on:
+  - [ ] [Mercurial](https://www.mercurial-scm.org)
+  - [ ] [Darcs](http://darcs.net)
+  - [ ] [Bazaar](https://bazaar.canonical.com)
 
 ## Acknowledgments 💡
 
