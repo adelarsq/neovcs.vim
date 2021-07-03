@@ -15,17 +15,18 @@ Basic support for:
 - `<leader>v` - help
 - `<leader>va` - add file
 - `<leader>vA` - add all files
-- `<leader>vb` - show branchs
+- `<leader>vb` - blame line
+- `<leader>vB` - blame file
 - `<leader>vc` - commit
 - `<leader>vd` - hunk diff
 - `<leader>vD` - file diff
 - `<leader>vo` - open URL for current line
 - `<leader>vO` - open URL for repository
 - `<leader>vm` - mark conflict as resolved for current file
-- `<leader>vl` - blame
 - `<leader>vL` - log
 - `<leader>vs` - status
 - `<leader>vS` - echo status line
+- `<leader>vt` - show branchs
 - `<leader>vu` - receive changes from remote
 - `<leader>vU` - send changes to remote
 - `<leader>vx` - hunk undo

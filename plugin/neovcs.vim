@@ -240,16 +240,30 @@ function! VcsRmFile(...)
     echo s:command
 endfunction
 
-function! VcsBlame()
+function! VcsBlameLine()
     let s:vcs_name = VcsName()
     if s:vcs_name == 'git'
-        call VcsBlameGit()
+        call VcsBlameLineGit()
     else
         echom "VCS not supported"
     endif
 endfunction
 
-function! VcsBlameGit()
+function! VcsBlameLineGit()
+    # Based on https://www.reddit.com/r/vim/comments/i50pce/how_to_show_commit_that_introduced_current_line
+    echo join(systemlist("git -C " . shellescape(expand('%:p:h')) . " blame -L <line1>,<line2> " . expand('%:t')), "\n")
+endfunction
+
+function! VcsBlameFile()
+    let s:vcs_name = VcsName()
+    if s:vcs_name == 'git'
+        call VcsBlameFileGit()
+    else
+        echom "VCS not supported"
+    endif
+endfunction
+
+function! VcsBlameFileGit()
     let s:cmd = 'git blame '
     echo s:cmd
     let s:systemcommand = system(s:command)
@@ -555,17 +569,18 @@ function! VcsHelp()
     echom "- <leader>v  - this help"
     echom "- <leader>va - add file"
     echom "- <leader>vA - add all files"
-    echom "- <leader>vb - show branchs"
+    echom "- <leader>vb - blame line"
+    echom "- <leader>vB - blame file"
     echom "- <leader>vc - commit"
     echom "- <leader>vd - hunk diff"
     echom "- <leader>vD - file diff"
     echom "- <leader>vo - open current line URL"
     echom "- <leader>vO - open repository URL"
     echom "- <leader>vm - mark conflict as resolved for current file"
-    echom "- <leader>vl - blame"
     echom "- <leader>vL - log"
     echom "- <leader>vs - status"
     echom "- <leader>vS - echo status line"
+    echom "- <leader>vt - show branchs"
     echom "- <leader>vu - receive changes from remote"
     echom "- <leader>vU - send changes to remote"
     echom "- <leader>vx - hunk undo"
@@ -575,17 +590,18 @@ endfunction
 nnoremap <silent> <leader>v  :call VcsHelp()<CR>
 nmap              <leader>va :call VcsAddFile("")<left><left>
 nnoremap <silent> <leader>vA :call VcsAddFiles()<CR>
-nmap              <leader>vb :call VcsShowBranchs("")<left><left>
+nnoremap <silent> <leader>vb :call VcsBlameLine()<CR>
+nnoremap <silent> <leader>vB :call VcsBlameFile()<CR>
 nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left>
 nnoremap <silent> <leader>vd :SignifyHunkDiff<CR>
 nmap              <leader>vD :call VcsDiff("")<left><left>
 nnoremap <silent> <leader>vm :call VcsResolve()<CR>
 nnoremap <silent> <leader>vo :call VcsOpenLineUrl()<CR>
 nnoremap <silent> <leader>vO :call VcsOpenUrl()<CR>
-nnoremap <silent> <leader>vl :call VcsBlame()<CR>
 nnoremap <silent> <leader>vL :call VcsLog()<CR>
 nnoremap <silent> <leader>vs :call VcsStatus()<CR>:bel copen<CR>
 nnoremap <silent> <leader>vS :echo VcsStatusLine()<CR>
+nmap              <leader>vt :call VcsShowBranchs("")<left><left>
 nnoremap <silent> <leader>vu :call VcsUpdateReceive()<CR>
 nnoremap <silent> <leader>vU :call VcsUpdateSend()<CR>
 nnoremap <silent> <leader>vx :SignifyHunkUndo<CR>
