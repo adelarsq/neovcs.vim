@@ -1,4 +1,4 @@
-# neovcs.vim
+# neovcs.vim 🌱
 
 VCS support for Neovim
 
@@ -10,7 +10,7 @@ Basic support for:
 - [x] [Bazaar](https://bazaar.canonical.com)
 - [x] [Mercurial](https://www.mercurial-scm.org)
 
-## Mappings
+## Mappings 🗺
 
 - `<leader>v` - help
 - `<leader>va` - add file
@@ -31,16 +31,17 @@ Basic support for:
 - `<leader>vx` - hunk undo
 - `<leader>vX` - remove file
 
-## Commands
+## Commands 🕹
 
 - `VcsName()` - get the VCS name. Can be used on status line plugins to show
     the VCS name for the current repository
 - `VcsStatusLine()` - get the repository status to use on status lines
 - `VcsBranchName()` - get the name for the current branch
 
-## Todo
+## Todo 🚧
 
-- Hightlight itens on quickfix with diferent colors
+- [ ] Hightlight itens on quickfix with diferent colors
+- [ ] Show commit for current line. Based on [1](https://www.reddit.com/r/vim/comments/i50pce/how_to_show_commit_that_introduced_current_line/).
 
 ## Acknowledgments 💡
 
