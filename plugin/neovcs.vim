@@ -383,8 +383,16 @@ function! VcsStatusGit()
         call add(s:list, s:dic)
     endfor
 
+    " Returns if no change is detected
+    if empty(s:list)
+        echom 'no changes'
+        return ''
+    endif
+
     " Populate the qf list
     call setqflist(s:list)
+
+    bel copen 10
 
 endfunction
 
@@ -647,7 +655,7 @@ nnoremap <silent> <leader>vO :call VcsOpenUrl()<CR>
 nnoremap <silent> <leader>vL :call VcsLog()<CR>
 nnoremap <silent> <leader>vr :call VcsUndoLastCommit()<CR>
 nnoremap <silent> <leader>vR :call VcsRevertLastCommit()<CR>
-nnoremap <silent> <leader>vs :call VcsStatus()<CR>:bel copen<CR>
+nnoremap <silent> <leader>vs :call VcsStatus()<CR>
 nnoremap <silent> <leader>vS :echo VcsStatusLine()<CR>
 nmap              <leader>vt :call VcsShowBranchs("")<left><left>
 nnoremap <silent> <leader>vu :call VcsUpdateReceive()<CR>

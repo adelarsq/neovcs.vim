@@ -55,6 +55,7 @@ Basic support for:
   - [ ] [Mercurial](https://www.mercurial-scm.org)
   - [ ] [Darcs](http://darcs.net)
   - [ ] [Bazaar](https://bazaar.canonical.com)
+- [ ] On repository for modified files show the lines status, like `+3-2~1M`
 
 ## Acknowledgments 💡
 
