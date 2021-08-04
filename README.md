@@ -56,6 +56,7 @@ Basic support for:
   - [ ] [Darcs](http://darcs.net)
   - [ ] [Bazaar](https://bazaar.canonical.com)
 - [ ] On repository for modified files show the lines status, like `+3-2~1M`
+- [ ] Emoji support on commits
 
 ## Acknowledgments 💡
 
