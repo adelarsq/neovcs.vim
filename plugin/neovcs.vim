@@ -220,6 +220,29 @@ function! VcsAddFiles(...)
     echo s:command
 endfunction
 
+function! VcsAddFileFromTree()
+    let s:filepath=luaeval("require'nvim-tree.lib'.get_node_at_cursor().absolute_path")
+
+    let s:command = ''
+    let s:vcs_name = VcsName()
+    if s:vcs_name ==# 'git'
+        let s:command = 'git add '.s:filepath
+    elseif s:vcs_name ==# 'svn'
+        if a:0 == 0
+            let s:command = 'svn add '.s:filepath
+        else
+            let s:command = 'svn changelist '.a:1.' '.s:filepath
+        endif
+    else
+        echo 'Is this file in a repository?'
+        return
+    endif
+    let s:systemcommand = system(s:command)
+    echo s:command
+
+    NvimTreeRefresh
+endfunction
+
 function! VcsShowBranchs()
     let s:command = ''
     let s:vcs_name = VcsName()
@@ -663,3 +686,7 @@ nnoremap <silent> <leader>vU :call VcsUpdateSend()<CR>
 nnoremap <silent> <leader>vx :SignifyHunkUndo<CR>
 nnoremap <silent> <leader>vX :call VcsRmFile("")<left><left>
 
+augroup neovcs_nvimtree
+    au!
+    au Filetype NvimTree nmap <buffer> <silent> <leader>va :call VcsAddFileFromTree()<CR>
+augroup

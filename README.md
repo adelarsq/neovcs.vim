@@ -45,6 +45,11 @@ Basic support for:
 - `VcsStatusLine()` - get the repository status to use on status lines
 - `VcsBranchName()` - get the name for the current branch
 
+# Supported Plugins 🧩
+
+- [nvim-tree.lua](https://github.com/kyazdani42/nvim-tree.lua). Mappings:
+  - `<leader>va` - add file or directory from the current line
+
 ## Todo 🚧
 
 - [ ] Convert all code to Lua
