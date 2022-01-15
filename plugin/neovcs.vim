@@ -653,15 +653,15 @@ function! VcsHelp()
     echom "- <leader>vO - open repository URL"
     echom "- <leader>vm - mark conflict as resolved for current file"
     echom "- <leader>vL - log"
-    echom "- <leader>vr - undo last commit"
-    echom "- <leader>vR - revert last commit"
+    echom "- <leader>vr - receive changes from remote"
+    echom "- <leader>vR - send changes to remote"
     echom "- <leader>vs - status"
     echom "- <leader>vS - echo status line"
     echom "- <leader>vt - show branchs"
-    echom "- <leader>vu - receive changes from remote"
-    echom "- <leader>vU - send changes to remote"
-    echom "- <leader>vx - hunk undo"
-    echom "- <leader>vX - remove file"
+    echom "- <leader>vu - hunk undo"
+    echom "- <leader>vU - undo last commit"
+    echom "- <leader>vx - remove file"
+    echom "- <leader>vX - revert last commit"
 endfunction
 
 nnoremap <silent> <leader>v  :call VcsHelp()<CR>
@@ -672,19 +672,19 @@ nnoremap <silent> <leader>vB :call VcsBlameFile()<CR>
 nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left>
 nnoremap <silent> <leader>vd :SignifyHunkDiff<CR>
 nmap              <leader>vD :call VcsDiff("")<left><left>
+nnoremap <silent> <leader>vL :call VcsLog()<CR>
 nnoremap <silent> <leader>vm :call VcsResolve()<CR>
 nnoremap <silent> <leader>vo :call VcsOpenLineUrl()<CR>
 nnoremap <silent> <leader>vO :call VcsOpenUrl()<CR>
-nnoremap <silent> <leader>vL :call VcsLog()<CR>
-nnoremap <silent> <leader>vr :call VcsUndoLastCommit()<CR>
-nnoremap <silent> <leader>vR :call VcsRevertLastCommit()<CR>
+nnoremap <silent> <leader>vr :call VcsUpdateReceive()<CR>
+nnoremap <silent> <leader>vR :call VcsUpdateSend()<CR>
 nnoremap <silent> <leader>vs :call VcsStatus()<CR>
 nnoremap <silent> <leader>vS :echo VcsStatusLine()<CR>
 nmap              <leader>vt :call VcsShowBranchs("")<left><left>
-nnoremap <silent> <leader>vu :call VcsUpdateReceive()<CR>
-nnoremap <silent> <leader>vU :call VcsUpdateSend()<CR>
-nnoremap <silent> <leader>vx :SignifyHunkUndo<CR>
-nnoremap <silent> <leader>vX :call VcsRmFile("")<left><left>
+nnoremap <silent> <leader>vu :SignifyHunkUndo<CR>
+nnoremap <silent> <leader>vU :call VcsUndoLastCommit()<CR>
+nnoremap <silent> <leader>vx :call VcsRmFile("")<left><left>
+nnoremap <silent> <leader>vx :call VcsRevertLastCommit()<CR>
 
 augroup neovcs_nvimtree
     au!
