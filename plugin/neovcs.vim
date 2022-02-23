@@ -664,6 +664,14 @@ function! VcsUpdateReceiveSvn()
     let s:flist = system(s:cmd)
 endfunction
 
+function! VcsHunkDiff()
+    Gitsigns preview_hunk
+endfunction
+
+function! VcsHunkUndo()
+    Gitsigns reset_hunk
+endfunction
+
 function! VcsHelp()
     echom "VCS Help: "
     echom "- <leader>v  - this help"
@@ -694,7 +702,7 @@ nnoremap <silent> <leader>vA :call VcsAddFiles()<CR>
 nnoremap <silent> <leader>vb :call VcsBlameLine()<CR>
 nnoremap <silent> <leader>vB :call VcsBlameFile()<CR>
 nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left>
-nnoremap <silent> <leader>vd :SignifyHunkDiff<CR>
+nnoremap <silent> <leader>vd :call VcsHunkDiff()<CR>
 nmap              <leader>vD :call VcsDiff("")<left><left>
 nnoremap <silent> <leader>vl :call VcsStatus()<CR>
 nnoremap <silent> <leader>vL :call VcsLog()<CR>
@@ -704,7 +712,7 @@ nnoremap <silent> <leader>vO :call VcsOpenUrl()<CR>
 nnoremap <silent> <leader>vr :call VcsUpdateReceive()<CR>
 nnoremap <silent> <leader>vs :call VcsUpdateSend()<CR>
 nmap              <leader>vt :call VcsShowBranchs("")<left><left>
-nnoremap <silent> <leader>vu :SignifyHunkUndo<CR>
+nnoremap <silent> <leader>vu :call VcsHunkUndo()<CR>
 nnoremap <silent> <leader>vU :call VcsUndoLastCommit()<CR>
 nnoremap <silent> <leader>vx :call VcsRmFile("")<left><left>
 nnoremap <silent> <leader>vX :call VcsRevertLastCommit()<CR>
