@@ -21,6 +21,8 @@ Basic support for:
 - `<leader>vc` - commit. Parameters:
     - `1` Commit message 
     - `2` Changelist name (just for SVN at moment)
+- `<leader>vC` - amend. Parameters:
+    - `1` Commit message 
 - `<leader>vd` - hunk diff
 - `<leader>vD` - file diff. Parameters:
     - `1` Revision (just for SVN at moment)

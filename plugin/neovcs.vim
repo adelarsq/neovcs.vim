@@ -111,6 +111,21 @@ function! VcsCommit(...) abort
             return ''
         endif
         execute '!svn commit --changelist '.a:2.' -m "'.a:1.'"'
+    else
+        echom "VCS not supported"
+    endif
+endfunction
+
+function! VcsAmend(...) abort
+    let s:vcs_name = VcsName()
+    if s:vcs_name ==# 'git'
+        if a:1 == ''
+            echom "Please add a commit message"
+            return ''
+        endif
+        execute '!git commit --amend -m "'.a:1.'"'
+    else
+        echom "VCS not supported"
     endif
 endfunction
 
@@ -680,6 +695,7 @@ function! VcsHelp()
     echom "- <leader>vb - blame line"
     echom "- <leader>vB - blame file"
     echom "- <leader>vc - commit"
+    echom "- <leader>vC - amend"
     echom "- <leader>vd - hunk diff"
     echom "- <leader>vD - file diff"
     echom "- <leader>vo - open current line URL"
@@ -702,6 +718,7 @@ nnoremap <silent> <leader>vA :call VcsAddFiles()<CR>
 nnoremap <silent> <leader>vb :call VcsBlameLine()<CR>
 nnoremap <silent> <leader>vB :call VcsBlameFile()<CR>
 nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left>
+nmap              <leader>vC :call VcsAmend("")<left><left><left>
 nnoremap <silent> <leader>vd :call VcsHunkDiff()<CR>
 nmap              <leader>vD :call VcsDiff("")<left><left>
 nnoremap <silent> <leader>vl :call VcsStatus()<CR>
@@ -722,3 +739,4 @@ augroup neovcs_nvimtree
     au Filetype NvimTree nmap <buffer> <silent> <leader>va :call VcsAddFileFromTree()<CR>
     " au Filetype NvimTree nmap <buffer> <silent> <leader>vx :call VcsRmFileFromTree()<CR>
 augroup
+
