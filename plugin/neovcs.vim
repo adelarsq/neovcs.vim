@@ -147,6 +147,24 @@ function! VcsOpenLineUrl()
     endif
 endfunction
 
+function! VcsNextHunk()
+    let s:vcs_name = VcsName()
+    if s:vcs_name == 'git'
+        Gitsigns next_hunk
+    else
+        echom "VCS not supported"
+    endif
+endfunction
+
+function! VcsPrevHunk()
+    let s:vcs_name = VcsName()
+    if s:vcs_name == 'git'
+        Gitsigns prev_hunk
+    else
+        echom "VCS not supported"
+    endif
+endfunction
+
 function! VcsOpenLineUrlGit()
     let s:cmd = 'git config --get remote.origin.url'
     " echo s:cmd
@@ -698,6 +716,8 @@ function! VcsHelp()
     echom "- <leader>vC - amend"
     echom "- <leader>vd - hunk diff"
     echom "- <leader>vD - file diff"
+    echom "- <leader>vh - next hunk"
+    echom "- <leader>vH - prev hunk"
     echom "- <leader>vo - open current line URL"
     echom "- <leader>vO - open repository URL"
     echom "- <leader>vm - mark conflict as resolved for current file"
@@ -721,6 +741,8 @@ nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left
 nmap              <leader>vC :call VcsAmend("")<left><left><left>
 nnoremap <silent> <leader>vd :call VcsHunkDiff()<CR>
 nmap              <leader>vD :call VcsDiff("")<left><left>
+nnoremap <silent> <leader>vh :call VcsNextHunk()<CR>
+nnoremap <silent> <leader>vH :call VcsPrevHunk()<CR>
 nnoremap <silent> <leader>vl :call VcsStatus()<CR>
 nnoremap <silent> <leader>vL :call VcsLog()<CR>
 nnoremap <silent> <leader>vm :call VcsResolve()<CR>

@@ -26,6 +26,8 @@ Basic support for:
 - `<leader>vd` - hunk diff
 - `<leader>vD` - file diff. Parameters:
     - `1` Revision (just for SVN at moment)
+- `<leader>vh` - go to next hunk
+- `<leader>vH` - go to previous hunk
 - `<leader>vo` - open URL for current line
 - `<leader>vO` - open URL for repository
 - `<leader>vm` - mark conflict as resolved for current file
@@ -64,6 +66,7 @@ Basic support for:
   - [ ] [Bazaar](https://bazaar.canonical.com)
 - [ ] On repository for modified files show the lines status, like `+3-2~1M`
 - [ ] Emoji support on commits
+- [ ] Remove Gitsigns dependency
 
 ## Acknowledgments 💡
 
