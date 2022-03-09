@@ -760,5 +760,5 @@ augroup neovcs_nvimtree
     au!
     au Filetype NvimTree nmap <buffer> <silent> <leader>va :call VcsAddFileFromTree()<CR>
     " au Filetype NvimTree nmap <buffer> <silent> <leader>vx :call VcsRmFileFromTree()<CR>
-augroup
+augroup END
 
