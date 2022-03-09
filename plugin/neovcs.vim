@@ -276,29 +276,28 @@ function! VcsAddFileFromTree()
     NvimTreeRefresh
 endfunction
 
-" function! VcsRmFileFromTree()
-"     let s:filepath=luaeval("require'nvim-tree.lib'.get_node_at_cursor().absolute_path")
-"
-"     let s:command = ''
-"     let s:vcs_name = VcsName()
-"     if s:vcs_name ==# 'git'
-"         let s:command = 'git rm --cached '.s:filepath
-"     elseif s:vcs_name ==# 'svn'
-"         if a:0 == 0
-"             let s:command = 'svn rm '.s:filepath
-"         else
-"             " TODO make test here
-"             let s:command = 'svn changelist '.a:1.' '.s:filepath
-"         endif
-"     else
-"         echo 'Is this file in a repository?'
-"         return
-"     endif
-"     let s:systemcommand = system(s:command)
-"     echo s:command
-"
-"     NvimTreeRefresh
-" endfunction
+function! VcsRmFileFromTree()
+    let s:filepath=luaeval("require'nvim-tree.lib'.get_node_at_cursor().absolute_path")
+
+    let s:command = ''
+    let s:vcs_name = VcsName()
+    if s:vcs_name ==# 'git'
+        let s:command = 'git rm --cached '.s:filepath
+    elseif s:vcs_name ==# 'svn'
+        if a:0 == 0
+            let s:command = 'svn rm '.s:filepath
+        else
+            let s:command = 'svn changelist --remove '.a:1.' '.s:filepath
+        endif
+    else
+        echo 'Is this file in a repository?'
+        return
+    endif
+    let s:systemcommand = system(s:command)
+    echo s:command
+
+    NvimTreeRefresh
+endfunction
 
 function! VcsShowBranchs()
     let s:command = ''
@@ -759,6 +758,6 @@ nnoremap <silent> <leader>vX :call VcsRevertLastCommit()<CR>
 augroup neovcs_nvimtree
     au!
     au Filetype NvimTree nmap <buffer> <silent> <leader>va :call VcsAddFileFromTree()<CR>
-    " au Filetype NvimTree nmap <buffer> <silent> <leader>vx :call VcsRmFileFromTree()<CR>
+    au Filetype NvimTree nmap <buffer> <silent> <leader>vx :call VcsRmFileFromTree()<CR>
 augroup END
 
