@@ -712,18 +712,18 @@ function! VcsHelp()
     echom "- <leader>vb - blame line"
     echom "- <leader>vB - blame file"
     echom "- <leader>vc - commit"
-    echom "- <leader>vC - amend"
+    echom "- <leader>vC - commit with amend"
     echom "- <leader>vd - hunk diff"
     echom "- <leader>vD - file diff"
-    echom "- <leader>vh - next hunk"
-    echom "- <leader>vH - prev hunk"
+    echom "- <leader>vn - next hunk"
+    echom "- <leader>vN - prev hunk"
     echom "- <leader>vo - open current line URL"
     echom "- <leader>vO - open repository URL"
     echom "- <leader>vm - mark conflict as resolved for current file"
     echom "- <leader>vl - status"
     echom "- <leader>vL - log"
-    echom "- <leader>vr - receive changes from remote"
-    echom "- <leader>vs - send changes to remote"
+    echom "- <leader>vr - get changes from remote"
+    echom "- <leader>vR - send changes to remote"
     echom "- <leader>vt - show branchs"
     echom "- <leader>vu - hunk undo"
     echom "- <leader>vU - undo last commit"
@@ -740,16 +740,16 @@ nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left
 nmap              <leader>vC :call VcsAmend("")<left><left><left>
 nnoremap <silent> <leader>vd :call VcsHunkDiff()<CR>
 nmap              <leader>vD :call VcsDiff("")<left><left>
-nnoremap <silent> <leader>vh :call VcsNextHunk()<CR>
-nnoremap <silent> <leader>vH :call VcsPrevHunk()<CR>
 nnoremap <silent> <leader>vl :call VcsStatus()<CR>
 nnoremap <silent> <leader>vL :call VcsLog()<CR>
 nnoremap <silent> <leader>vm :call VcsResolve()<CR>
+nnoremap <silent> <leader>vn :call VcsNextHunk()<CR>
+nnoremap <silent> <leader>vN :call VcsPrevHunk()<CR>
 nnoremap <silent> <leader>vo :call VcsOpenLineUrl()<CR>
 nnoremap <silent> <leader>vO :call VcsOpenUrl()<CR>
 nnoremap <silent> <leader>vr :call VcsUpdateReceive()<CR>
-nnoremap <silent> <leader>vs :call VcsUpdateSend()<CR>
-nmap              <leader>vt :call VcsShowBranchs("")<left><left>
+nnoremap <silent> <leader>vR :call VcsUpdateSend()<CR>
+nmap              <leader>vt :call VcsShowBranchs()<CR>
 nnoremap <silent> <leader>vu :call VcsHunkUndo()<CR>
 nnoremap <silent> <leader>vU :call VcsUndoLastCommit()<CR>
 nnoremap <silent> <leader>vx :call VcsRmFile("")<left><left>
