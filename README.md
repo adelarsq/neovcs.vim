@@ -19,28 +19,28 @@ Basic support for:
 - `<leader>vb` - blame line
 - `<leader>vB` - blame file
 - `<leader>vc` - commit. Parameters:
-    - `1` Commit message 
+    - `1` Message 
     - `2` Changelist name (just for SVN at moment)
-- `<leader>vC` - amend. Parameters:
-    - `1` Commit message 
+- `<leader>vC` - commit with amend. Parameters:
+    - `1` Message 
 - `<leader>vd` - hunk diff
 - `<leader>vD` - file diff. Parameters:
     - `1` Revision (just for SVN at moment)
-- `<leader>vh` - go to next hunk
-- `<leader>vH` - go to previous hunk
 - `<leader>vo` - open URL for current line
 - `<leader>vO` - open URL for repository
 - `<leader>vm` - mark conflict as resolved for current file
+- `<leader>vn` - go to next hunk
+- `<leader>vN` - go to previous hunk
 - `<leader>vL` - log
-- `<leader>vr` - undo last commit
-- `<leader>vR` - revert last commit
+- `<leader>vr` - get changes from remote
+- `<leader>vR` - send changes to remote
 - `<leader>vs` - status
 - `<leader>vS` - echo status line
 - `<leader>vt` - show branchs
-- `<leader>vu` - receive changes from remote
-- `<leader>vU` - send changes to remote
-- `<leader>vx` - hunk undo
-- `<leader>vX` - remove file
+- `<leader>vu` - hunk undo
+- `<leader>vU` - undo last commit
+- `<leader>vx` - remove file
+- `<leader>vX` - revert last commit
 
 ## Commands 🕹
 
