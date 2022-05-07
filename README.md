@@ -56,6 +56,7 @@ Basic support for:
 
 ## Todo 🚧
 
+- [ ] Root folder based on the current file [wip]
 - [ ] Convert all code to Lua
 - [ ] Telescope integration
 - [x] Show commit for current line. Based on [1](https://www.reddit.com/r/vim/comments/i50pce/how_to_show_commit_that_introduced_current_line/).
