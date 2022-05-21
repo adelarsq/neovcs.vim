@@ -696,6 +696,11 @@ function! VcsUpdateReceiveSvn()
     let s:flist = system(s:cmd)
 endfunction
 
+function! VcsReload()
+    VcsUpdateReceive()
+    VcsUpdateSend()
+endfunction
+
 function! VcsHunkDiff()
     Gitsigns preview_hunk
 endfunction
@@ -722,8 +727,9 @@ function! VcsHelp()
     echom "- <leader>vm - mark conflict as resolved for current file"
     echom "- <leader>vl - status"
     echom "- <leader>vL - log"
-    echom "- <leader>vr - get changes from remote"
-    echom "- <leader>vR - send changes to remote"
+    echom "- <leader>vr - reload changes"
+    echom "- <leader>vp - get changes from remote"
+    echom "- <leader>vP - send changes to remote"
     echom "- <leader>vt - show branchs"
     echom "- <leader>vu - hunk undo"
     echom "- <leader>vU - undo last commit"
@@ -747,8 +753,9 @@ nnoremap <silent> <leader>vn :call VcsNextHunk()<CR>
 nnoremap <silent> <leader>vN :call VcsPrevHunk()<CR>
 nnoremap <silent> <leader>vo :call VcsOpenLineUrl()<CR>
 nnoremap <silent> <leader>vO :call VcsOpenUrl()<CR>
-nnoremap <silent> <leader>vr :call VcsUpdateReceive()<CR>
-nnoremap <silent> <leader>vR :call VcsUpdateSend()<CR>
+nnoremap <silent> <leader>vr :call VcsReload()()<CR>
+nnoremap <silent> <leader>vp :call VcsUpdateReceive()<CR>
+nnoremap <silent> <leader>vP :call VcsUpdateSend()<CR>
 nmap              <leader>vt :call VcsShowBranchs()<CR>
 nnoremap <silent> <leader>vu :call VcsHunkUndo()<CR>
 nnoremap <silent> <leader>vU :call VcsUndoLastCommit()<CR>

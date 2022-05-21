@@ -32,8 +32,9 @@ Basic support for:
 - `<leader>vn` - go to next hunk
 - `<leader>vN` - go to previous hunk
 - `<leader>vL` - log
-- `<leader>vr` - get changes from remote
-- `<leader>vR` - send changes to remote
+- `<leader>vr` - reload changes
+- `<leader>vp` - get changes from remote
+- `<leader>vP` - send changes to remote
 - `<leader>vs` - status
 - `<leader>vS` - echo status line
 - `<leader>vt` - show branchs
