@@ -753,7 +753,7 @@ nnoremap <silent> <leader>vn :call VcsNextHunk()<CR>
 nnoremap <silent> <leader>vN :call VcsPrevHunk()<CR>
 nnoremap <silent> <leader>vo :call VcsOpenLineUrl()<CR>
 nnoremap <silent> <leader>vO :call VcsOpenUrl()<CR>
-nnoremap <silent> <leader>vr :call VcsReload()()<CR>
+nnoremap <silent> <leader>vr :call VcsReload()<CR>
 nnoremap <silent> <leader>vp :call VcsUpdateReceive()<CR>
 nnoremap <silent> <leader>vP :call VcsUpdateSend()<CR>
 nmap              <leader>vt :call VcsShowBranchs()<CR>
