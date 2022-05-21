@@ -4,6 +4,16 @@ if exists('g:loaded_neovcs')
 endif
 let g:loaded_neovcs=1
 
+function! ShowMessage(arg)
+    " echo a:arg
+    let s:r = luaeval("require('notify')('"..a:arg.."')")
+endfunction
+
+function! ShowError(arg)
+    " echo a:arg
+    let s:r = luaeval("require('notify')('"..a:arg.."', 'error')")
+endfunction
+
 function! VcsName()
     if !empty(GitRoot())
         return 'git'
@@ -82,7 +92,7 @@ function! VcsBranchName() abort
     if s:vcs_name ==# 'git'
         return VcsGitBranchName()
     else
-        echom "VCS not supported"
+        call ShowError("VCS not supported")
         return ''
     endif
 endfunction
@@ -97,22 +107,22 @@ function! VcsCommit(...) abort
     let s:vcs_name = VcsName()
     if s:vcs_name ==# 'git'
         if a:1 == ''
-            echom "Please add a commit message"
+            call ShowError("Please add a commit message")
             return ''
         endif
         execute '!git commit -m "'.a:1.'"'
     elseif s:vcs_name ==# 'svn'
         if a:1 == ''
-            echom "Please add a commit message"
+            call ShowError("Please add a commit message")
             return ''
         endif
         if a:2 == ''
-            echom "Please add a changelist name"
+            call ShowError("Please add a changelist name")
             return ''
         endif
         execute '!svn commit --changelist '.a:2.' -m "'.a:1.'"'
     else
-        echom "VCS not supported"
+        call ShowError("VCS not supported")
     endif
 endfunction
 
@@ -120,12 +130,12 @@ function! VcsAmend(...) abort
     let s:vcs_name = VcsName()
     if s:vcs_name ==# 'git'
         if a:1 == ''
-            echom "Please add a commit message"
+            call ShowError("Please add a commit message")
             return ''
         endif
         execute '!git commit --amend -m "'.a:1.'"'
     else
-        echom "VCS not supported"
+        call ShowError("VCS not supported")
     endif
 endfunction
 
@@ -134,7 +144,7 @@ function! VcsDiff(...) abort
     if s:vcs_name ==# 'svn'
         execute '!svn diff -r'.a:1
     else
-        echom "VCS not supported"
+        call ShowError("VCS not supported")
     endif
 endfunction
 
@@ -143,7 +153,7 @@ function! VcsOpenLineUrl()
     if s:vcs_name == 'git'
         call VcsOpenLineUrlGit()
     else
-        echom "VCS not supported"
+        call ShowError("VCS not supported")
     endif
 endfunction
 
@@ -152,7 +162,7 @@ function! VcsNextHunk()
     if s:vcs_name == 'git'
         Gitsigns next_hunk
     else
-        echom "VCS not supported"
+        call ShowError("VCS not supported")
     endif
 endfunction
 
@@ -161,13 +171,14 @@ function! VcsPrevHunk()
     if s:vcs_name == 'git'
         Gitsigns prev_hunk
     else
-        echom "VCS not supported"
+        call ShowError("VCS not supported")
     endif
 endfunction
 
 function! VcsOpenLineUrlGit()
     let s:cmd = 'git config --get remote.origin.url'
-    " echo s:cmd
+    call ShowMessage(s:cmd)
+
     let s:result = system(s:cmd)
     let s:split = split(s:result, '\n')
 
@@ -191,13 +202,13 @@ function! VcsOpenUrl()
     elseif s:vcs_name == 'svn'
         call VcsOpenUrlSvn()
     else
-        echom "VCS not supported"
+        call ShowError("VCS not supported")
     endif
 endfunction
 
 function! VcsOpenUrlGit()
     let s:cmd = 'git config --get remote.origin.url'
-    echo s:cmd
+    call ShowMessage(s:cmd)
     let s:result = system(s:cmd)
     let s:split = split(s:result, '\n')
     let s:openurl = 'OpenBrowser '.s:split[0]
@@ -207,7 +218,7 @@ endfunction
 function! VcsOpenUrlSvn()
     " https://serverfault.com/questions/310300/how-to-get-the-url-of-the-current-svn-repo
     let s:cmd = 'svn info --show-item repos-root-url'
-    echo s:cmd
+    call ShowMessage(s:cmd)
     let s:result = system(s:cmd)
     let s:split = split(s:result, '\n')
     let s:openurl = 'OpenBrowser '.s:split[0]
@@ -227,11 +238,11 @@ function! VcsAddFile(...)
             let s:command = 'svn changelist '.a:1.' '.s:filepath
         endif
     else
-        echo 'Is this file in a repository?'
+        call ShowMessage('Is this file in a repository?')
         return
     endif
     let s:systemcommand = system(s:command)
-    echo s:command
+    call ShowMessage(s:command)
 endfunction
 
 function! VcsAddFiles(...)
@@ -246,11 +257,11 @@ function! VcsAddFiles(...)
             let s:command = 'svn changelist '.a:1.' *'
         endif
     else
-        echo 'Is this file in a repository?'
+        call ShowMessage('Is this file in a repository?')
         return
     endif
     let s:systemcommand = system(s:command)
-    echo s:command
+    call ShowMessage(s:command)
 endfunction
 
 function! VcsAddFileFromTree()
@@ -267,11 +278,11 @@ function! VcsAddFileFromTree()
             let s:command = 'svn changelist '.a:1.' '.s:filepath
         endif
     else
-        echo 'Is this file in a repository?'
+        call ShowMessage('Is this file in a repository?')
         return
     endif
     let s:systemcommand = system(s:command)
-    echo s:command
+    call ShowMessage(s:command)
 
     NvimTreeRefresh
 endfunction
@@ -290,11 +301,11 @@ function! VcsRmFileFromTree()
             let s:command = 'svn changelist --remove '.a:1.' '.s:filepath
         endif
     else
-        echo 'Is this file in a repository?'
+        call ShowMessage('Is this file in a repository?')
         return
     endif
     let s:systemcommand = system(s:command)
-    echo s:command
+    call ShowMessage(s:command)
 
     NvimTreeRefresh
 endfunction
@@ -305,11 +316,11 @@ function! VcsShowBranchs()
     if s:vcs_name ==# 'git'
         let s:command = 'git branch'
     else
-        echo 'Is this file in a repository?'
+        call ShowMessage('Is this file in a repository?')
         return
     endif
     let s:systemcommand = system(s:command)
-    echo s:command
+    call ShowMessage(s:command)
 endfunction
 
 function! VcsRmFile(...)
@@ -326,11 +337,11 @@ function! VcsRmFile(...)
             let s:command = 'svn changelist '.a:1.' '.s:filepath
         endif
     else
-        echo 'Is this file in a repository?'
+        call ShowMessage('Is this file in a repository?')
         return
     endif
     let s:systemcommand = system(s:command)
-    echo s:command
+    call ShowMessage(s:command)
 endfunction
 
 function! VcsBlameLine()
@@ -338,13 +349,14 @@ function! VcsBlameLine()
     if s:vcs_name == 'git'
         call VcsBlameLineGit()
     else
-        echom "VCS not supported"
+        call ShowError("VCS not supported")
     endif
 endfunction
 
 function! VcsBlameLineGit()
     # Based on https://www.reddit.com/r/vim/comments/i50pce/how_to_show_commit_that_introduced_current_line
-    echo join(systemlist("git -C " . shellescape(expand('%:p:h')) . " blame -L <line1>,<line2> " . expand('%:t')), "\n")
+    let s:r = join(systemlist("git -C " . shellescape(expand('%:p:h')) . " blame -L <line1>,<line2> " . expand('%:t')), "\n")
+    call ShowMessage(s:r)
 endfunction
 
 function! VcsBlameFile()
@@ -352,13 +364,13 @@ function! VcsBlameFile()
     if s:vcs_name == 'git'
         call VcsBlameFileGit()
     else
-        echom "VCS not supported"
+        call ShowError("VCS not supported")
     endif
 endfunction
 
 function! VcsBlameFileGit()
     let s:cmd = 'git blame '
-    echo s:cmd
+    call ShowMessage(s:cmd)
     let s:systemcommand = system(s:command)
 endfunction
 
@@ -367,14 +379,14 @@ function! VcsResolve()
     if s:vcs_name == 'svn'
         call VcsResolveSvn()
     else
-        echom "VCS not supported"
+        call ShowError("VCS not supported")
     endif
 endfunction
 
 function! VcsResolveSvn()
     let s:filepath = expand('%:p')
     let s:cmd = 'svn resolve '.s:filepath
-    echo s:cmd
+    call ShowMessage(s:cmd)
     let s:systemcommand = system(s:command)
 endfunction
 
@@ -385,19 +397,19 @@ function! VcsLog()
     elseif s:vcs_name == 'svn'
         call VcsLogSvn()
     else
-        echom "VCS not supported"
+        call ShowError("VCS not supported")
     endif
 endfunction
 
 function! VcsLogGit()
     let s:cmd = 'git log '
-    echo s:cmd
+    call ShowMessage(s:cmd)
     let s:systemcommand = system(s:command)
 endfunction
 
 function! VcsLogSvn()
     let s:cmd = 'svn log '
-    echo s:cmd
+    call ShowMessage(s:cmd)
     let s:systemcommand = system(s:command)
 endfunction
 
@@ -406,13 +418,13 @@ function! VcsUndoLastCommit()
     if s:vcs_name == 'git'
         call VcsUndoLastCommitGit()
     else
-        echom "VCS not supported"
+        call ShowError("VCS not supported")
     endif
 endfunction
 
 function! VcsUndoLastCommitGit()
     let s:cmd = 'git reset --soft HEAD~1'
-    echo s:cmd
+    call ShowMessage(s:cmd)
     let s:systemcommand = system(s:cmd)
 endfunction
 
@@ -421,13 +433,13 @@ function! VcsRevertLastCommit()
     if s:vcs_name == 'git'
         call VcsRevertLastCommitGit()
     else
-        echom "VCS not supported"
+        call ShowError("VCS not supported")
     endif
 endfunction
 
 function! VcsRevertLastCommitGit()
     let s:cmd = 'git revert HEAD'
-    echo s:cmd
+    call ShowMessage(s:cmd)
     let s:systemcommand = system(s:cmd)
 endfunction
 
@@ -438,14 +450,14 @@ function! VcsStatus()
     elseif s:vcs_name == 'svn'
         call VcsStatusSvn()
     else
-        echom "VCS not supported"
+        call ShowError("VCS not supported")
     endif
 endfunction
 
 function! VcsStatusGit()
 
     let s:cmd = 'git status --porcelain'
-    echo s:cmd
+    call ShowMessage(s:cmd)
 
     " Get the result of git
     let s:flist = system(s:cmd)
@@ -464,7 +476,7 @@ function! VcsStatusGit()
 
     " Returns if no change is detected
     if empty(s:list)
-        echom 'no changes'
+        call ShowMessage('no changes')
         return ''
     endif
 
@@ -478,7 +490,7 @@ endfunction
 function! VcsStatusSvn()
 
     let s:cmd = "svn status | awk '{print $1\" \"$2}'"
-    echo s:cmd
+    call ShowMessage(s:cmd)
 
     " Get the result of svn
     let s:flist = system(s:cmd)
@@ -663,13 +675,13 @@ function! VcsUpdateSend()
     if s:vcs_name == 'git'
         call VcsUpdateSendGit()
     else
-        echom "VCS not supported"
+        call ShowError("VCS not supported")
     endif
 endfunction
 
 function! VcsUpdateSendGit()
     let s:cmd = "git push"
-    echo s:cmd
+    call ShowMessage(s:cmd)
     let s:flist = system(s:cmd)
 endfunction
 
@@ -680,19 +692,19 @@ function! VcsUpdateReceive()
     elseif s:vcs_name == 'svn'
         call VcsUpdateReceiveSvn()
     else
-        echom "VCS not supported"
+        call ShowError("VCS not supported")
     endif
 endfunction
 
 function! VcsUpdateReceiveGit()
     let s:cmd = "git pull"
-    echo s:cmd
+    call ShowMessage(s:cmd)
     let s:flist = system(s:cmd)
 endfunction
 
 function! VcsUpdateReceiveSvn()
     let s:cmd = "svn update"
-    echo s:cmd
+    call ShowMessage(s:cmd)
     let s:flist = system(s:cmd)
 endfunction
 
