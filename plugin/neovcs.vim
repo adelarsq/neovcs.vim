@@ -5,13 +5,19 @@ endif
 let g:loaded_neovcs=1
 
 function! ShowMessage(arg)
-    " echo a:arg
-    let s:r = luaeval("require('notify')('"..a:arg.."')")
+    try
+        let s:r = luaeval("require('notify')('"..a:arg.."')")
+    catch
+         echo a:arg
+    endtry
 endfunction
 
 function! ShowError(arg)
-    " echo a:arg
-    let s:r = luaeval("require('notify')('"..a:arg.."', 'error')")
+    try
+        let s:r = luaeval("require('notify')('"..a:arg.."', 'error')")
+    catch
+         echo a:arg
+    endtry
 endfunction
 
 function! VcsName()

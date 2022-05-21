@@ -52,6 +52,7 @@ Basic support for:
 
 # Supported Plugins 🧩
 
+- [rcarriga/nvim-notify](https://github.com/rcarriga/nvim-notify)
 - [nvim-tree.lua](https://github.com/kyazdani42/nvim-tree.lua). Mappings:
   - `<leader>va` - add file or directory from the current line
 
