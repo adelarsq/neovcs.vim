@@ -727,7 +727,7 @@ function! VcsHelp()
     echom "- <leader>vm - mark conflict as resolved for current file"
     echom "- <leader>vl - status"
     echom "- <leader>vL - log"
-    echom "- <leader>vr - reload changes (send and get changes from remote)"
+    echom "- <leader>vr - reload changes (get/send changes from/to remote)"
     echom "- <leader>vp - get changes from remote"
     echom "- <leader>vP - send changes to remote"
     echom "- <leader>vt - show branchs"

@@ -32,7 +32,7 @@ Basic support for:
 - `<leader>vn` - go to next hunk
 - `<leader>vN` - go to previous hunk
 - `<leader>vL` - log
-- `<leader>vr` - reload changes (send and get changes from remote)
+- `<leader>vr` - reload changes (get/send changes from/to remote)
 - `<leader>vp` - get changes from remote
 - `<leader>vP` - send changes to remote
 - `<leader>vs` - status
