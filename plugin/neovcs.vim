@@ -697,8 +697,8 @@ function! VcsUpdateReceiveSvn()
 endfunction
 
 function! VcsReload()
-    VcsUpdateReceive()
-    VcsUpdateSend()
+    call VcsUpdateReceive()
+    call VcsUpdateSend()
 endfunction
 
 function! VcsHunkDiff()
