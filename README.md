@@ -31,12 +31,11 @@ Basic support for:
 - `<leader>vm` - mark conflict as resolved for current file
 - `<leader>vn` - go to next hunk
 - `<leader>vN` - go to previous hunk
-- `<leader>vL` - log
+- `<leader>vl` - log
 - `<leader>vr` - reload changes (get/send changes from/to remote)
 - `<leader>vp` - get changes from remote
 - `<leader>vP` - send changes to remote
 - `<leader>vs` - status
-- `<leader>vS` - echo status line
 - `<leader>vt` - show branchs
 - `<leader>vu` - hunk undo
 - `<leader>vU` - undo last commit

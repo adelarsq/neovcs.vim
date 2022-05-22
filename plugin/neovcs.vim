@@ -743,11 +743,11 @@ function! VcsHelp()
     echom "- <leader>vo - open current line URL"
     echom "- <leader>vO - open repository URL"
     echom "- <leader>vm - mark conflict as resolved for current file"
-    echom "- <leader>vl - status"
-    echom "- <leader>vL - log"
-    echom "- <leader>vr - reload changes (get/send changes from/to remote)"
+    echom "- <leader>vl - log"
     echom "- <leader>vp - get changes from remote"
     echom "- <leader>vP - send changes to remote"
+    echom "- <leader>vr - reload changes (get/send changes from/to remote)"
+    echom "- <leader>vs - status"
     echom "- <leader>vt - show branchs"
     echom "- <leader>vu - hunk undo"
     echom "- <leader>vU - undo last commit"
@@ -764,14 +764,14 @@ nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left
 nmap              <leader>vC :call VcsAmend("")<left><left><left>
 nnoremap <silent> <leader>vd :call VcsHunkDiff()<CR>
 nmap              <leader>vD :call VcsDiff("")<left><left>
-nnoremap <silent> <leader>vl :call VcsStatus()<CR>
-nnoremap <silent> <leader>vL :call VcsLog()<CR>
+nnoremap <silent> <leader>vl :call VcsLog()<CR>
 nnoremap <silent> <leader>vm :call VcsResolve()<CR>
 nnoremap <silent> <leader>vn :call VcsNextHunk()<CR>
 nnoremap <silent> <leader>vN :call VcsPrevHunk()<CR>
 nnoremap <silent> <leader>vo :call VcsOpenLineUrl()<CR>
 nnoremap <silent> <leader>vO :call VcsOpenUrl()<CR>
 nnoremap <silent> <leader>vr :call VcsReload()<CR>
+nnoremap <silent> <leader>vs :call VcsStatus()<CR>
 nnoremap <silent> <leader>vp :call VcsUpdateReceive()<CR>
 nnoremap <silent> <leader>vP :call VcsUpdateSend()<CR>
 nmap              <leader>vt :call VcsShowBranchs()<CR>
