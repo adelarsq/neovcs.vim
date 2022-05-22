@@ -8,7 +8,7 @@ function! ShowMessage(arg)
     try
         let s:r = luaeval("require('notify')('"..a:arg.."')")
     catch
-         echo a:arg
+        echo a:arg
     endtry
 endfunction
 
@@ -16,7 +16,7 @@ function! ShowError(arg)
     try
         let s:r = luaeval("require('notify')('"..a:arg.."', 'error')")
     catch
-         echo a:arg
+        echo a:arg
     endtry
 endfunction
 
@@ -780,6 +780,7 @@ nnoremap <silent> <leader>vU :call VcsUndoLastCommit()<CR>
 nnoremap <silent> <leader>vx :call VcsRmFile("")<left><left>
 nnoremap <silent> <leader>vX :call VcsRevertLastCommit()<CR>
 
+" kyazdani42/nvim-tree.lua
 augroup neovcs_nvimtree
     au!
     au Filetype NvimTree nmap <buffer> <silent> <leader>va :call VcsAddFileFromTree()<CR>
