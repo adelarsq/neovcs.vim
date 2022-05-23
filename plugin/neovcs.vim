@@ -410,19 +410,18 @@ endfunction
 function! VcsLogGit()
     let s:cmd = 'git log '
     call ShowMessage(s:cmd)
-    " TODO
     " let s:result = system(s:cmd)
     "
-    " let s:result = split(s:result, '\r')
+    " let s:result = split(s:result, '\n')
     "
     " " Create the dictionaries used to populate the quickfix list
-    " " let s:list = []
-    " " for s:item in s:result
-    " "     call add(s:item, '')
-    " " endfor
+    " let s:list = []
+    " for s:item in s:result
+    "     call add(s:list, s:item)
+    " endfor
     "
     " " Populate the qf list
-    " call setqflist(s:result)
+    " call setqflist(s:list)
     "
     " bel copen 10
 
