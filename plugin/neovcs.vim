@@ -148,7 +148,7 @@ endfunction
 function! VcsDiff(...) abort
     let s:vcs_name = VcsName()
     if s:vcs_name ==# 'svn'
-        execute '!svn diff -r'.a:1
+        execute '!svn diff -r '.a:1
     else
         call ShowError("VCS not supported")
     endif
@@ -233,62 +233,62 @@ endfunction
 
 function! VcsAddFile(...)
     let s:filepath = expand('%:p')
-    let s:command = ''
+    let s:cmd = ''
     let s:vcs_name = VcsName()
     if s:vcs_name ==# 'git'
-        let s:command = 'git add '.s:filepath
+        let s:cmd = 'git add '.s:filepath
     elseif s:vcs_name ==# 'svn'
         if a:0 == 0
-            let s:command = 'svn add '.s:filepath
+            let s:cmd = 'svn add '.s:filepath
         else
-            let s:command = 'svn changelist '.a:1.' '.s:filepath
+            let s:cmd = 'svn changelist '.a:1.' '.s:filepath
         endif
     else
         call ShowMessage('Is this file in a repository?')
         return
     endif
-    let s:systemcommand = system(s:command)
-    call ShowMessage(s:command)
+    let s:syscmd = system(s:cmd)
+    call ShowMessage(s:cmd)
 endfunction
 
 function! VcsAddFiles(...)
-    let s:command = ''
+    let s:cmd = ''
     let s:vcs_name = VcsName()
     if s:vcs_name ==# 'git'
-        let s:command = 'git add *'
+        let s:cmd = 'git add *'
     elseif s:vcs_name ==# 'svn'
         if a:0 == 0
-            let s:command = 'svn add *'
+            let s:cmd = 'svn add *'
         else
-            let s:command = 'svn changelist '.a:1.' *'
+            let s:cmd = 'svn changelist '.a:1.' *'
         endif
     else
         call ShowMessage('Is this file in a repository?')
         return
     endif
-    let s:systemcommand = system(s:command)
-    call ShowMessage(s:command)
+    let s:syscmd = system(s:cmd)
+    call ShowMessage(s:cmd)
 endfunction
 
 function! VcsAddFileFromTree()
     let s:filepath=luaeval("require'nvim-tree.lib'.get_node_at_cursor().absolute_path")
 
-    let s:command = ''
+    let s:cmd = ''
     let s:vcs_name = VcsName()
     if s:vcs_name ==# 'git'
-        let s:command = 'git add '.s:filepath
+        let s:cmd = 'git add '.s:filepath
     elseif s:vcs_name ==# 'svn'
         if a:0 == 0
-            let s:command = 'svn add '.s:filepath
+            let s:cmd = 'svn add '.s:filepath
         else
-            let s:command = 'svn changelist '.a:1.' '.s:filepath
+            let s:cmd = 'svn changelist '.a:1.' '.s:filepath
         endif
     else
         call ShowMessage('Is this file in a repository?')
         return
     endif
-    let s:systemcommand = system(s:command)
-    call ShowMessage(s:command)
+    let s:syscmd = system(s:cmd)
+    call ShowMessage(s:cmd)
 
     NvimTreeRefresh
 endfunction
@@ -296,58 +296,58 @@ endfunction
 function! VcsRmFileFromTree()
     let s:filepath=luaeval("require'nvim-tree.lib'.get_node_at_cursor().absolute_path")
 
-    let s:command = ''
+    let s:cmd = ''
     let s:vcs_name = VcsName()
     if s:vcs_name ==# 'git'
-        let s:command = 'git rm --cached '.s:filepath
+        let s:cmd = 'git rm --cached '.s:filepath
     elseif s:vcs_name ==# 'svn'
         if a:0 == 0
-            let s:command = 'svn rm '.s:filepath
+            let s:cmd = 'svn rm '.s:filepath
         else
-            let s:command = 'svn changelist --remove '.a:1.' '.s:filepath
+            let s:cmd = 'svn changelist --remove '.a:1.' '.s:filepath
         endif
     else
         call ShowMessage('Is this file in a repository?')
         return
     endif
-    let s:systemcommand = system(s:command)
-    call ShowMessage(s:command)
+    let s:syscmd = system(s:cmd)
+    call ShowMessage(s:cmd)
 
     NvimTreeRefresh
 endfunction
 
 function! VcsShowBranchs()
-    let s:command = ''
+    let s:cmd = ''
     let s:vcs_name = VcsName()
     if s:vcs_name ==# 'git'
-        let s:command = 'git branch'
+        let s:cmd = 'git branch'
     else
         call ShowMessage('Is this file in a repository?')
         return
     endif
-    let s:systemcommand = system(s:command)
-    call ShowMessage(s:command)
+    let s:syscmd = system(s:cmd)
+    call ShowMessage(s:cmd)
 endfunction
 
 function! VcsRmFile(...)
     let s:filepath = expand('%:p')
-    let s:command = ''
+    let s:cmd = ''
     let s:vcs_name = VcsName()
     if s:vcs_name ==# 'git'
-        let s:command = 'git rm '.s:filepath
+        let s:cmd = 'git rm '.s:filepath
     elseif s:vcs_name ==# 'svn'
         if a:0 == 0
-            let s:command = 'svn rm '.s:filepath
+            let s:cmd = 'svn rm '.s:filepath
         else
             " TODO
-            let s:command = 'svn changelist '.a:1.' '.s:filepath
+            let s:cmd = 'svn changelist '.a:1.' '.s:filepath
         endif
     else
         call ShowMessage('Is this file in a repository?')
         return
     endif
-    let s:systemcommand = system(s:command)
-    call ShowMessage(s:command)
+    let s:syscmd = system(s:cmd)
+    call ShowMessage(s:cmd)
 endfunction
 
 function! VcsBlameLine()
@@ -377,7 +377,7 @@ endfunction
 function! VcsBlameFileGit()
     let s:cmd = 'git blame '
     call ShowMessage(s:cmd)
-    let s:systemcommand = system(s:command)
+    let s:syscmd = system(s:cmd)
 endfunction
 
 function! VcsResolve()
@@ -393,7 +393,7 @@ function! VcsResolveSvn()
     let s:filepath = expand('%:p')
     let s:cmd = 'svn resolve '.s:filepath
     call ShowMessage(s:cmd)
-    let s:systemcommand = system(s:command)
+    let s:syscmd = system(s:cmd)
 endfunction
 
 function! VcsLog()
@@ -410,13 +410,28 @@ endfunction
 function! VcsLogGit()
     let s:cmd = 'git log '
     call ShowMessage(s:cmd)
-    let s:systemcommand = system(s:command)
+    " TODO
+    " let s:result = system(s:cmd)
+    "
+    " let s:result = split(s:result, '\r')
+    "
+    " " Create the dictionaries used to populate the quickfix list
+    " " let s:list = []
+    " " for s:item in s:result
+    " "     call add(s:item, '')
+    " " endfor
+    "
+    " " Populate the qf list
+    " call setqflist(s:result)
+    "
+    " bel copen 10
+
 endfunction
 
 function! VcsLogSvn()
     let s:cmd = 'svn log '
     call ShowMessage(s:cmd)
-    let s:systemcommand = system(s:command)
+    let s:syscmd = system(s:cmd)
 endfunction
 
 function! VcsUndoLastCommit()
@@ -431,7 +446,7 @@ endfunction
 function! VcsUndoLastCommitGit()
     let s:cmd = 'git reset --soft HEAD~1'
     call ShowMessage(s:cmd)
-    let s:systemcommand = system(s:cmd)
+    let s:syscmd = system(s:cmd)
 endfunction
 
 function! VcsRevertLastCommit()
@@ -446,7 +461,7 @@ endfunction
 function! VcsRevertLastCommitGit()
     let s:cmd = 'git revert HEAD'
     call ShowMessage(s:cmd)
-    let s:systemcommand = system(s:cmd)
+    let s:syscmd = system(s:cmd)
 endfunction
 
 function! VcsStatus()
@@ -579,8 +594,8 @@ function! VcsStatusLine()
             let g:light_line_vcs_status_local = s:mark_local.'0'
         endif
     elseif s:vcs_name ==# 'svn'
-        let s:commands = s:cd_root_dir.'; svn status'
-        let s:status_update_list_local = systemlist(s:commands)
+        let s:cmds = s:cd_root_dir.'; svn status'
+        let s:status_update_list_local = systemlist(s:cmds)
         if len(s:status_update_list_local) > 0
             let g:light_line_vcs_status_local = s:mark_local.len(s:status_update_list_local)
         else
@@ -596,8 +611,8 @@ function! VcsStatusLine()
 
     if s:vcs_name ==# 'git'
         " TODO
-        " let s:commands = s:cd_root_dir.'; git for-each-ref --format="%(HEAD) %(refname:short) %(push:track)" refs/heads | grep -o "[0-9]\+"'
-        " let s:status_behind = systemlist(s:commands)
+        " let s:cmds = s:cd_root_dir.'; git for-each-ref --format="%(HEAD) %(refname:short) %(push:track)" refs/heads | grep -o "[0-9]\+"'
+        " let s:status_behind = systemlist(s:cmds)
         " if len(s:status_behind) > 0
             " let g:light_line_vcs_status_behind = s:mark_behind.s:status_behind[0]
         " else
@@ -605,8 +620,8 @@ function! VcsStatusLine()
         " endif
         let g:light_line_vcs_status_behind = s:mark_behind.'?'
     elseif s:vcs_name ==# 'svn'
-        let s:commands = s:cd_root_dir.'; svn status -u | grep "        \*"'
-        let s:status_behind = systemlist(s:commands)
+        let s:cmds = s:cd_root_dir.'; svn status -u | grep "        \*"'
+        let s:status_behind = systemlist(s:cmds)
         if len(s:status_behind) > 0
             let g:light_line_vcs_status_behind = s:mark_behind.len(s:status_behind)
         else
@@ -621,12 +636,12 @@ function! VcsStatusLine()
     let s:light_line_vcs_repository_conflits = ''
     if s:vcs_name ==# 'git'
         " Based on: https://stackoverflow.com/questions/3065650/whats-the-simplest-way-to-list-conflicted-files-in-git
-        let s:commands = s:cd_root_dir.'; git diff --name-only --diff-filter=U '
-        let s:status_conflicts_repository = systemlist(s:commands)
+        let s:cmds = s:cd_root_dir.'; git diff --name-only --diff-filter=U '
+        let s:status_conflicts_repository = systemlist(s:cmds)
         let g:light_line_vcs_repository_conflits = s:mark_repository_conflits.len(s:status_conflicts_repository)
     elseif s:vcs_name ==# 'svn'
-        let s:commands = s:cd_root_dir.'; svn status|grep "Text conflicts"|sed ''s/[^0-9]*//g'' '
-        let s:status_conflicts_repository = systemlist(s:commands)
+        let s:cmds = s:cd_root_dir.'; svn status|grep "Text conflicts"|sed ''s/[^0-9]*//g'' '
+        let s:status_conflicts_repository = systemlist(s:cmds)
         if len(s:status_conflicts_repository) > 0
             let g:light_line_vcs_repository_conflits = s:mark_repository_conflits.s:status_conflicts_repository[0]
         else
@@ -645,8 +660,8 @@ function! VcsStatusLine()
         if s:vcs_name ==# 'git'
             let s:vcs_name_branch = s:vcs_name.' '.VcsGitBranchName()
         elseif s:vcs_name ==# 'svn'
-            let s:commands = s:cd_root_dir."; svn info | grep '^URL:' | egrep -o '(tags|branches)/[^/]+|trunk' | egrep -o '[^/]+$' "
-            let s:vcs_name_branch = s:vcs_name.' '.systemlist(s:commands)[0]
+            let s:cmds = s:cd_root_dir."; svn info | grep '^URL:' | egrep -o '(tags|branches)/[^/]+|trunk' | egrep -o '[^/]+$' "
+            let s:vcs_name_branch = s:vcs_name.' '.systemlist(s:cmds)[0]
         endif
         let b:vcs_name_branch = s:vcs_name_branch
     else
