@@ -57,6 +57,7 @@ Basic support for:
 
 ## Todo 🚧
 
+- [ ] Remove Gitsigns dependency [wip]
 - [ ] Root folder based on the current file [wip]
 - [ ] Convert all code to Lua
 - [ ] Telescope integration
@@ -68,7 +69,6 @@ Basic support for:
   - [ ] [Bazaar](https://bazaar.canonical.com)
 - [ ] On repository for modified files show the lines status, like `+3-2~1M`
 - [ ] Emoji support on commits
-- [ ] Remove Gitsigns dependency
 
 ## Acknowledgments 💡
 
