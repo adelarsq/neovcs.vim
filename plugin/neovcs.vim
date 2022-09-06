@@ -4,6 +4,50 @@ if exists('g:loaded_neovcs')
 endif
 let g:loaded_neovcs=1
 
+lua << EOF
+local function starts_with(str, start)
+   return str:sub(1, #start) == start
+end
+
+-- Based on https://github.com/pvdlg/conventional-changelog-metahub
+function GetEmojiForCommit(commitMessage)
+   if (starts_with(commitMessage, "feat")) then
+     return "✨"   
+   end
+   if (starts_with(commitMessage, "fix")) then
+     return "🐛"   
+   end
+   if (starts_with(commitMessage, "docs")) then
+     return "📚"   
+   end
+   if (starts_with(commitMessage, "style")) then
+     return "💎"   
+   end
+   if (starts_with(commitMessage, "refactor")) then
+     return "📦"   
+   end
+   if (starts_with(commitMessage, "perf")) then
+     return "🚀"   
+   end
+   if (starts_with(commitMessage, "test")) then
+     return "🚨"   
+   end
+   if (starts_with(commitMessage, "build")) then
+     return "🛠"   
+   end
+   if (starts_with(commitMessage, "ci")) then
+     return "⚙️"   
+   end
+   if (starts_with(commitMessage, "chore")) then
+     return "♻️"   
+   end
+   if (starts_with(commitMessage, "revert")) then
+     return "🗑"   
+   end
+   return ""; 
+end
+EOF
+
 function! ShowMessage(arg)
     try
         let s:r = luaeval("require('notify')('"..a:arg.."')")
@@ -116,7 +160,8 @@ function! VcsCommit(...) abort
             call ShowError("Please add a commit message")
             return ''
         endif
-        execute '!git commit -m "'.a:1.'"'
+        let s:commitMessage = luaeval('GetEmojiForCommit("'.a:1.'")').' '.a:1
+        execute '!git commit -m "'.s:commitMessage.'"'
     elseif s:vcs_name ==# 'svn'
         if a:1 == ''
             call ShowError("Please add a commit message")
