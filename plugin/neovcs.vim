@@ -44,6 +44,9 @@ function GetEmojiForCommit(commitMessage)
    if (starts_with(commitMessage, "revert")) then
      return "🗑"   
    end
+   if (starts_with(commitMessage, "refactor")) then
+     return "🔨"   
+   end
    return ""; 
 end
 EOF
