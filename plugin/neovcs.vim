@@ -166,7 +166,7 @@ endfunction
 function! VcsNextHunk()
     let s:vcs_name = VcsName()
     if s:vcs_name == 'git'
-        Gitsigns next_hunk
+        lua require('gitsigns').next_hunk({navigation_message = false})
     else
         call ShowError("VCS not supported")
     endif
@@ -175,7 +175,7 @@ endfunction
 function! VcsPrevHunk()
     let s:vcs_name = VcsName()
     if s:vcs_name == 'git'
-        Gitsigns prev_hunk
+        lua require('gitsigns').prev_hunk({navigation_message = false})
     else
         call ShowError("VCS not supported")
     endif
