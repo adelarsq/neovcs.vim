@@ -23,9 +23,6 @@ function GetEmojiForCommit(commitMessage)
    if (starts_with(commitMessage, "style")) then
      return "💎"   
    end
-   if (starts_with(commitMessage, "refactor")) then
-     return "📦"   
-   end
    if (starts_with(commitMessage, "perf")) then
      return "🚀"   
    end
@@ -33,7 +30,7 @@ function GetEmojiForCommit(commitMessage)
      return "🚨"   
    end
    if (starts_with(commitMessage, "build")) then
-     return "🛠"   
+     return "📦"   
    end
    if (starts_with(commitMessage, "ci")) then
      return "⚙️"   
