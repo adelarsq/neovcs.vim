@@ -55,6 +55,26 @@ Basic support for:
 - [nvim-tree.lua](https://github.com/kyazdani42/nvim-tree.lua). Mappings:
   - `<leader>va` - add file or directory from the current line
 
+## Features
+
+### Emoji Support for Commits
+
+Just add a prefix based on the table:
+
+| Commit Type | Title                    | Description                                                                                                 | Emoji | Release                        | Include in changelog |
+|:-----------:|--------------------------|-------------------------------------------------------------------------------------------------------------|:-----:|--------------------------------|:--------------------:|
+|   `feat`    | Features                 | A new feature                                                                                               |   ✨   | `minor`                        |        `wip`        |
+|    `fix`    | Bug Fixes                | A bug Fix                                                                                                   |  🐛   | `patch`                        |        `wip`        |
+|   `docs`    | Documentation            | Documentation only changes                                                                                  |  📚   | `patch` if `scope` is `readme` |        `wip`        |
+|   `style`   | Styles                   | Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)      |  💎   | -                              |        `wip`        |
+| `refactor`  | Code Refactoring         | A code change that neither fixes a bug nor adds a feature                                                   |  📦   | -                              |        `wip`        |
+|   `perf`    | Performance Improvements | A code change that improves performance                                                                     |  🚀   | `patch`                        |        `wip`        |
+|   `test`    | Tests                    | Adding missing tests or correcting existing tests                                                           |  🚨   | -                              |        `wip`        |
+|   `build`   | Builds                   | Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)         |  🛠   | `patch`                        |        `wip`        |
+|    `ci`     | Continuous Integrations  | Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs) |  ⚙️   | -                              |        `wip`        |
+|   `chore`   | Chores                   | Other changes that don't modify src or test files                                                           |  ♻️   | -                              |        `wip`        |
+|  `revert`   | Reverts                  | Reverts a previous commit                                                                                   |  🗑   | -                              |        `wip`        |
+
 ## Todo 🚧
 
 - [ ] Remove Gitsigns dependency [wip]
@@ -68,7 +88,6 @@ Basic support for:
   - [ ] [Darcs](http://darcs.net)
   - [ ] [Bazaar](https://bazaar.canonical.com)
 - [ ] On repository for modified files show the lines status, like `+3-2~1M`
-- [ ] Emoji support on commits
 
 ## Acknowledgments 💡
 
@@ -77,6 +96,7 @@ Thanks goes to these people/projects for inspiration:
 - [juneedahamed/vc.vim](https://github.com/juneedahamed/vc.vim)
 - [LucHermitte/lh-vim-lib](https://github.com/LucHermitte/lh-vim-lib)
 - [Emoji Log VSCode plugin](https://marketplace.visualstudio.com/items?itemName=ahmadawais.emoji-log-vscode)
+- [conventional-changelog-metahub](https://github.com/pvdlg/conventional-changelog-metahub)
 
 ## Self-plug 🔌
 
