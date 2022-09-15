@@ -923,6 +923,13 @@ function! VcsHelp()
     echom "- <leader>vX - revert last commit"
 endfunction
 
+function! VcsHelpFileTree()
+    echom "VCS Help: "
+    echom "- <leader>v  - this help"
+    echom "- <leader>va - add file"
+    echom "- <leader>vA - add all files"
+endfunction
+
 nnoremap <silent> <leader>v  :call VcsHelp()<CR>
 nmap              <leader>va :call VcsAddFile("")<left><left>
 nnoremap <silent> <leader>vA :call VcsAddFiles()<CR>
@@ -954,6 +961,7 @@ nnoremap <silent> <leader>vX :call VcsRevertLastCommit()<CR>
 " kyazdani42/nvim-tree.lua
 augroup neovcs_nvimtree
     au!
+    au Filetype NvimTree nmap <buffer> <silent> <leader>v :call VcsHelpFileTree()<CR>
     au Filetype NvimTree nmap <buffer> <silent> <leader>va :call VcsAddFileFromTree()<CR>
     au Filetype NvimTree nmap <buffer> <silent> <leader>vx :call VcsRmFileFromTree()<CR>
 augroup END
