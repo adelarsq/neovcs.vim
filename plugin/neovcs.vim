@@ -444,41 +444,146 @@ function! VcsResolveSvn()
     let s:syscmd = system(s:cmd)
 endfunction
 
-function! VcsLog()
+function! VcsLogFile()
     let s:vcs_name = VcsName()
     if s:vcs_name == 'git'
-        call VcsLogGit()
-    elseif s:vcs_name == 'svn'
-        call VcsLogSvn()
+        call VcsLogFileGit()
     else
         call ShowError("VCS not supported")
     endif
 endfunction
 
-function! VcsLogGit()
-    let s:cmd = 'git log '
-    call ShowMessage(s:cmd)
-    " let s:result = system(s:cmd)
-    "
-    " let s:result = split(s:result, '\n')
-    "
-    " " Create the dictionaries used to populate the quickfix list
-    " let s:list = []
-    " for s:item in s:result
-    "     call add(s:list, s:item)
-    " endfor
-    "
-    " " Populate the qf list
-    " call setqflist(s:list)
-    "
-    " bel copen 10
+function! VcsLogFileGit()
+    let s:filePath = expand('%:p')
 
+    let s:cmd = 'git log --pretty=oneline -- filename '.s:filePath
+    call ShowMessage(s:cmd)
+    let s:result = system(s:cmd)
+
+    let s:result = split(s:result, '\n')
+
+    " Create the dictionaries used to populate the quickfix list
+    let s:list = []
+    for s:item in s:result
+        let s:dic = {'filename': "", "text": s:item}
+        call add(s:list, s:dic)
+    endfor
+
+    " Populate the qf list
+    call setqflist(s:list)
+
+    bel copen 10
 endfunction
 
-function! VcsLogSvn()
+function! VcsLogProject()
+    let s:vcs_name = VcsName()
+    if s:vcs_name == 'git'
+        call VcsLogProjectGit()
+    elseif s:vcs_name == 'svn'
+        call VcsLogProjectSvn()
+    else
+        call ShowError("VCS not supported")
+    endif
+endfunction
+
+function! VcsLogProjectGit()
+    let s:cmd = 'git log --pretty=oneline'
+    call ShowMessage(s:cmd)
+    let s:result = system(s:cmd)
+
+    let s:result = split(s:result, '\n')
+
+    " Create the dictionaries used to populate the quickfix list
+    let s:list = []
+    for s:item in s:result
+        let s:dic = {'filename': "", "text": s:item}
+        call add(s:list, s:dic)
+    endfor
+
+    " Populate the qf list
+    call setqflist(s:list)
+
+    bel copen 10
+endfunction
+
+function! VcsLogProjectSvn()
     let s:cmd = 'svn log '
     call ShowMessage(s:cmd)
-    let s:syscmd = system(s:cmd)
+    let s:result = system(s:cmd)
+
+    let s:result = split(s:result, '\n')
+
+    " Create the dictionaries used to populate the quickfix list
+    let s:list = []
+    for s:item in s:result
+        let s:dic = {'filename': "", "text": s:item}
+        call add(s:list, s:dic)
+    endfor
+
+    " Populate the qf list
+    call setqflist(s:list)
+
+    bel copen 10
+endfunction
+
+function! VcsLogFileGraph()
+    let s:vcs_name = VcsName()
+    if s:vcs_name == 'git'
+        call VcsLogFileGraphGit()
+    else
+        call ShowError("VCS not supported")
+    endif
+endfunction
+
+function! VcsLogFileGraphGit()
+    let s:filePath = expand('%:p')
+
+    let s:cmd = "git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -- filename ".s:filePath
+    call ShowMessage(s:cmd)
+    let s:result = system(s:cmd)
+
+    let s:result = split(s:result, '\n')
+
+    " Create the dictionaries used to populate the quickfix list
+    let s:list = []
+    for s:item in s:result
+        let s:dic = {'filename': "", "text": s:item}
+        call add(s:list, s:dic)
+    endfor
+
+    " Populate the qf list
+    call setqflist(s:list)
+
+    bel copen 10
+endfunction
+
+function! VcsLogProjectGraph()
+    let s:vcs_name = VcsName()
+    if s:vcs_name == 'git'
+        call VcsLogProjectGitGraph()
+    else
+        call ShowError("VCS not supported")
+    endif
+endfunction
+
+function! VcsLogProjectGitGraph()
+    let s:cmd = "git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+    call ShowMessage(s:cmd)
+    let s:result = system(s:cmd)
+
+    let s:result = split(s:result, '\n')
+
+    " Create the dictionaries used to populate the quickfix list
+    let s:list = []
+    for s:item in s:result
+        let s:dic = {'filename': "", "text": s:item}
+        call add(s:list, s:dic)
+    endfor
+
+    " Populate the qf list
+    call setqflist(s:list)
+
+    bel copen 10
 endfunction
 
 function! VcsUndoLastCommit()
@@ -805,7 +910,8 @@ function! VcsHelp()
     echom "- <leader>vo - open current line URL"
     echom "- <leader>vO - open repository URL"
     echom "- <leader>vm - mark conflict as resolved for current file"
-    echom "- <leader>vl - log"
+    echom "- <leader>vl - log for current file"
+    echom "- <leader>vL - log for the project"
     echom "- <leader>vp - get changes from remote"
     echom "- <leader>vP - send changes to remote"
     echom "- <leader>vr - reload changes (get/send changes from/to remote)"
@@ -826,7 +932,10 @@ nmap              <leader>vc :call VcsCommit("","")<left><left><left><left><left
 nmap              <leader>vC :call VcsAmend("")<left><left><left>
 nnoremap <silent> <leader>vd :call VcsHunkDiff()<CR>
 nmap              <leader>vD :call VcsDiff("")<left><left>
-nnoremap <silent> <leader>vl :call VcsLog()<CR>
+nnoremap <silent> <leader>vl :call VcsLogFile()<CR>
+nnoremap <silent> <leader>vL :call VcsLogProject()<CR>
+" nnoremap <silent> <leader>vg :call VcsLogFileGraph()<CR>
+" nnoremap <silent> <leader>vG :call VcsLogProjectGraph()<CR>
 nnoremap <silent> <leader>vm :call VcsResolve()<CR>
 nnoremap <silent> <leader>vn :call VcsNextHunk()<CR>
 nnoremap <silent> <leader>vN :call VcsPrevHunk()<CR>
