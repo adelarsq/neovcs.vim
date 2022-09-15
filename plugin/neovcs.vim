@@ -11,37 +11,39 @@ end
 
 -- Based on https://github.com/pvdlg/conventional-changelog-metahub
 function GetEmojiForCommit(commitMessage)
-   if (starts_with(commitMessage, "feat")) then
+   commitMessageLower = string.lower(commitMessage)
+
+   if (starts_with(commitMessageLower, "feat")) then
      return "✨"   
    end
-   if (starts_with(commitMessage, "fix")) then
+   if (starts_with(commitMessageLower, "fix")) then
      return "🐛"   
    end
-   if (starts_with(commitMessage, "docs")) then
+   if (starts_with(commitMessageLower, "docs")) then
      return "📚"   
    end
-   if (starts_with(commitMessage, "style")) then
+   if (starts_with(commitMessageLower, "style")) then
      return "💎"   
    end
-   if (starts_with(commitMessage, "perf")) then
+   if (starts_with(commitMessageLower, "perf")) then
      return "🚀"   
    end
-   if (starts_with(commitMessage, "test")) then
+   if (starts_with(commitMessageLower, "test")) then
      return "🚨"   
    end
-   if (starts_with(commitMessage, "build")) then
+   if (starts_with(commitMessageLower, "build")) then
      return "📦"   
    end
-   if (starts_with(commitMessage, "ci")) then
+   if (starts_with(commitMessageLower, "ci")) then
      return "⚙️"   
    end
-   if (starts_with(commitMessage, "chore")) then
+   if (starts_with(commitMessageLower, "chore")) then
      return "♻️"   
    end
-   if (starts_with(commitMessage, "revert")) then
+   if (starts_with(commitMessageLower, "revert")) then
      return "🗑"   
    end
-   if (starts_with(commitMessage, "refactor")) then
+   if (starts_with(commitMessageLower, "refact")) then
      return "🔨"   
    end
    return ""; 
@@ -184,7 +186,8 @@ function! VcsAmend(...) abort
             call ShowError("Please add a commit message")
             return ''
         endif
-        execute '!git commit --amend -m "'.a:1.'"'
+        let s:commitMessage = luaeval('GetEmojiForCommit("'.a:1.'")').' '.a:1
+        execute '!git commit --amend -m "'.s:commitMessage.'"'
     else
         call ShowError("VCS not supported")
     endif
