@@ -31,7 +31,8 @@ Basic support for:
 - `<leader>vm` - mark conflict as resolved for current file
 - `<leader>vn` - go to next hunk
 - `<leader>vN` - go to previous hunk
-- `<leader>vl` - log
+- `<leader>vl` - log for current file
+- `<leader>vL` - log for the project
 - `<leader>vr` - reload changes (get/send changes from/to remote)
 - `<leader>vp` - get changes from remote
 - `<leader>vP` - send changes to remote
