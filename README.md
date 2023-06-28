@@ -9,6 +9,7 @@ Basic support for:
 - [x] [Darcs](http://darcs.net) - just VCS name for now
 - [x] [Bazaar](https://bazaar.canonical.com) - just VCS name for now
 - [x] [Mercurial](https://www.mercurial-scm.org) - just VCS name for now
+- [ ] [Grace](https://github.com/ScottArbeit/Grace)
 
 ## Mappings 🗺
 
