@@ -244,9 +244,7 @@ function! VcsOpenLineUrlGit()
 
     let s:url = s:split[0].'/blob/'.s:branch.'/'.s:relativeFilePath.'#L'.s:line
 
-    let s:openurl = 'OpenBrowser '.s:url
-
-    execute s:openurl
+    lua vim.ui.open s.url
 endfunction
 
 function! VcsOpenUrl()
@@ -265,8 +263,8 @@ function! VcsOpenUrlGit()
     call ShowMessage(s:cmd)
     let s:result = system(s:cmd)
     let s:split = split(s:result, '\n')
-    let s:openurl = 'OpenBrowser '.s:split[0]
-    execute s:openurl
+    let s:url = s:split[0]
+    lua vim.ui.open s.url
 endfunction
 
 function! VcsOpenUrlSvn()
@@ -275,8 +273,8 @@ function! VcsOpenUrlSvn()
     call ShowMessage(s:cmd)
     let s:result = system(s:cmd)
     let s:split = split(s:result, '\n')
-    let s:openurl = 'OpenBrowser '.s:split[0]
-    execute s:openurl
+    let s:url = s:split[0]
+    lua vim.ui.open s.url
 endfunction
 
 function! VcsAddFile(...)
