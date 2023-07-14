@@ -11,6 +11,57 @@ Basic support for:
 - [x] [Mercurial](https://www.mercurial-scm.org) - just VCS name for now
 - [ ] [Grace](https://github.com/ScottArbeit/Grace)
 
+## Installation 🧙
+
+### [Lazy](https://github.com/folke/lazy.nvim)
+
+Add the following lines on the NeoVim config file (Lua):
+
+```lua
+require('lazy').setup({
+  {
+    'https://github.com/adelarsq/neovcs.vim',
+    keys = {
+        '<leader>v',
+    },
+    config = function ()
+        require('neovcs').setup()
+    end
+  },
+}, {})
+```
+
+### [Plug](https://github.com/junegunn/vim-plug)
+
+Add the following lines on the Vim/NeoVim config file:
+
+```vim
+Plug 'https://github.com/adelarsq/neovcs.vim'
+
+lua require('neovcs').setup()
+```
+
+Then open the editor and install with `PlugInstall`.
+
+### [Dein](https://github.com/Shougo/dein.vim)
+
+Add the following lines on the Vim/NeoVim config file:
+
+```vim
+call dein#add('adelarsq/neovcs.vim')
+
+lua require('neovcs').setup()
+```
+Then open the editor and install with `call dein#install()`.
+
+### [Packer](https://github.com/wbthomason/packer.nvim)
+
+```lua
+use 'adelarsq/neovcs.vim'
+
+require('neovcs').setup()
+```
+
 ## Mappings 🗺
 
 - `<leader>v` - help
