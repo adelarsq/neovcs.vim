@@ -107,6 +107,10 @@ require('neovcs').setup()
 - [rcarriga/nvim-notify](https://github.com/rcarriga/nvim-notify)
 - [nvim-tree.lua](https://github.com/kyazdani42/nvim-tree.lua). Mappings:
   - `<leader>va` - add file or directory under cursor
+  - `<leader>vx` - remove file or directory under cursor
+- [stevearc/oil.nvim](https://github.com/stevearc/oil.nvim). Mappings:
+  - `<leader>va` - add file or directory under cursor
+  - `<leader>vx` - remove file or directory under cursor
 
 ## Features
 
