@@ -136,7 +136,7 @@ Just add a prefix based on the table:
 
 - [ ] Remove Gitsigns dependency [wip]
 - [ ] Root folder based on the current file [wip]
-- [ ] Convert all code to Lua
+- [x] Convert all source code to Fennel/Lua
 - [ ] Telescope integration
 - [x] Show commit for current line. Based on [1](https://www.reddit.com/r/vim/comments/i50pce/how_to_show_commit_that_introduced_current_line/).
 - [ ] Hightlight itens on quickfix with diferent colors
