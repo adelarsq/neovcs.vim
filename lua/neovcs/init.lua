@@ -270,7 +270,7 @@ function VcsOpenLineUrlGit()
 
     local url = split[1] .. '/blob/' .. branch .. '/' .. relativeFilePath .. '#L' .. line
 
-    vim.fn.open(url)
+    vim.ui.open(url)
 end
 
 function VcsOpenUrl()
@@ -291,7 +291,7 @@ function VcsOpenUrlGit()
     local split = vim.split(result, '\n')
     local url = split[1]
 
-    vim.fn.open(url)
+    vim.ui.open(url)
 end
 
 function VcsOpenUrlSvn()
@@ -301,7 +301,7 @@ function VcsOpenUrlSvn()
     local split = vim.split(result, '\n')
     local url = split[1]
 
-    vim.fn.open(url)
+    vim.ui.open(url)
 end
 
 function VcsAddFile()
