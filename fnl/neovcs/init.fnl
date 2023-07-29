@@ -207,7 +207,7 @@
                    (local result (vim.fn.system cmd))
                    (local split (vim.split result "\n"))
                    (local branch (Vcs-git-branch-name))
-                   (local relative-file-path (vim.fn.expand "%:P"))
+                   (local relative-file-path (vim.fn.expand "%:t"))
                    (local line (vim.fn.line "."))
                    (local url
                           (.. (. split 1) :/blob/ branch "/" relative-file-path
