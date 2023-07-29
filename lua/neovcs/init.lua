@@ -264,7 +264,7 @@ function VcsOpenLineUrlGit()
 
     local branch = VcsGitBranchName()
 
-    local relativeFilePath = vim.fn.expand('%:P')
+    local relativeFilePath = vim.fn.expand('%:t')
 
     local line = vim.fn.line('.')
 
