@@ -184,22 +184,26 @@ end
 function VcsCommit(...)
     local vcs_name = VcsName()
     if vcs_name == 'git' then
-        if select(2, ...) == '' then
+        if select(1, ...) == '' then
             ShowError("Please add a commit message")
             return ''
         end
-        local commitMessage = GetEmojiForCommit(select(2, ...)) .. ' ' .. select(2, ...)
-        vim.fn.system('git commit -m "' .. commitMessage .. '"')
+        local commitMessage = GetEmojiForCommit(select(1, ...)) .. ' ' .. select(1, ...)
+        local cmd = 'git commit -m "' .. commitMessage .. '"'
+        vim.fn.system(cmd)
+        ShowMessage(cmd)
     elseif vcs_name == 'svn' then
-        if select(2, ...) == '' then
+        if select(1, ...) == '' then
             ShowError("Please add a commit message")
             return ''
         end
-        if select(3, ...) == '' then
+        if select(2, ...) == '' then
             ShowError("Please add a changelist name")
             return ''
         end
-        vim.fn.system('svn commit --changelist ' .. select(3, ...) .. ' -m "' .. select(2, ...) .. '"')
+        local cmd = 'svn commit --changelist ' .. select(2, ...) .. ' -m "' .. select(1, ...) .. '"'
+        vim.fn.system(cmd)
+        ShowMessage(cmd)
     else
         ShowError("VCS not supported")
     end
@@ -213,7 +217,9 @@ function VcsAmend(...)
             return ''
         end
         local commitMessage = GetEmojiForCommit(select(1, ...)) .. ' ' .. select(1, ...)
-        vim.fn.system('git commit --amend -m "' .. commitMessage .. '"')
+        local cmd = 'git commit --amend -m "' .. commitMessage .. '"'
+        vim.fn.system(cmd)
+        ShowMessage(cmd)
     else
         ShowError("VCS not supported")
     end
@@ -222,7 +228,9 @@ end
 function VcsDiff(...)
     local vcs_name = VcsName()
     if vcs_name == 'svn' then
-        vim.fn.system('svn diff -r ' .. select(1, ...))
+        local cmd = 'svn diff -r ' .. select(1, ...)
+        vim.fn.system(cmd)
+        ShowMessage(cmd)
     else
         ShowError("VCS not supported")
     end
