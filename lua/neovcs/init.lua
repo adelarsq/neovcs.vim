@@ -11,7 +11,7 @@ end
 -- Based on https://github.com/pvdlg/conventional-changelog-metahub
 function GetEmojiForCommit(commitMessage)
     if vim.g.neovcs_enable_emojis == true then
-        local commitMessageLower = string.lower(commitMessage)
+        local commitMessageLower = ' ' .. string.lower(commitMessage)
 
         if (starts_with(commitMessageLower, "feat")) then
             return "✨"
@@ -189,7 +189,7 @@ function VcsCommit(...)
             ShowError("Please add a commit message")
             return ''
         end
-        local commitMessage = GetEmojiForCommit(select(1, ...)) .. ' ' .. select(1, ...)
+        local commitMessage = GetEmojiForCommit(select(1, ...)) .. select(1, ...)
         local cmd = 'git commit -m "' .. commitMessage .. '"'
         vim.fn.system(cmd)
         ShowMessage(cmd)
@@ -217,7 +217,7 @@ function VcsAmend(...)
             ShowError("Please add a commit message")
             return ''
         end
-        local commitMessage = GetEmojiForCommit(select(1, ...)) .. ' ' .. select(1, ...)
+        local commitMessage = GetEmojiForCommit(select(1, ...)) .. select(1, ...)
         local cmd = 'git commit --amend -m "' .. commitMessage .. '"'
         vim.fn.system(cmd)
         ShowMessage(cmd)
