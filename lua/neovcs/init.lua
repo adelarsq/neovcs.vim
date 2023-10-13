@@ -1,4 +1,3 @@
-
 if vim.g.loaded_neovcs then
     return
 end
@@ -11,40 +10,42 @@ end
 
 -- Based on https://github.com/pvdlg/conventional-changelog-metahub
 function GetEmojiForCommit(commitMessage)
-    local commitMessageLower = string.lower(commitMessage)
+    if vim.g.neovcs_enable_emojis == true then
+        local commitMessageLower = string.lower(commitMessage)
 
-    if (starts_with(commitMessageLower, "feat")) then
-        return "✨"
-    end
-    if (starts_with(commitMessageLower, "fix")) then
-        return "🐛"
-    end
-    if (starts_with(commitMessageLower, "docs")) then
-        return "📚"
-    end
-    if (starts_with(commitMessageLower, "style")) then
-        return "💎"
-    end
-    if (starts_with(commitMessageLower, "perf")) then
-        return "🚀"
-    end
-    if (starts_with(commitMessageLower, "test")) then
-        return "🚨"
-    end
-    if (starts_with(commitMessageLower, "build")) then
-        return "📦"
-    end
-    if (starts_with(commitMessageLower, "ci")) then
-        return "⚙️"
-    end
-    if (starts_with(commitMessageLower, "chore")) then
-        return "♻️"
-    end
-    if (starts_with(commitMessageLower, "revert")) then
-        return "🗑"
-    end
-    if (starts_with(commitMessageLower, "refact")) then
-        return "🔨"
+        if (starts_with(commitMessageLower, "feat")) then
+            return "✨"
+        end
+        if (starts_with(commitMessageLower, "fix")) then
+            return "🐛"
+        end
+        if (starts_with(commitMessageLower, "docs")) then
+            return "📚"
+        end
+        if (starts_with(commitMessageLower, "style")) then
+            return "💎"
+        end
+        if (starts_with(commitMessageLower, "perf")) then
+            return "🚀"
+        end
+        if (starts_with(commitMessageLower, "test")) then
+            return "🚨"
+        end
+        if (starts_with(commitMessageLower, "build")) then
+            return "📦"
+        end
+        if (starts_with(commitMessageLower, "ci")) then
+            return "⚙️"
+        end
+        if (starts_with(commitMessageLower, "chore")) then
+            return "♻️"
+        end
+        if (starts_with(commitMessageLower, "revert")) then
+            return "🗑"
+        end
+        if (starts_with(commitMessageLower, "refact")) then
+            return "🔨"
+        end
     end
     return "";
 end
