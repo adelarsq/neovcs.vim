@@ -61,6 +61,9 @@ use 'adelarsq/neovcs.vim'
 
 require('neovcs').setup()
 ```
+## Configurations 🧩 
+
+Emojis on commit messages are disabled by default. Enabled with `vim.g.neovcs_enable_emojis == true`.
 
 ## Mappings 🗺
 
