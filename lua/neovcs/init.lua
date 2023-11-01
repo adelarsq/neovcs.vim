@@ -84,6 +84,7 @@ function ShowMessage(arg)
     end
 end
 
+
 function ShowError(arg)
     local success, notify = pcall(require, 'notify')
     if success then
@@ -111,6 +112,13 @@ end
 function GitRoot()
     local path = vim.fn.expand('%:p:h')
     return vim.fn.finddir('.git', path .. ';')
+end
+
+function GitRootDir()
+    local path = vim.fn.expand('%:p:h') -- TODO oil
+    local gitDir = vim.fn.finddir('.git', path .. ';')
+    local root = gitDir:gsub("%.git$", "")
+    return root
 end
 
 function SvnRoot()
@@ -634,19 +642,28 @@ function VcsStatusGit()
     local cmd = 'git status --porcelain'
     ShowMessage(cmd)
 
+    local root = GitRootDir()
+
     -- Get the result of git
     local flist = vim.fn.system(cmd)
-    flist = vim.split(flist, '\n')
+    local flistSplit = vim.split(flist, '\n')
 
     -- Create the dictionaries used to populate the quickfix list
     local list = {}
-    for _, f1 in ipairs(flist) do
-        local f2 = vim.trim(f1)
-        local glist = vim.split(f2, '\n')
-        local a = glist[1]
-        local b = glist[2]
-        local dic = { filename = b, text = a }
-        table.insert(list, dic)
+    for _, f1 in ipairs(flistSplit) do
+        if f1 ~= '' then
+            local f2 = vim.trim(f1)
+            local glist = vim.split(f2, '\n')
+
+            local input = glist[1]
+            local pattern = "^(%S+)%s(.+)$"
+            local part1, part2 = input:match(pattern)
+
+            if part1 and part2 then
+                local dic = { filename = root .. part2, text = part1 }
+                table.insert(list, dic)
+            end
+        end
     end
 
     -- Returns if no change is detected
