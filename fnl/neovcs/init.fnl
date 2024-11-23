@@ -36,8 +36,8 @@
                (fn []
                  (let [(use imported) (pcall require :nvim-tree.lib)]
                    (when use (local entry (imported.get_node_at_cursor))
-                     (let [___antifnl_rtn_1___ entry.absolute_path]
-                       (lua "return ___antifnl_rtn_1___")))
+                     (let [result entry.absolute_path]
+                       (lua "return result")))
                    "")))
 
 (set-forcibly! GetOilFilePath (fn []
@@ -48,8 +48,8 @@
                                          (local dir (imported.get_current_dir))
                                          (local file-name (. entry :name))
                                          (local full-name (.. dir file-name))
-                                         (let [___antifnl_rtn_1___ full-name]
-                                           (lua "return ___antifnl_rtn_1___"))))
+                                         (let [result full-name]
+                                           (lua "return result"))))
                                      "")))
 
 (set-forcibly! ShowMessage
@@ -99,25 +99,25 @@
                                (let [cwd-root (vim.fn.getcwd)
                                      git-root (GitRoot)]
                                  (when (> (length git-root) 0)
-                                   (let [___antifnl_rtn_1___ [:git cwd-root]]
-                                     (lua "return ___antifnl_rtn_1___")))
+                                   (let [result [:git cwd-root]]
+                                     (lua "return result")))
                                  (local svn-root (SvnRoot))
                                  (when (> (length svn-root) 0)
-                                   (let [___antifnl_rtn_1___ [:svn cwd-root]]
-                                     (lua "return ___antifnl_rtn_1___")))
+                                   (let [result [:svn cwd-root]]
+                                     (lua "return result")))
                                  (local darcs-root (DarcsRoot))
                                  (when (> (length darcs-root) 0)
-                                   (let [___antifnl_rtn_1___ [:darcs cwd-root]]
-                                     (lua "return ___antifnl_rtn_1___")))
+                                   (let [result [:darcs cwd-root]]
+                                     (lua "return result")))
                                  (local bazaar-root (BazaarRoot))
                                  (when (> (length bazaar-root) 0)
-                                   (let [___antifnl_rtn_1___ [:bazaar cwd-root]]
-                                     (lua "return ___antifnl_rtn_1___")))
+                                   (let [result [:bazaar cwd-root]]
+                                     (lua "return result")))
                                  (local mercurial-root (MercurialRoot))
                                  (when (> (length mercurial-root) 0)
-                                   (let [___antifnl_rtn_1___ [:mercurial
+                                   (let [result [:mercurial
                                                               cwd-root]]
-                                     (lua "return ___antifnl_rtn_1___")))
+                                     (lua "return result")))
                                  {})))
 
 (set-forcibly! VcsBranchName (fn []

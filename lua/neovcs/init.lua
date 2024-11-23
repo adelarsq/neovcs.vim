@@ -60,8 +60,8 @@ local function _14_()
   local use, imported = pcall(require, "nvim-tree.lib")
   if use then
     local entry = imported.get_node_at_cursor()
-    local ___antifnl_rtn_1___ = entry.absolute_path
-    return ___antifnl_rtn_1___
+    local result = entry.absolute_path
+    return result
   else
   end
   return ""
@@ -75,8 +75,8 @@ local function _16_()
       local dir = imported.get_current_dir()
       local file_name = entry.name
       local full_name = (dir .. file_name)
-      local ___antifnl_rtn_1___ = full_name
-      return ___antifnl_rtn_1___
+      local result = full_name
+      return result
     else
     end
   else
@@ -147,32 +147,32 @@ local function _30_()
   local cwd_root = vim.fn.getcwd()
   local git_root = GitRoot()
   if (#git_root > 0) then
-    local ___antifnl_rtn_1___ = {"git", cwd_root}
-    return ___antifnl_rtn_1___
+    local result = {"git", cwd_root}
+    return result
   else
   end
   local svn_root = SvnRoot()
   if (#svn_root > 0) then
-    local ___antifnl_rtn_1___ = {"svn", cwd_root}
-    return ___antifnl_rtn_1___
+    local result = {"svn", cwd_root}
+    return result
   else
   end
   local darcs_root = DarcsRoot()
   if (#darcs_root > 0) then
-    local ___antifnl_rtn_1___ = {"darcs", cwd_root}
-    return ___antifnl_rtn_1___
+    local result = {"darcs", cwd_root}
+    return result
   else
   end
   local bazaar_root = BazaarRoot()
   if (#bazaar_root > 0) then
-    local ___antifnl_rtn_1___ = {"bazaar", cwd_root}
-    return ___antifnl_rtn_1___
+    local result = {"bazaar", cwd_root}
+    return result
   else
   end
   local mercurial_root = MercurialRoot()
   if (#mercurial_root > 0) then
-    local ___antifnl_rtn_1___ = {"mercurial", cwd_root}
-    return ___antifnl_rtn_1___
+    local result = {"mercurial", cwd_root}
+    return result
   else
   end
   return {}
