@@ -5,7 +5,7 @@
 (fn starts-with [str start]
   (= (str:sub 1 (length start)) start))
 
-(set-forcibly! Get-emoji-for-commit
+(set-forcibly! GetEmojiForCommit
                (fn [commit-message]
                  (let [commit-message-lower (string.lower commit-message)]
                    (when (starts-with commit-message-lower :feat)
@@ -32,7 +32,7 @@
                      (lua "return \"🔨\""))
                    "")))
 
-(set-forcibly! Get-nvim-tree-file-path
+(set-forcibly! GetNvimTreeFilePath
                (fn []
                  (let [(use imported) (pcall require :nvim-tree.lib)]
                    (when use (local entry (imported.get_node_at_cursor))
@@ -40,7 +40,7 @@
                        (lua "return ___antifnl_rtn_1___")))
                    "")))
 
-(set-forcibly! Get-oil-file-path (fn []
+(set-forcibly! GetOilFilePath (fn []
                                    (let [(use imported) (pcall require :oil)]
                                      (when use
                                        (local entry (imported.get_cursor_entry))
@@ -52,42 +52,42 @@
                                            (lua "return ___antifnl_rtn_1___"))))
                                      "")))
 
-(set-forcibly! Show-message
+(set-forcibly! ShowMessage
                (fn [arg]
                  (let [(success notify) (pcall require :notify)]
                    (if success (notify arg) (print arg)))))
 
-(set-forcibly! Show-error
+(set-forcibly! ShowError
                (fn [arg]
                  (let [(success notify) (pcall require :notify)]
                    (if success (notify arg :error) (print arg)))))
 
-(set-forcibly! Mercurial-root
+(set-forcibly! MercurialRoot
                (fn []
                  (let [path (vim.fn.expand "%:p:h")]
                    (vim.fn.finddir :.hg (.. path ";")))))
 
-(set-forcibly! Bazaar-root
+(set-forcibly! BazaarRoot
                (fn []
                  (let [path (vim.fn.expand "%:p:h")]
                    (vim.fn.finddir :.bzr (.. path ";")))))
 
-(set-forcibly! Darcs-root
+(set-forcibly! DarcsRoot
                (fn []
                  (let [path (vim.fn.expand "%:p:h")]
                    (vim.fn.finddir :_darcs (.. path ";")))))
 
-(set-forcibly! Git-root
+(set-forcibly! GitRoot
                (fn []
                  (let [path (vim.fn.expand "%:p:h")]
                    (vim.fn.finddir :.git (.. path ";")))))
 
-(set-forcibly! Svn-root
+(set-forcibly! SvnRoot
                (fn []
                  (let [path (vim.fn.expand "%:p:h")]
                    (vim.fn.finddir :.svn (.. path ";")))))
 
-(set-forcibly! Vcs-name (fn []
+(set-forcibly! VcsName (fn []
                           (if (> (length (Git-root)) 0) :git
                               (> (length (Svn-root)) 0) :svn
                               (> (length (Darcs-root)) 0) :darcs
@@ -95,7 +95,7 @@
                               (> (length (Mercurial-root)) 0) :mercurial
                               "")))
 
-(set-forcibly! Vcs-name-path (fn []
+(set-forcibly! VcsNamePath (fn []
                                (let [cwd-root (vim.fn.getcwd)
                                      git-root (Git-root)]
                                  (when (> (length git-root) 0)
@@ -120,20 +120,20 @@
                                      (lua "return ___antifnl_rtn_1___")))
                                  {})))
 
-(set-forcibly! Vcs-branch-name (fn []
+(set-forcibly! VcsBranchName (fn []
                                  (let [vcs-name (Vcs-name)]
                                    (if (= vcs-name :git) (Vcs-git-branch-name)
                                        (do
                                          (Show-error )
                                          "")))))
 
-(set-forcibly! Vcs-git-branch-name
+(set-forcibly! VcsGitBranchName
                (fn []
                  (let [branch (. (vim.fn.systemlist "git branch") 1)
                        branch-split (. (vim.fn.split branch " ") 2)]
                    branch-split)))
 
-(set-forcibly! Vcs-commit
+(set-forcibly! VcsCommit
                (fn [...]
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :git)
@@ -159,7 +159,7 @@
                                             (select 2 ...) "\"")))
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-amend
+(set-forcibly! VcsAmend
                (fn [...]
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :git)
@@ -174,33 +174,33 @@
                                             commit-message "\"")))
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-diff
+(set-forcibly! VcsDiff
                (fn [...]
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :svn)
                        (vim.fn.system (.. "svn diff -r " (select 1 ...)))
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-open-line-url
+(set-forcibly! VcsOpenLineUrl
                (fn []
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :git) (Vcs-open-line-url-git)
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-next-hunk
+(set-forcibly! VcsNextHunk
                (fn []
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :git)
                        ((. (require :gitsigns) :next_hunk) {:navigation_message false})
                        (Show-error "VCS not supported")))))
-(set-forcibly! Vcs-prev-hunk
+(set-forcibly! VcsPrevHunk
                (fn []
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :git)
                        ((. (require :gitsigns) :prev_hunk) {:navigation_message false})
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-open-line-url-git
+(set-forcibly! VcsOpenLineUrlGit
                (fn []
                  (let [cmd "git config --get remote.origin.url"]
                    (Show-message cmd)
@@ -214,14 +214,14 @@
                               "#L" line))
                    (vim.ui.open url))))
 
-(set-forcibly! Vcs-open-url
+(set-forcibly! VcsOpenUrl
                (fn []
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :git) (Vcs-open-url-git)
                        (= vcs-name :svn) (Vcs-open-url-svn)
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-open-url-git
+(set-forcibly! VcsOpenUrlGit
                (fn []
                  (let [cmd "git config --get remote.origin.url"]
                    (Show-message cmd)
@@ -230,7 +230,7 @@
                    (local url (. split 1))
                    (vim.ui.open url))))
 
-(set-forcibly! Vcs-open-url-svn
+(set-forcibly! VcsOpenUrlSvn
                (fn []
                  (let [cmd "svn info --show-item repos-root-url"]
                    (Show-message cmd)
@@ -239,7 +239,7 @@
                    (local url (. split 1))
                    (vim.ui.open url))))
 
-(set-forcibly! Vcs-add-file (fn []
+(set-forcibly! VcsAddFile (fn []
                               (var full-name "")
                               (local filetype vim.bo.filetype)
                               (if (= filetype :oil)
@@ -263,7 +263,7 @@
                               (vim.fn.system cmd)
                               (Show-message cmd)))
 
-(set-forcibly! Vcs-add-files (fn [...]
+(set-forcibly! VcsAddFiles (fn [...]
                                (var cmd "")
                                (local vcs-name (Vcs-name))
                                (if (= vcs-name :git) (set cmd "git add *")
@@ -279,7 +279,7 @@
                                (vim.fn.system cmd)
                                (Show-message cmd)))
 
-(set-forcibly! Vcs-show-branches
+(set-forcibly! VcsShowBranches
                (fn []
                  (var cmd "")
                  (local vcs-name (Vcs-name))
@@ -290,7 +290,7 @@
                  (vim.fn.system cmd)
                  (Show-message cmd)))
 
-(set-forcibly! Vcs-rm-file (fn [...]
+(set-forcibly! VcsRmFile (fn [...]
                              (let [filepath (vim.fn.expand "%:p")]
                                (var cmd "")
                                (local vcs-name (Vcs-name))
@@ -308,13 +308,13 @@
                                (vim.fn.system cmd)
                                (Show-message cmd))))
 
-(set-forcibly! Vcs-blame-line
+(set-forcibly! VcsBlameLine
                (fn []
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :git) (Vcs-blame-line-git)
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-blame-line-git
+(set-forcibly! VcsBlameLineGit
                (fn []
                  (let [r (table.concat (vim.fn.systemlist (.. "git -C "
                                                               (vim.fn.shellescape (vim.fn.expand "%:p:h"))
@@ -323,36 +323,36 @@
                                        "\n")]
                    (Show-message r))))
 
-(set-forcibly! Vcs-blame-file
+(set-forcibly! VcsBlameFile
                (fn []
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :git) (Vcs-blame-file-git)
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-blame-file-git
+(set-forcibly! VcsBlameFileGit
                (fn []
                  (let [cmd "git blame "] (Show-message cmd) (vim.fn.system cmd))))
 
-(set-forcibly! Vcs-resolve
+(set-forcibly! VcsResolve
                (fn []
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :svn) (Vcs-resolve-svn)
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-resolve-svn
+(set-forcibly! VcsResolveSvn
                (fn []
                  (let [filepath (vim.fn.expand "%:p")
                        cmd (.. "svn resolve " filepath)]
                    (Show-message cmd)
                    (vim.fn.system cmd))))
 
-(set-forcibly! Vcs-log-file
+(set-forcibly! VcsLogFile
                (fn []
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :git) (Vcs-log-file-git)
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-log-file-git
+(set-forcibly! VcsLogFileGit
                (fn []
                  (let [file-path (vim.fn.expand "%:p")
                        cmd (.. "git log --pretty=oneline -- filename "
@@ -367,14 +367,14 @@
                    (vim.fn.setqflist list)
                    (vim.cmd "bel copen 10"))))
 
-(set-forcibly! Vcs-log-project
+(set-forcibly! VcsLogProject
                (fn []
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :git) (Vcs-log-project-git)
                        (= vcs-name :svn) (Vcs-log-project-svn)
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-log-project-git
+(set-forcibly! VcsLogProjectGit
                (fn []
                  (let [cmd "git log --pretty=oneline"]
                    (Show-message cmd)
@@ -387,7 +387,7 @@
                    (vim.fn.setqflist list)
                    (vim.cmd "bel copen 10"))))
 
-(set-forcibly! Vcs-log-project-svn
+(set-forcibly! VcsLogProjectSvn
                (fn []
                  (let [cmd "svn log"]
                    (Show-message cmd)
@@ -400,13 +400,13 @@
                    (vim.fn.setqflist list)
                    (vim.cmd "bel copen 10"))))
 
-(set-forcibly! Vcs-log-file-graph
+(set-forcibly! VcsLogFileGraph
                (fn []
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :git) (Vcs-log-file-graph-git)
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-log-file-graph-git
+(set-forcibly! VcsLogFileGraphGit
                (fn []
                  (let [file-path (vim.fn.expand "%:p")
                        cmd (.. "git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -- filename "
@@ -421,13 +421,13 @@
                    (vim.fn.setqflist list)
                    (vim.cmd "bel copen 10"))))
 
-(set-forcibly! Vcs-log-project-graph
+(set-forcibly! VcsLogProjectGraph
                (fn []
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :git) (Vcs-log-project-git-graph)
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-log-project-git-graph
+(set-forcibly! VcsLogProjectGitGraph
                (fn []
                  (let [cmd "git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"]
                    (Show-message cmd)
@@ -440,36 +440,36 @@
                    (vim.fn.setqflist list)
                    (vim.cmd "bel copen 10"))))
 
-(set-forcibly! Vcs-undo-last-commit
+(set-forcibly! VcsUndoLastCommit
                (fn []
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :git) (Vcs-undo-last-commit-git)
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-undo-last-commit-git
+(set-forcibly! VcsUndoLastCommitGit
                (fn []
                  (let [cmd "git reset --soft HEAD~1"] (Show-message cmd)
                    (vim.fn.system cmd))))
 
-(set-forcibly! Vcs-revert-last-commit
+(set-forcibly! VcsRevertLastCommit
                (fn []
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :git) (Vcs-revert-last-commit-git)
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-revert-last-commit-git
+(set-forcibly! VcsRevertLastCommitGit
                (fn []
                  (let [cmd "git revert HEAD"] (Show-message cmd)
                    (vim.fn.system cmd))))
 
-(set-forcibly! Vcs-status
+(set-forcibly! VcsStatus
                (fn []
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :git) (Vcs-status-git)
                        (= vcs-name :svn) (Vcs-status-svn)
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-status-git
+(set-forcibly! VcsStatusGit
                (fn []
                  (let [cmd "git status --porcelain"]
                    (Show-message cmd)
@@ -487,7 +487,7 @@
                    (vim.fn.setqflist list)
                    (vim.cmd "bel copen 10"))))
 
-(set-forcibly! Vcs-status-svn
+(set-forcibly! VcsStatusSvn
                (fn []
                  (let [cmd "svn status | awk '{print $1\" \"$2}'"]
                    (Show-message cmd)
@@ -502,7 +502,7 @@
                        (table.insert list dic)))
                    (vim.fn.setqflist list))))
 
-(set-forcibly! Get-local-file-changes-for-git
+(set-forcibly! GetLocalFileChangesForGit
                (fn []
                  (let [filename (vim.api.nvim_buf_get_name 0)
                        git-command (.. "git ls-files --error-unmatch "
@@ -531,7 +531,7 @@
                    (vim.api.nvim_command (.. "echo '" git-status-symbol "'"))
                    git-status-symbol)))
 
-(set-forcibly! Vcs-status-line
+(set-forcibly! VcsStatusLine
                (fn []
                  (let [vcs-name-path (Vcs-name-path)]
                    (when (vim.tbl_isempty vcs-name-path) (lua "return \"\""))
@@ -618,7 +618,7 @@
                        light-line-vcs-status-local light-line-vcs-status-behind
                        light-line-vcs-repository-conflits " " vcs-name-branch))))
 
-(set-forcibly! Vcs-git-conflict-marker
+(set-forcibly! VcsGitConflictMarker
                (fn []
                  (let [annotation "\\%([0-9A-Za-z_.:]+\\)\\?"
                        pattern (.. "^\\%(\\%(<\\{7} " annotation
@@ -626,45 +626,45 @@
                                    annotation "\\)\\)$")]
                    (vim.fn.search pattern :nw))))
 
-(set-forcibly! Vcs-update-send
+(set-forcibly! VcsUpdateSend
                (fn []
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :git) (Vcs-update-send-git)
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-update-send-git
+(set-forcibly! VcsUpdateSendGit
                (fn []
                  (let [cmd "git push"] (Show-message cmd) (vim.fn.system cmd))))
 
-(set-forcibly! Vcs-update-receive
+(set-forcibly! VcsUpdateReceive
                (fn []
                  (let [vcs-name (Vcs-name)]
                    (if (= vcs-name :git) (Vcs-update-receive-git)
                        (= vcs-name :svn) (Vcs-update-receive-svn)
                        (Show-error "VCS not supported")))))
 
-(set-forcibly! Vcs-update-receive-git
+(set-forcibly! VcsUpdateReceiveGit
                (fn []
                  (Show-message "First pull")
                  (let [cmd "git pull -p"] (Show-message cmd) (vim.fn.system cmd))
                  (Show-message "Second pull")
                  (let [cmd "git pull -p"] (Show-message cmd) (vim.fn.system cmd))))
 
-(set-forcibly! Vcs-update-receive-svn
+(set-forcibly! VcsUpdateReceiveSvn
                (fn []
                  (let [cmd "svn update"] (Show-message cmd) (vim.fn.system cmd))))
 
-(set-forcibly! Vcs-reload (fn [] (Vcs-update-receive) (Vcs-update-send)))
+(set-forcibly! VcsReload (fn [] (Vcs-update-receive) (Vcs-update-send)))
 
-(set-forcibly! Vcs-hunk-diff
+(set-forcibly! VcsHunkDiff
                (fn []
                  ((. (require :gitsigns) :preview_hunk))))
 
-(set-forcibly! Vcs-hunk-undo
+(set-forcibly! VcsHunkUndo
                (fn []
                  ((. (require :gitsigns) :reset_hunk))))
 
-(set-forcibly! Vcs-help
+(set-forcibly! VcsHelp
                (fn [] (print "VCS Help:") (print "- <leader>v  - this help")
                  (print "- <leader>va - add file")
                  (print "- <leader>vA - add all files")

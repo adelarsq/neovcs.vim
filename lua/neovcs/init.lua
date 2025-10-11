@@ -55,7 +55,7 @@ local function _2_(commit_message)
   end
   return ""
 end
-__fnl_global__Get_2demoji_2dfor_2dcommit = _2_
+GetEmojiForCommit = _2_
 local function _14_()
   local use, imported = pcall(require, "nvim-tree.lib")
   if use then
@@ -66,7 +66,7 @@ local function _14_()
   end
   return ""
 end
-__fnl_global__Get_2dnvim_2dtree_2dfile_2dpath = _14_
+GetNvimTreeFilePath = _14_
 local function _16_()
   local use, imported = pcall(require, "oil")
   if use then
@@ -83,7 +83,7 @@ local function _16_()
   end
   return ""
 end
-__fnl_global__Get_2doil_2dfile_2dpath = _16_
+GetOilFilePath = _16_
 local function _19_(arg)
   local success, notify = pcall(require, "notify")
   if success then
@@ -92,7 +92,7 @@ local function _19_(arg)
     return print(arg)
   end
 end
-__fnl_global__Show_2dmessage = _19_
+ShowMessage = _19_
 local function _21_(arg)
   local success, notify = pcall(require, "notify")
   if success then
@@ -101,32 +101,32 @@ local function _21_(arg)
     return print(arg)
   end
 end
-__fnl_global__Show_2derror = _21_
+ShowError = _21_
 local function _23_()
   local path = vim.fn.expand("%:p:h")
   return vim.fn.finddir(".hg", (path .. ";"))
 end
-__fnl_global__Mercurial_2droot = _23_
+MercurialRoot = _23_
 local function _24_()
   local path = vim.fn.expand("%:p:h")
   return vim.fn.finddir(".bzr", (path .. ";"))
 end
-__fnl_global__Bazaar_2droot = _24_
+BazaarRoot = _24_
 local function _25_()
   local path = vim.fn.expand("%:p:h")
   return vim.fn.finddir("_darcs", (path .. ";"))
 end
-__fnl_global__Darcs_2droot = _25_
+DarcsRoot = _25_
 local function _26_()
   local path = vim.fn.expand("%:p:h")
   return vim.fn.finddir(".git", (path .. ";"))
 end
-__fnl_global__Git_2droot = _26_
+GitRoot = _26_
 local function _27_()
   local path = vim.fn.expand("%:p:h")
   return vim.fn.finddir(".svn", (path .. ";"))
 end
-__fnl_global__Svn_2droot = _27_
+SvnRoot = _27_
 local function _28_()
   if (#__fnl_global__Git_2droot() > 0) then
     return "git"
@@ -142,7 +142,7 @@ local function _28_()
     return ""
   end
 end
-__fnl_global__Vcs_2dname = _28_
+VcsName = _28_
 local function _30_()
   local cwd_root = vim.fn.getcwd()
   local git_root = __fnl_global__Git_2droot()
@@ -177,7 +177,7 @@ local function _30_()
   end
   return {}
 end
-__fnl_global__Vcs_2dname_2dpath = _30_
+VcsNamePath = _30_
 local function _36_()
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -187,13 +187,13 @@ local function _36_()
     return ""
   end
 end
-__fnl_global__Vcs_2dbranch_2dname = _36_
+VcsBranchName = _36_
 local function _38_()
   local branch = vim.fn.systemlist("git branch")[1]
   local branch_split = vim.fn.split(branch, " ")[2]
   return branch_split
 end
-__fnl_global__Vcs_2dgit_2dbranch_2dname = _38_
+VcsGitBranchName = _38_
 local function _39_(...)
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -220,7 +220,7 @@ local function _39_(...)
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2dcommit = _39_
+VcsCommit = _39_
 local function _44_(...)
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -235,7 +235,7 @@ local function _44_(...)
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2damend = _44_
+VcsAmend = _44_
 local function _47_(...)
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "svn") then
@@ -244,7 +244,7 @@ local function _47_(...)
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2ddiff = _47_
+VcsDiff = _47_
 local function _49_()
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -253,7 +253,7 @@ local function _49_()
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2dopen_2dline_2durl = _49_
+VcsOpenLineUrl = _49_
 local function _51_()
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -262,7 +262,7 @@ local function _51_()
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2dnext_2dhunk = _51_
+VcsNextHunk = _51_
 local function _53_()
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -271,7 +271,7 @@ local function _53_()
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2dprev_2dhunk = _53_
+VcsPrevHunk = _53_
 local function _55_()
   local cmd = "git config --get remote.origin.url"
   __fnl_global__Show_2dmessage(cmd)
@@ -283,7 +283,7 @@ local function _55_()
   local url = (split[1] .. "/blob/" .. branch .. "/" .. relative_file_path .. "#L" .. line)
   return vim.ui.open(url)
 end
-__fnl_global__Vcs_2dopen_2dline_2durl_2dgit = _55_
+VcsOpenLineUrlGit = _55_
 local function _56_()
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -294,7 +294,7 @@ local function _56_()
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2dopen_2durl = _56_
+VcsOpenUrl = _56_
 local function _58_()
   local cmd = "git config --get remote.origin.url"
   __fnl_global__Show_2dmessage(cmd)
@@ -303,7 +303,7 @@ local function _58_()
   local url = split[1]
   return vim.ui.open(url)
 end
-__fnl_global__Vcs_2dopen_2durl_2dgit = _58_
+VcsOpenUrlGit = _58_
 local function _59_()
   local cmd = "svn info --show-item repos-root-url"
   __fnl_global__Show_2dmessage(cmd)
@@ -312,7 +312,7 @@ local function _59_()
   local url = split[1]
   return vim.ui.open(url)
 end
-__fnl_global__Vcs_2dopen_2durl_2dsvn = _59_
+VcsOpenUrlSvn = _59_
 local function _60_()
   local full_name = ""
   local filetype = vim.bo.filetype
@@ -340,7 +340,7 @@ local function _60_()
   vim.fn.system(cmd)
   return __fnl_global__Show_2dmessage(cmd)
 end
-__fnl_global__Vcs_2dadd_2dfile = _60_
+VcsAddFile = _60_
 local function _64_(...)
   local cmd = ""
   local vcs_name = __fnl_global__Vcs_2dname()
@@ -359,7 +359,7 @@ local function _64_(...)
   vim.fn.system(cmd)
   return __fnl_global__Show_2dmessage(cmd)
 end
-__fnl_global__Vcs_2dadd_2dfiles = _64_
+VcsAddFiles = _64_
 local function _67_()
   local cmd = ""
   local vcs_name = __fnl_global__Vcs_2dname()
@@ -372,7 +372,7 @@ local function _67_()
   vim.fn.system(cmd)
   return __fnl_global__Show_2dmessage(cmd)
 end
-__fnl_global__Vcs_2dshow_2dbranches = _67_
+VcsShowBranches = _67_
 local function _69_(...)
   local filepath = vim.fn.expand("%:p")
   local cmd = ""
@@ -392,7 +392,7 @@ local function _69_(...)
   vim.fn.system(cmd)
   return __fnl_global__Show_2dmessage(cmd)
 end
-__fnl_global__Vcs_2drm_2dfile = _69_
+VcsRmFile = _69_
 local function _72_()
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -401,12 +401,12 @@ local function _72_()
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2dblame_2dline = _72_
+VcsBlameLine = _72_
 local function _74_()
   local r = table.concat(vim.fn.systemlist(("git -C " .. vim.fn.shellescape(vim.fn.expand("%:p:h")) .. " blame -L <line1>,<line2> " .. vim.fn.expand("%:t"))), "\n")
   return __fnl_global__Show_2dmessage(r)
 end
-__fnl_global__Vcs_2dblame_2dline_2dgit = _74_
+VcsBlameLineGit = _74_
 local function _75_()
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -415,13 +415,13 @@ local function _75_()
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2dblame_2dfile = _75_
+VcsBlameFile = _75_
 local function _77_()
   local cmd = "git blame "
   __fnl_global__Show_2dmessage(cmd)
   return vim.fn.system(cmd)
 end
-__fnl_global__Vcs_2dblame_2dfile_2dgit = _77_
+VcsBlameFileGit = _77_
 local function _78_()
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "svn") then
@@ -430,14 +430,14 @@ local function _78_()
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2dresolve = _78_
+VcsResolve = _78_
 local function _80_()
   local filepath = vim.fn.expand("%:p")
   local cmd = ("svn resolve " .. filepath)
   __fnl_global__Show_2dmessage(cmd)
   return vim.fn.system(cmd)
 end
-__fnl_global__Vcs_2dresolve_2dsvn = _80_
+VcsResolveSvn = _80_
 local function _81_()
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -446,7 +446,7 @@ local function _81_()
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2dlog_2dfile = _81_
+VcsLogFile = _81_
 local function _83_()
   local file_path = vim.fn.expand("%:p")
   local cmd = ("git log --pretty=oneline -- filename " .. file_path)
@@ -461,7 +461,7 @@ local function _83_()
   vim.fn.setqflist(list)
   return vim.cmd("bel copen 10")
 end
-__fnl_global__Vcs_2dlog_2dfile_2dgit = _83_
+VcsLogFileGit = _83_
 local function _84_()
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -472,7 +472,7 @@ local function _84_()
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2dlog_2dproject = _84_
+VcsLogProject = _84_
 local function _86_()
   local cmd = "git log --pretty=oneline"
   __fnl_global__Show_2dmessage(cmd)
@@ -486,7 +486,7 @@ local function _86_()
   vim.fn.setqflist(list)
   return vim.cmd("bel copen 10")
 end
-__fnl_global__Vcs_2dlog_2dproject_2dgit = _86_
+VcsLogProjectGit = _86_
 local function _87_()
   local cmd = "svn log"
   __fnl_global__Show_2dmessage(cmd)
@@ -500,7 +500,7 @@ local function _87_()
   vim.fn.setqflist(list)
   return vim.cmd("bel copen 10")
 end
-__fnl_global__Vcs_2dlog_2dproject_2dsvn = _87_
+VcsLogProjectSvn = _87_
 local function _88_()
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -509,7 +509,7 @@ local function _88_()
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2dlog_2dfile_2dgraph = _88_
+VcsLogFileGraph = _88_
 local function _90_()
   local file_path = vim.fn.expand("%:p")
   local cmd = ("git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -- filename " .. file_path)
@@ -524,7 +524,7 @@ local function _90_()
   vim.fn.setqflist(list)
   return vim.cmd("bel copen 10")
 end
-__fnl_global__Vcs_2dlog_2dfile_2dgraph_2dgit = _90_
+VcsLogFileGraphGit = _90_
 local function _91_()
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -533,7 +533,7 @@ local function _91_()
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2dlog_2dproject_2dgraph = _91_
+VcsLogProjectGraph = _91_
 local function _93_()
   local cmd = "git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
   __fnl_global__Show_2dmessage(cmd)
@@ -547,7 +547,7 @@ local function _93_()
   vim.fn.setqflist(list)
   return vim.cmd("bel copen 10")
 end
-__fnl_global__Vcs_2dlog_2dproject_2dgit_2dgraph = _93_
+VcsLogProjectGitGraph = _93_
 local function _94_()
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -556,13 +556,13 @@ local function _94_()
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2dundo_2dlast_2dcommit = _94_
+VcsUndoLastCommit = _94_
 local function _96_()
   local cmd = "git reset --soft HEAD~1"
   __fnl_global__Show_2dmessage(cmd)
   return vim.fn.system(cmd)
 end
-__fnl_global__Vcs_2dundo_2dlast_2dcommit_2dgit = _96_
+VcsUndoLastCommitGit = _96_
 local function _97_()
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -571,13 +571,13 @@ local function _97_()
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2drevert_2dlast_2dcommit = _97_
+VcsRevertLastCommit = _97_
 local function _99_()
   local cmd = "git revert HEAD"
   __fnl_global__Show_2dmessage(cmd)
   return vim.fn.system(cmd)
 end
-__fnl_global__Vcs_2drevert_2dlast_2dcommit_2dgit = _99_
+VcsRevertLastCommitGit = _99_
 local function _100_()
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -588,7 +588,7 @@ local function _100_()
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2dstatus = _100_
+VcsStatus = _100_
 local function _102_()
   local cmd = "git status --porcelain"
   __fnl_global__Show_2dmessage(cmd)
@@ -611,7 +611,7 @@ local function _102_()
   vim.fn.setqflist(list)
   return vim.cmd("bel copen 10")
 end
-__fnl_global__Vcs_2dstatus_2dgit = _102_
+VcsStatusGit = _102_
 local function _104_()
   local cmd = "svn status | awk '{print $1\" \"$2}'"
   __fnl_global__Show_2dmessage(cmd)
@@ -630,7 +630,7 @@ local function _104_()
   end
   return vim.fn.setqflist(list)
 end
-__fnl_global__Vcs_2dstatus_2dsvn = _104_
+VcsStatusSvn = _104_
 local function _106_()
   local filename = vim.api.nvim_buf_get_name(0)
   local git_command = ("git ls-files --error-unmatch " .. vim.fn.shellescape(filename))
@@ -662,7 +662,7 @@ local function _106_()
   vim.api.nvim_command(("echo '" .. git_status_symbol .. "'"))
   return git_status_symbol
 end
-__fnl_global__Get_2dlocal_2dfile_2dchanges_2dfor_2dgit = _106_
+GetLocalFileChangesForGit = _106_
 local function _110_()
   local vcs_name_path = __fnl_global__Vcs_2dname_2dpath()
   if vim.tbl_isempty(vcs_name_path) then
@@ -748,13 +748,13 @@ local function _110_()
   end
   return (mark_vcs .. " " .. hunkline .. light_line_vcs_conflits .. " " .. light_line_vcs_status_local .. light_line_vcs_status_behind .. light_line_vcs_repository_conflits .. " " .. vcs_name_branch)
 end
-__fnl_global__Vcs_2dstatus_2dline = _110_
+VcsStatusLine = _110_
 local function _122_()
   local annotation = "\\%([0-9A-Za-z_.:]+\\)\\?"
   local pattern = ("^\\%(\\%(<\\{7} " .. annotation .. "\\)\\|\\%(=\\{7\\}\\)\\|\\%(>\\{7\\} " .. annotation .. "\\)\\)$")
   return vim.fn.search(pattern, "nw")
 end
-__fnl_global__Vcs_2dgit_2dconflict_2dmarker = _122_
+VcsGitConflictMarker = _122_
 local function _123_()
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -763,13 +763,13 @@ local function _123_()
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2dupdate_2dsend = _123_
+VcsUpdateSend = _123_
 local function _125_()
   local cmd = "git push"
   __fnl_global__Show_2dmessage(cmd)
   return vim.fn.system(cmd)
 end
-__fnl_global__Vcs_2dupdate_2dsend_2dgit = _125_
+VcsUpdateSendGit = _125_
 local function _126_()
   local vcs_name = __fnl_global__Vcs_2dname()
   if (vcs_name == "git") then
@@ -780,7 +780,7 @@ local function _126_()
     return __fnl_global__Show_2derror("VCS not supported")
   end
 end
-__fnl_global__Vcs_2dupdate_2dreceive = _126_
+VcsUpdateReceive = _126_
 local function _128_()
   __fnl_global__Show_2dmessage("First pull")
   do
@@ -793,26 +793,26 @@ local function _128_()
   __fnl_global__Show_2dmessage(cmd)
   return vim.fn.system(cmd)
 end
-__fnl_global__Vcs_2dupdate_2dreceive_2dgit = _128_
+VcsUpdateReceiveGit = _128_
 local function _129_()
   local cmd = "svn update"
   __fnl_global__Show_2dmessage(cmd)
   return vim.fn.system(cmd)
 end
-__fnl_global__Vcs_2dupdate_2dreceive_2dsvn = _129_
+VcsUpdateReceiveSvn = _129_
 local function _130_()
   __fnl_global__Vcs_2dupdate_2dreceive()
   return __fnl_global__Vcs_2dupdate_2dsend()
 end
-__fnl_global__Vcs_2dreload = _130_
+VcsReload = _130_
 local function _131_()
   return require("gitsigns").preview_hunk()
 end
-__fnl_global__Vcs_2dhunk_2ddiff = _131_
+VcsHunkDiff = _131_
 local function _132_()
   return require("gitsigns").reset_hunk()
 end
-__fnl_global__Vcs_2dhunk_2dundo = _132_
+VcsHunkUndo = _132_
 local function _133_()
   print("VCS Help:")
   print("- <leader>v  - this help")
@@ -841,7 +841,7 @@ local function _133_()
   print("- <leader>vx - remove file")
   return print("- <leader>vX - revert last commit")
 end
-__fnl_global__Vcs_2dhelp = _133_
+VcsHelp = _133_
 M.setup = function()
   vim.api.nvim_set_keymap("n", "<leader>v", ":lua VcsHelp()<CR>", {silent = true})
   vim.api.nvim_set_keymap("n", "<leader>va", ":lua VcsAddFile(\"\")<left><left>", {})
