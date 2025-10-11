@@ -645,7 +645,10 @@
 
 (set-forcibly! Vcs-update-receive-git
                (fn []
-                 (let [cmd "git pull"] (Show-message cmd) (vim.fn.system cmd))))
+                 (Show-message "First pull")
+                 (let [cmd "git pull -p"] (Show-message cmd) (vim.fn.system cmd))
+                 (Show-message "Second pull")
+                 (let [cmd "git pull -p"] (Show-message cmd) (vim.fn.system cmd))))
 
 (set-forcibly! Vcs-update-receive-svn
                (fn []
