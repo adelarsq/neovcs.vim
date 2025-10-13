@@ -122,7 +122,7 @@
 
 (set M.VcsBranchName (fn []
                                  (let [vcs-name (M.VcsName)]
-                                   (if (= vcs-name :git) (VcsGitBranchName)
+                                   (if (= vcs-name :git) (M.VcsGitBranchName)
                                        (do
                                          (M.ShowError )
                                          "")))))
@@ -184,7 +184,7 @@
 (set M.VcsOpenLineUrl
                (fn []
                  (let [vcs-name (M.VcsName)]
-                   (if (= vcs-name :git) (VcsOpenLineUrlGit)
+                   (if (= vcs-name :git) (M.VcsOpenLineUrlGit)
                        (M.ShowError "VCS not supported")))))
 
 (set M.VcsNextHunk
@@ -206,7 +206,7 @@
                    (M.ShowMessage cmd)
                    (local result (vim.fn.system cmd))
                    (local split (vim.split result "\n"))
-                   (local branch (VcsGitBranchName))
+                   (local branch (M.VcsGitBranchName))
                    (local relative-file-path (vim.fn.expand "%:t"))
                    (local line (vim.fn.line "."))
                    (local url
@@ -217,8 +217,8 @@
 (set M.VcsOpenUrl
                (fn []
                  (let [vcs-name (M.VcsName)]
-                   (if (= vcs-name :git) (VcsOpenUrlGit)
-                       (= vcs-name :svn) (VcsOpenUrlSvn)
+                   (if (= vcs-name :git) (M.VcsOpenUrlGit)
+                       (= vcs-name :svn) (M.VcsOpenUrlSvn)
                        (M.ShowError "VCS not supported")))))
 
 (set M.VcsOpenUrlGit
@@ -311,7 +311,7 @@
 (set M.VcsBlameLine
                (fn []
                  (let [vcs-name (M.VcsName)]
-                   (if (= vcs-name :git) (VcsBlameLineGit)
+                   (if (= vcs-name :git) (M.VcsBlameLineGit)
                        (M.ShowError "VCS not supported")))))
 
 (set M.VcsBlameLineGit
@@ -326,7 +326,7 @@
 (set M.VcsBlameFile
                (fn []
                  (let [vcs-name (M.VcsName)]
-                   (if (= vcs-name :git) (VcsBlameFileGit)
+                   (if (= vcs-name :git) (M.VcsBlameFileGit)
                        (M.ShowError "VCS not supported")))))
 
 (set M.VcsBlameFileGit
@@ -336,7 +336,7 @@
 (set M.VcsResolve
                (fn []
                  (let [vcs-name (M.VcsName)]
-                   (if (= vcs-name :svn) (VcsResolveSvn)
+                   (if (= vcs-name :svn) (M.VcsResolveSvn)
                        (M.ShowError "VCS not supported")))))
 
 (set M.VcsResolveSvn
@@ -349,7 +349,7 @@
 (set M.VcsLogFile
                (fn []
                  (let [vcs-name (M.VcsName)]
-                   (if (= vcs-name :git) (VcsLogFileGit)
+                   (if (= vcs-name :git) (M.VcsLogFileGit)
                        (M.ShowError "VCS not supported")))))
 
 (set M.VcsLogFileGit
@@ -370,8 +370,8 @@
 (set M.VcsLogProject
                (fn []
                  (let [vcs-name (M.VcsName)]
-                   (if (= vcs-name :git) (VcsLogProjectGit)
-                       (= vcs-name :svn) (VcsLogProjectSvn)
+                   (if (= vcs-name :git) (M.VcsLogProjectGit)
+                       (= vcs-name :svn) (M.VcsLogProjectSvn)
                        (M.ShowError "VCS not supported")))))
 
 (set M.VcsLogProjectGit
@@ -403,7 +403,7 @@
 (set M.VcsLogFileGraph
                (fn []
                  (let [vcs-name (M.VcsName)]
-                   (if (= vcs-name :git) (VcsLogFileGraphGit)
+                   (if (= vcs-name :git) (M.VcsLogFileGraphGit)
                        (M.ShowError "VCS not supported")))))
 
 (set M.VcsLogFileGraphGit
@@ -424,7 +424,7 @@
 (set M.VcsLogProjectGraph
                (fn []
                  (let [vcs-name (M.VcsName)]
-                   (if (= vcs-name :git) (VcsLogProjectGitGraph)
+                   (if (= vcs-name :git) (M.VcsLogProjectGitGraph)
                        (M.ShowError "VCS not supported")))))
 
 (set M.VcsLogProjectGitGraph
@@ -443,7 +443,7 @@
 (set M.VcsUndoLastCommit
                (fn []
                  (let [vcs-name (M.VcsName)]
-                   (if (= vcs-name :git) (VcsUndoLastCommitGit)
+                   (if (= vcs-name :git) (M.VcsUndoLastCommitGit)
                        (M.ShowError "VCS not supported")))))
 
 (set M.VcsUndoLastCommitGit
@@ -454,7 +454,7 @@
 (set M.VcsRevertLastCommit
                (fn []
                  (let [vcs-name (M.VcsName)]
-                   (if (= vcs-name :git) (VcsRevertLastCommitGit)
+                   (if (= vcs-name :git) (M.VcsRevertLastCommitGit)
                        (M.ShowError "VCS not supported")))))
 
 (set M.VcsRevertLastCommitGit
@@ -465,8 +465,8 @@
 (set M.VcsStatus
                (fn []
                  (let [vcs-name (M.VcsName)]
-                   (if (= vcs-name :git) (VcsStatusGit)
-                       (= vcs-name :svn) (VcsStatusSvn)
+                   (if (= vcs-name :git) (M.VcsStatusGit)
+                       (= vcs-name :svn) (M.VcsStatusSvn)
                        (M.ShowError "VCS not supported")))))
 
 (set M.VcsStatusGit
@@ -533,7 +533,7 @@
 
 (set M.VcsStatusLine
                (fn []
-                 (let [vcs-name-path (VcsNamePath)]
+                 (let [vcs-name-path (M.VcsNamePath)]
                    (when (vim.tbl_isempty vcs-name-path) (lua "return \"\""))
                    (local vcs-name (. vcs-name-path 1))
                    (local root-dir (. vcs-name-path 2))
@@ -543,7 +543,7 @@
                    (var light-line-vcs-conflits "")
                    (if (= vcs-name :git)
                        (set light-line-vcs-conflits
-                            (.. mark-conflits (VcsGitConflictMarker)))
+                            (.. mark-conflits (M.VcsGitConflictMarker)))
                        (set light-line-vcs-conflits (.. mark-conflits :0)))
                    (local mark-local "↑")
                    (var light-line-vcs-status-local "")
@@ -605,7 +605,7 @@
                        (do
                          (if (= vcs-name :git)
                              (set vcs-name-branch
-                                  (.. vcs-name " " (VcsGitBranchName)))
+                                  (.. vcs-name " " (M.VcsGitBranchName)))
                              (= vcs-name :svn)
                              (let [cmds (.. cd-root-dir
                                             "; svn info | grep '^URL:' | egrep -o '(tags|branches)/[^/]+|trunk' | egrep -o '[^/]+$' ")]
@@ -629,7 +629,7 @@
 (set M.VcsUpdateSend
                (fn []
                  (let [vcs-name (M.VcsName)]
-                   (if (= vcs-name :git) (VcsUpdateSendGit)
+                   (if (= vcs-name :git) (M.VcsUpdateSendGit)
                        (M.ShowError "VCS not supported")))))
 
 (set M.VcsUpdateSendGit
@@ -639,8 +639,8 @@
 (set M.VcsUpdateReceive
                (fn []
                  (let [vcs-name (M.VcsName)]
-                   (if (= vcs-name :git) (VcsUpdateReceiveGit)
-                       (= vcs-name :svn) (VcsUpdateReceiveSvn)
+                   (if (= vcs-name :git) (M.VcsUpdateReceiveGit)
+                       (= vcs-name :svn) (M.VcsUpdateReceiveSvn)
                        (M.ShowError "VCS not supported")))))
 
 (set M.VcsUpdateReceiveGit
@@ -654,7 +654,7 @@
                (fn []
                  (let [cmd "svn update"] (M.ShowMessage cmd) (vim.fn.system cmd))))
 
-(set M.VcsReload (fn [] (VcsUpdateReceive) (VcsUpdateSend)))
+(set M.VcsReload (fn [] (M.VcsUpdateReceive) (M.VcsUpdateSend)))
 
 (set M.VcsHunkDiff
                (fn []

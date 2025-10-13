@@ -181,7 +181,7 @@ M.VcsNamePath = _30_
 local function _36_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
-    return VcsGitBranchName()
+    return M.VcsGitBranchName()
   else
     M.ShowError()
     return ""
@@ -248,7 +248,7 @@ M.VcsDiff = _47_
 local function _49_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
-    return VcsOpenLineUrlGit()
+    return M.VcsOpenLineUrlGit()
   else
     return M.ShowError("VCS not supported")
   end
@@ -277,7 +277,7 @@ local function _55_()
   M.ShowMessage(cmd)
   local result = vim.fn.system(cmd)
   local split = vim.split(result, "\n")
-  local branch = VcsGitBranchName()
+  local branch = M.VcsGitBranchName()
   local relative_file_path = vim.fn.expand("%:t")
   local line = vim.fn.line(".")
   local url = (split[1] .. "/blob/" .. branch .. "/" .. relative_file_path .. "#L" .. line)
@@ -287,9 +287,9 @@ M.VcsOpenLineUrlGit = _55_
 local function _56_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
-    return VcsOpenUrlGit()
+    return M.VcsOpenUrlGit()
   elseif (vcs_name == "svn") then
-    return VcsOpenUrlSvn()
+    return M.VcsOpenUrlSvn()
   else
     return M.ShowError("VCS not supported")
   end
@@ -396,7 +396,7 @@ M.VcsRmFile = _69_
 local function _72_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
-    return VcsBlameLineGit()
+    return M.VcsBlameLineGit()
   else
     return M.ShowError("VCS not supported")
   end
@@ -410,7 +410,7 @@ M.VcsBlameLineGit = _74_
 local function _75_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
-    return VcsBlameFileGit()
+    return M.VcsBlameFileGit()
   else
     return M.ShowError("VCS not supported")
   end
@@ -425,7 +425,7 @@ M.VcsBlameFileGit = _77_
 local function _78_()
   local vcs_name = M.VcsName()
   if (vcs_name == "svn") then
-    return VcsResolveSvn()
+    return M.VcsResolveSvn()
   else
     return M.ShowError("VCS not supported")
   end
@@ -441,7 +441,7 @@ M.VcsResolveSvn = _80_
 local function _81_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
-    return VcsLogFileGit()
+    return M.VcsLogFileGit()
   else
     return M.ShowError("VCS not supported")
   end
@@ -465,9 +465,9 @@ M.VcsLogFileGit = _83_
 local function _84_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
-    return VcsLogProjectGit()
+    return M.VcsLogProjectGit()
   elseif (vcs_name == "svn") then
-    return VcsLogProjectSvn()
+    return M.VcsLogProjectSvn()
   else
     return M.ShowError("VCS not supported")
   end
@@ -504,7 +504,7 @@ M.VcsLogProjectSvn = _87_
 local function _88_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
-    return VcsLogFileGraphGit()
+    return M.VcsLogFileGraphGit()
   else
     return M.ShowError("VCS not supported")
   end
@@ -528,7 +528,7 @@ M.VcsLogFileGraphGit = _90_
 local function _91_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
-    return VcsLogProjectGitGraph()
+    return M.VcsLogProjectGitGraph()
   else
     return M.ShowError("VCS not supported")
   end
@@ -551,7 +551,7 @@ M.VcsLogProjectGitGraph = _93_
 local function _94_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
-    return VcsUndoLastCommitGit()
+    return M.VcsUndoLastCommitGit()
   else
     return M.ShowError("VCS not supported")
   end
@@ -566,7 +566,7 @@ M.VcsUndoLastCommitGit = _96_
 local function _97_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
-    return VcsRevertLastCommitGit()
+    return M.VcsRevertLastCommitGit()
   else
     return M.ShowError("VCS not supported")
   end
@@ -581,9 +581,9 @@ M.VcsRevertLastCommitGit = _99_
 local function _100_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
-    return VcsStatusGit()
+    return M.VcsStatusGit()
   elseif (vcs_name == "svn") then
-    return VcsStatusSvn()
+    return M.VcsStatusSvn()
   else
     return M.ShowError("VCS not supported")
   end
@@ -664,7 +664,7 @@ local function _106_()
 end
 M.GetLocalFileChangesForGit = _106_
 local function _110_()
-  local vcs_name_path = VcsNamePath()
+  local vcs_name_path = M.VcsNamePath()
   if vim.tbl_isempty(vcs_name_path) then
     return ""
   else
@@ -676,7 +676,7 @@ local function _110_()
   local mark_conflits = "\226\137\160"
   local light_line_vcs_conflits = ""
   if (vcs_name == "git") then
-    light_line_vcs_conflits = (mark_conflits .. VcsGitConflictMarker())
+    light_line_vcs_conflits = (mark_conflits .. M.VcsGitConflictMarker())
   else
     light_line_vcs_conflits = (mark_conflits .. "0")
   end
@@ -736,7 +736,7 @@ local function _110_()
   local vcs_name_branch = ""
   if not vim.b.vcs_name_branch then
     if (vcs_name == "git") then
-      vcs_name_branch = (vcs_name .. " " .. VcsGitBranchName())
+      vcs_name_branch = (vcs_name .. " " .. M.VcsGitBranchName())
     elseif (vcs_name == "svn") then
       local cmds = (cd_root_dir .. "; svn info | grep '^URL:' | egrep -o '(tags|branches)/[^/]+|trunk' | egrep -o '[^/]+$' ")
       vcs_name_branch = (vcs_name .. " " .. vim.fn.systemlist(cmds)[1])
@@ -758,7 +758,7 @@ M.VcsGitConflictMarker = _122_
 local function _123_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
-    return VcsUpdateSendGit()
+    return M.VcsUpdateSendGit()
   else
     return M.ShowError("VCS not supported")
   end
@@ -773,9 +773,9 @@ M.VcsUpdateSendGit = _125_
 local function _126_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
-    return VcsUpdateReceiveGit()
+    return M.VcsUpdateReceiveGit()
   elseif (vcs_name == "svn") then
-    return VcsUpdateReceiveSvn()
+    return M.VcsUpdateReceiveSvn()
   else
     return M.ShowError("VCS not supported")
   end
@@ -801,8 +801,8 @@ local function _129_()
 end
 M.VcsUpdateReceiveSvn = _129_
 local function _130_()
-  VcsUpdateReceive()
-  return VcsUpdateSend()
+  M.VcsUpdateReceive()
+  return M.VcsUpdateSend()
 end
 M.VcsReload = _130_
 local function _131_()
