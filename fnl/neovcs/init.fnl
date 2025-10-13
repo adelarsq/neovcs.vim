@@ -703,7 +703,7 @@
   (vim.api.nvim_set_keymap :n :<leader>vB ":lua require('neovcs').VcsBlameFile()<CR>"
                            {:silent true})
   (vim.api.nvim_set_keymap :n :<leader>vc
-                            ":lua VcsCommit(\"\",\"\")<left><left><left><left><left>"
+                            ":lua require('neovcs').VcsCommit(\"\",\"\")<left><left><left><left><left>"
                             {})
   (vim.api.nvim_set_keymap :n :<leader>vC
                            ":lua require('neovcs').VcsAmend(\"\")<left><left><left>" {})
