@@ -317,14 +317,14 @@ local function _60_()
   local full_name = ""
   local filetype = vim.bo.filetype
   if (filetype == "oil") then
-    full_name = GetOilFilePath()
+    full_name = get_oil_file_path()
   elseif (filetype == "NvimTree") then
-    full_name = GetNvimTreeFilePath()
+    full_name = get_nvim_tree_file_path()
   else
     full_name = vim.fn.expand("%:p")
   end
   local cmd = ""
-  local vcs_name = VcsName()
+  local vcs_name = M.VcsName()
   if (vcs_name == "git") then
     cmd = ("git add " .. full_name)
   elseif (vcs_name == "svn") then
