@@ -482,7 +482,7 @@
                             :text (. (vim.split trimmed "\n") 1)})))
         (if (> (length list) 0)
             (do (vim.fn.setqflist list) (vim.cmd "bel copen 10"))
-            (do (M.ShowMessage "no changes") (lua "return \"\""))))))
+            (do (M.ShowMessage "no changes") nil)))))
 
 (set M.VcsStatusSvn
                (fn []

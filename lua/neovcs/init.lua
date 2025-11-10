@@ -1,3 +1,4 @@
+-- [nfnl] fnl/neovcs/init.fnl
 if vim.g.loaded_neovcs then
   return 
 else
@@ -605,7 +606,6 @@ local function _102_()
     return vim.cmd("bel copen 10")
   else
     M.ShowMessage("no changes")
-    return ""
     return nil
   end
 end
