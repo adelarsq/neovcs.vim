@@ -1,4 +1,3 @@
--- [nfnl] fnl/neovcs/init.fnl
 if vim.g.loaded_neovcs then
   return 
 else
@@ -592,27 +591,26 @@ M.VcsStatus = _100_
 local function _102_()
   local cmd = "git status --porcelain"
   M.ShowMessage(cmd)
-  local flist = vim.fn.system(cmd)
-  flist = vim.split(flist, "\n")
+  local flist = vim.split(vim.fn.system(cmd), "\n")
   local list = {}
-  for _, f1 in ipairs(flist) do
-    local f2 = vim.trim(f1)
-    local glist = vim.split(f2, "\n")
-    local a = glist[1]
-    local b = glist[2]
-    local dic = {filename = b, text = a}
-    table.insert(list, dic)
+  for _, line in ipairs(flist) do
+    local trimmed = vim.trim(line)
+    if (#trimmed > 0) then
+      table.insert(list, {filename = vim.split(trimmed, "\n")[2], text = vim.split(trimmed, "\n")[1]})
+    else
+    end
   end
-  if (#list == 0) then
+  if (#list > 0) then
+    vim.fn.setqflist(list)
+    return vim.cmd("bel copen 10")
+  else
     M.ShowMessage("no changes")
     return ""
-  else
+    return nil
   end
-  vim.fn.setqflist(list)
-  return vim.cmd("bel copen 10")
 end
 M.VcsStatusGit = _102_
-local function _104_()
+local function _105_()
   local cmd = "svn status | awk '{print $1\" \"$2}'"
   M.ShowMessage(cmd)
   local flist = vim.fn.system(cmd)
@@ -630,8 +628,8 @@ local function _104_()
   end
   return vim.fn.setqflist(list)
 end
-M.VcsStatusSvn = _104_
-local function _106_()
+M.VcsStatusSvn = _105_
+local function _107_()
   local filename = vim.api.nvim_buf_get_name(0)
   local git_command = ("git ls-files --error-unmatch " .. vim.fn.shellescape(filename))
   local git_output = io.popen(git_command)
@@ -662,8 +660,8 @@ local function _106_()
   vim.api.nvim_command(("echo '" .. git_status_symbol .. "'"))
   return git_status_symbol
 end
-M.GetLocalFileChangesForGit = _106_
-local function _110_()
+M.GetLocalFileChangesForGit = _107_
+local function _111_()
   local vcs_name_path = M.VcsNamePath()
   if vim.tbl_isempty(vcs_name_path) then
     return ""
@@ -748,14 +746,14 @@ local function _110_()
   end
   return (mark_vcs .. " " .. hunkline .. light_line_vcs_conflits .. " " .. light_line_vcs_status_local .. light_line_vcs_status_behind .. light_line_vcs_repository_conflits .. " " .. vcs_name_branch)
 end
-M.VcsStatusLine = _110_
-local function _122_()
+M.VcsStatusLine = _111_
+local function _123_()
   local annotation = "\\%([0-9A-Za-z_.:]+\\)\\?"
   local pattern = ("^\\%(\\%(<\\{7} " .. annotation .. "\\)\\|\\%(=\\{7\\}\\)\\|\\%(>\\{7\\} " .. annotation .. "\\)\\)$")
   return vim.fn.search(pattern, "nw")
 end
-M.VcsGitConflictMarker = _122_
-local function _123_()
+M.VcsGitConflictMarker = _123_
+local function _124_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
     return M.VcsUpdateSendGit()
@@ -763,14 +761,14 @@ local function _123_()
     return M.ShowError("VCS not supported")
   end
 end
-M.VcsUpdateSend = _123_
-local function _125_()
+M.VcsUpdateSend = _124_
+local function _126_()
   local cmd = "git push"
   M.ShowMessage(cmd)
   return vim.fn.system(cmd)
 end
-M.VcsUpdateSendGit = _125_
-local function _126_()
+M.VcsUpdateSendGit = _126_
+local function _127_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
     return M.VcsUpdateReceiveGit()
@@ -780,8 +778,8 @@ local function _126_()
     return M.ShowError("VCS not supported")
   end
 end
-M.VcsUpdateReceive = _126_
-local function _128_()
+M.VcsUpdateReceive = _127_
+local function _129_()
   M.ShowMessage("First pull")
   do
     local cmd = "git pull -p"
@@ -793,27 +791,27 @@ local function _128_()
   M.ShowMessage(cmd)
   return vim.fn.system(cmd)
 end
-M.VcsUpdateReceiveGit = _128_
-local function _129_()
+M.VcsUpdateReceiveGit = _129_
+local function _130_()
   local cmd = "svn update"
   M.ShowMessage(cmd)
   return vim.fn.system(cmd)
 end
-M.VcsUpdateReceiveSvn = _129_
-local function _130_()
+M.VcsUpdateReceiveSvn = _130_
+local function _131_()
   M.VcsUpdateReceive()
   return M.VcsUpdateSend()
 end
-M.VcsReload = _130_
-local function _131_()
+M.VcsReload = _131_
+local function _132_()
   return require("gitsigns").preview_hunk()
 end
-M.VcsHunkDiff = _131_
-local function _132_()
+M.VcsHunkDiff = _132_
+local function _133_()
   return require("gitsigns").reset_hunk()
 end
-M.VcsHunkUndo = _132_
-local function _133_()
+M.VcsHunkUndo = _133_
+local function _134_()
   print("VCS Help:")
   print("- <leader>v  - this help")
   print("- <leader>va - add file")
@@ -841,7 +839,7 @@ local function _133_()
   print("- <leader>vx - remove file")
   return print("- <leader>vX - revert last commit")
 end
-M.VcsHelp = _133_
+M.VcsHelp = _134_
 M.setup = function()
   vim.api.nvim_set_keymap("n", "<leader>v", ":lua require('neovcs').VcsHelp()<CR>", {silent = true})
   vim.api.nvim_set_keymap("n", "<leader>va", ":lua require('neovcs').VcsAddFile(\"\")<left><left>", {})

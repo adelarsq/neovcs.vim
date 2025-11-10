@@ -470,22 +470,19 @@
                        (M.ShowError "VCS not supported")))))
 
 (set M.VcsStatusGit
-               (fn []
-                 (let [cmd "git status --porcelain"]
-                   (M.ShowMessage cmd)
-                   (var flist (vim.fn.system cmd))
-                   (set flist (vim.split flist "\n"))
-                   (local list {})
-                   (each [_ f1 (ipairs flist)] (local f2 (vim.trim f1))
-                     (local glist (vim.split f2 "\n"))
-                     (local a (. glist 1))
-                     (local b (. glist 2))
-                     (local dic {:filename b :text a})
-                     (table.insert list dic))
-                   (when (= (length list) 0) (M.ShowMessage "no changes")
-                     (lua "return \"\""))
-                   (vim.fn.setqflist list)
-                   (vim.cmd "bel copen 10"))))
+    (fn []
+    (let [cmd "git status --porcelain"]
+        (M.ShowMessage cmd)
+        (local flist (vim.split (vim.fn.system cmd) "\n"))
+        (local list [])
+        (each [_ line (ipairs flist)]
+        (local trimmed (vim.trim line))
+        (when (> (length trimmed) 0)
+            (table.insert list {:filename (. (vim.split trimmed "\n") 2)
+                            :text (. (vim.split trimmed "\n") 1)})))
+        (if (> (length list) 0)
+            (do (vim.fn.setqflist list) (vim.cmd "bel copen 10"))
+            (do (M.ShowMessage "no changes") (lua "return \"\""))))))
 
 (set M.VcsStatusSvn
                (fn []
