@@ -597,7 +597,7 @@ local function _102_()
   for _, line in ipairs(flist) do
     local trimmed = vim.trim(line)
     if (#trimmed > 0) then
-      table.insert(list, {filename = vim.split(trimmed, "\n")[2], text = vim.split(trimmed, "\n")[1]})
+      table.insert(list, {filename = vim.split(trimmed, " ")[2], text = vim.split(trimmed, " ")[1]})
     else
     end
   end

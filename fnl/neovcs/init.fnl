@@ -478,8 +478,8 @@
         (each [_ line (ipairs flist)]
         (local trimmed (vim.trim line))
         (when (> (length trimmed) 0)
-            (table.insert list {:filename (. (vim.split trimmed "\n") 2)
-                            :text (. (vim.split trimmed "\n") 1)})))
+            (table.insert list {:filename (. (vim.split trimmed " ") 2)
+                            :text (. (vim.split trimmed " ") 1)})))
         (if (> (length list) 0)
             (do (vim.fn.setqflist list) (vim.cmd "bel copen 10"))
             (do (M.ShowMessage "no changes") nil)))))
