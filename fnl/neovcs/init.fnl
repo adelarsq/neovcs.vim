@@ -689,7 +689,7 @@
                  (print "- <leader>vX - revert last commit")))
 
 (fn M.setup []
-  (vim.api.nvim_set_keymap :n :<leader>v ":lua require('neovcs').VcsHelp()<CR>" {:silent true})
+  (vim.api.nvim_set_keymap :n :<leader>vh ":lua require('neovcs').VcsHelp()<CR>" {:silent true})
   (vim.api.nvim_set_keymap :n :<leader>va ":lua require('neovcs').VcsAddFile(\"\")<left><left>"
                            {})
   (vim.api.nvim_set_keymap :n :<leader>vA

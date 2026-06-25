@@ -841,7 +841,7 @@ local function _134_()
 end
 M.VcsHelp = _134_
 M.setup = function()
-  vim.api.nvim_set_keymap("n", "<leader>v", ":lua require('neovcs').VcsHelp()<CR>", {silent = true})
+  vim.api.nvim_set_keymap("n", "<leader>vh", ":lua require('neovcs').VcsHelp()<CR>", {silent = true})
   vim.api.nvim_set_keymap("n", "<leader>va", ":lua require('neovcs').VcsAddFile(\"\")<left><left>", {})
   vim.api.nvim_set_keymap("n", "<leader>vA", ":lua require('neovcs').VcsAddFiles(\"\",\"\")<left><left><left><left><left>", {silent = true})
   vim.api.nvim_set_keymap("n", "<leader>vb", ":lua require('neovcs').VcsBlameLine()<CR>", {silent = true})
