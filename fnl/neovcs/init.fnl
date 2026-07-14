@@ -134,29 +134,29 @@
                    branch-split)))
 
 (set M.VcsCommit
-               (fn [...]
+               (fn []
                  (let [vcs-name (M.VcsName)]
                    (if (= vcs-name :git)
                        (do
-                         (when (= (select 2 ...) "")
+                         (local commit-message (vim.fn.input "Commit message: "))
+                         (when (= commit-message "")
                            (M.ShowError "Please add a commit message")
                            (lua "return \"\""))
-                         (local commit-message
-                                (.. (Get-emoji-for-commit (select 2 ...)) " "
-                                    (select 2 ...)))
                          (vim.fn.system (.. "git commit -m \"" commit-message
                                             "\"")))
                        (= vcs-name :svn)
                        (do
-                         (when (= (select 2 ...) "")
+                         (local commit-message (vim.fn.input "Commit message: "))
+                         (when (= commit-message "")
                            (M.ShowError "Please add a commit message")
                            (lua "return \"\""))
-                         (when (= (select 3 ...) "")
+                         (local changelist-name (vim.fn.input "Changelist name: "))
+                         (when (= changelist-name "")
                            (M.ShowError "Please add a changelist name")
                            (lua "return \"\""))
                          (vim.fn.system (.. "svn commit --changelist "
-                                            (select 3 ...) " -m \""
-                                            (select 2 ...) "\"")))
+                                            changelist-name " -m \""
+                                            commit-message "\"")))
                        (M.ShowError "VCS not supported")))))
 
 (set M.VcsAmend
@@ -168,7 +168,7 @@
                            (M.ShowError "Please add a commit message")
                            (lua "return \"\""))
                          (local commit-message
-                                (.. (Get-emoji-for-commit (select 1 ...)) " "
+                                (.. (select 1 ...) " "
                                     (select 1 ...)))
                          (vim.fn.system (.. "git commit --amend -m \""
                                             commit-message "\"")))
@@ -243,36 +243,36 @@
                               (var full-name "")
                               (local filetype vim.bo.filetype)
                               (if (= filetype :oil)
-                                  (set full-name (get_oil_file_path))
+                                  (set full-name (M.GetOilFilePath))
                                   (= filetype :NvimTree)
-                                  (set full-name (get_nvim_tree_file_path))
+                                  (set full-name (M.GetNvimTreeFilePath))
                                   (set full-name (vim.fn.expand "%:p")))
                               (var cmd "")
                               (local vcs-name (M.VcsName))
                               (if (= vcs-name :git)
                                   (set cmd (.. "git add " full-name))
                                   (= vcs-name :svn)
-                                  (if (= (. arg 0) 0)
-                                      (set cmd (.. "svn add " full-name))
-                                      (set cmd
-                                           (.. "svn changelist " (. arg 1) " "
-                                               full-name)))
+                                  (do
+                                    (local changelist (vim.fn.input "Changelist name (optional): "))
+                                    (if (= changelist "")
+                                        (set cmd (.. "svn add " full-name))
+                                        (set cmd (.. "svn changelist " changelist " " full-name))))
                                   (do
                                     (M.ShowMessage "Is this file in a repository?")
                                     (lua "return ")))
                               (vim.fn.system cmd)
                               (M.ShowMessage cmd)))
 
-(set M.VcsAddFiles (fn [...]
+(set M.VcsAddFiles (fn []
                                (var cmd "")
                                (local vcs-name (M.VcsName))
                                (if (= vcs-name :git) (set cmd "git add *")
                                    (= vcs-name :svn)
-                                   (if (= (select 1 ...) 0)
-                                       (set cmd "svn add *")
-                                       (set cmd
-                                            (.. "svn changelist "
-                                                (select 1 ...) " *")))
+                                   (do
+                                     (local changelist (vim.fn.input "Changelist name (optional): "))
+                                     (if (= changelist "")
+                                         (set cmd "svn add *")
+                                         (set cmd (.. "svn changelist " changelist " *"))))
                                    (do
                                      (M.ShowMessage "Is this file in a repository?")
                                      (lua "return ")))
@@ -290,18 +290,18 @@
                  (vim.fn.system cmd)
                  (M.ShowMessage cmd)))
 
-(set M.VcsRmFile (fn [...]
+(set M.VcsRmFile (fn []
                              (let [filepath (vim.fn.expand "%:p")]
                                (var cmd "")
                                (local vcs-name (M.VcsName))
                                (if (= vcs-name :git)
                                    (set cmd (.. "git rm " filepath))
                                    (= vcs-name :svn)
-                                   (if (= (select 1 ...) 0)
-                                       (set cmd (.. "svn rm " filepath))
-                                       (set cmd
-                                            (.. "svn changelist "
-                                                (select 1 ...) " " filepath)))
+                                   (do
+                                     (local changelist (vim.fn.input "Changelist name (optional): "))
+                                     (if (= changelist "")
+                                         (set cmd (.. "svn rm " filepath))
+                                         (set cmd (.. "svn changelist " changelist " " filepath))))
                                    (do
                                      (M.ShowMessage "Is this file in a repository?")
                                      (lua "return ")))
@@ -318,7 +318,7 @@
                (fn []
                  (let [r (table.concat (vim.fn.systemlist (.. "git -C "
                                                               (vim.fn.shellescape (vim.fn.expand "%:p:h"))
-                                                              " blame -L <line1>,<line2> "
+                                                              " blame -L " (vim.fn.line ".") "," (vim.fn.line ".") " "
                                                               (vim.fn.expand "%:t")))
                                        "\n")]
                    (M.ShowMessage r))))
@@ -355,15 +355,15 @@
 (set M.VcsLogFileGit
                (fn []
                  (let [file-path (vim.fn.expand "%:p")
-                       cmd (.. "git log --pretty=oneline -- filename "
-                               file-path)]
+                       cmd (.. "git log --pretty=oneline -- " file-path)]
                    (M.ShowMessage cmd)
                    (var result (vim.fn.system cmd))
                    (set result (vim.split result "\n"))
-                   (local list {})
+                   (local list [])
                    (each [_ item (ipairs result)]
-                     (local dic {:filename "" :text item})
-                     (table.insert list dic))
+                     (when (> (length item) 0)
+                       (local dic {:filename "" :text item})
+                       (table.insert list dic)))
                    (vim.fn.setqflist list)
                    (vim.cmd "bel copen 10"))))
 
@@ -380,10 +380,11 @@
                    (M.ShowMessage cmd)
                    (var result (vim.fn.system cmd))
                    (set result (vim.split result "\n"))
-                   (local list {})
+                   (local list [])
                    (each [_ item (ipairs result)]
-                     (local dic {:filename "" :text item})
-                     (table.insert list dic))
+                     (when (> (length item) 0)
+                       (local dic {:filename "" :text item})
+                       (table.insert list dic)))
                    (vim.fn.setqflist list)
                    (vim.cmd "bel copen 10"))))
 
@@ -393,10 +394,11 @@
                    (M.ShowMessage cmd)
                    (var result (vim.fn.system cmd))
                    (set result (vim.split result "\n"))
-                   (local list {})
+                   (local list [])
                    (each [_ item (ipairs result)]
-                     (local dic {:filename "" :text item})
-                     (table.insert list dic))
+                     (when (> (length item) 0)
+                       (local dic {:filename "" :text item})
+                       (table.insert list dic)))
                    (vim.fn.setqflist list)
                    (vim.cmd "bel copen 10"))))
 
@@ -409,15 +411,15 @@
 (set M.VcsLogFileGraphGit
                (fn []
                  (let [file-path (vim.fn.expand "%:p")
-                       cmd (.. "git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -- filename "
-                               file-path)]
+                       cmd (.. "git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -- " file-path)]
                    (M.ShowMessage cmd)
                    (var result (vim.fn.system cmd))
                    (set result (vim.split result "\n"))
-                   (local list {})
+                   (local list [])
                    (each [_ item (ipairs result)]
-                     (local dic {:filename "" :text item})
-                     (table.insert list dic))
+                     (when (> (length item) 0)
+                       (local dic {:filename "" :text item})
+                       (table.insert list dic)))
                    (vim.fn.setqflist list)
                    (vim.cmd "bel copen 10"))))
 
@@ -433,10 +435,11 @@
                    (M.ShowMessage cmd)
                    (var result (vim.fn.system cmd))
                    (set result (vim.split result "\n"))
-                   (local list {})
+                   (local list [])
                    (each [_ item (ipairs result)]
-                     (local dic {:filename "" :text item})
-                     (table.insert list dic))
+                     (when (> (length item) 0)
+                       (local dic {:filename "" :text item})
+                       (table.insert list dic)))
                    (vim.fn.setqflist list)
                    (vim.cmd "bel copen 10"))))
 
@@ -490,7 +493,7 @@
                    (M.ShowMessage cmd)
                    (var flist (vim.fn.system cmd))
                    (set flist (vim.split flist "\n"))
-                   (local list {})
+                   (local list [])
                    (each [_ f (ipairs flist)]
                      (local glist (vim.split f " "))
                      (when (= (length glist) 2) (local a (. glist 1))
@@ -535,7 +538,7 @@
                    (local vcs-name (. vcs-name-path 1))
                    (local root-dir (. vcs-name-path 2))
                    (local cd-root-dir (.. "cd " root-dir))
-                   (local hunkline (Get-local-file-changes-for-git))
+                   (local hunkline (M.GetLocalFileChangesForGit))
                    (local mark-conflits "≠")
                    (var light-line-vcs-conflits "")
                    (if (= vcs-name :git)
@@ -693,10 +696,10 @@
   (vim.keymap.set :n :<leader>vh #(M.VcsHelp) {:silent true :desc "Show VCS help"})
   
   ;; Add file to VCS
-  (vim.keymap.set :n :<leader>va #(M.VcsAddFile "") {:desc "Add file to VCS"})
+  (vim.keymap.set :n :<leader>va #(M.VcsAddFile) {:desc "Add file to VCS"})
   
   ;; Add all files to VCS
-  (vim.keymap.set :n :<leader>vA #(M.VcsAddFiles "" "") {:silent true :desc "Add all files to VCS"})
+  (vim.keymap.set :n :<leader>vA #(M.VcsAddFiles) {:silent true :desc "Add all files to VCS"})
   
   ;; Blame current line
   (vim.keymap.set :n :<leader>vb #(M.VcsBlameLine) {:silent true :desc "Blame current line"})
@@ -705,7 +708,7 @@
   (vim.keymap.set :n :<leader>vB #(M.VcsBlameFile) {:silent true :desc "Blame current file"})
   
   ;; Commit changes
-  (vim.keymap.set :n :<leader>vc #(M.VcsCommit "" "") {:desc "Commit changes"})
+  (vim.keymap.set :n :<leader>vc #(M.VcsCommit) {:desc "Commit changes"})
   
   ;; Amend commit
   (vim.keymap.set :n :<leader>vC #(M.VcsAmend "") {:desc "Amend commit"})
@@ -759,7 +762,7 @@
   (vim.keymap.set :n :<leader>vU #(M.VcsUndoLastCommit) {:silent true :desc "Undo last commit"})
   
   ;; Remove file from VCS
-  (vim.keymap.set :n :<leader>vx #(M.VcsRmFile "") {:desc "Remove file from VCS"})
+  (vim.keymap.set :n :<leader>vx #(M.VcsRmFile) {:desc "Remove file from VCS"})
   
   ;; Revert last commit
   (vim.keymap.set :n :<leader>vX #(M.VcsRevertLastCommit) {:silent true :desc "Revert last commit"})

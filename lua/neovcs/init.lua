@@ -194,28 +194,30 @@ local function _38_()
   return branch_split
 end
 M.VcsGitBranchName = _38_
-local function _39_(...)
+local function _39_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
-    if (select(2, ...) == "") then
+    local commit_message = vim.fn.input("Commit message: ")
+    if (commit_message == "") then
       M.ShowError("Please add a commit message")
       return ""
     else
     end
-    local commit_message = (__fnl_global__Get_2demoji_2dfor_2dcommit(select(2, ...)) .. " " .. select(2, ...))
     return vim.fn.system(("git commit -m \"" .. commit_message .. "\""))
   elseif (vcs_name == "svn") then
-    if (select(2, ...) == "") then
+    local commit_message = vim.fn.input("Commit message: ")
+    if (commit_message == "") then
       M.ShowError("Please add a commit message")
       return ""
     else
     end
-    if (select(3, ...) == "") then
+    local changelist_name = vim.fn.input("Changelist name: ")
+    if (changelist_name == "") then
       M.ShowError("Please add a changelist name")
       return ""
     else
     end
-    return vim.fn.system(("svn commit --changelist " .. select(3, ...) .. " -m \"" .. select(2, ...) .. "\""))
+    return vim.fn.system(("svn commit --changelist " .. changelist_name .. " -m \"" .. commit_message .. "\""))
   else
     return M.ShowError("VCS not supported")
   end
@@ -229,7 +231,7 @@ local function _44_(...)
       return ""
     else
     end
-    local commit_message = (__fnl_global__Get_2demoji_2dfor_2dcommit(select(1, ...)) .. " " .. select(1, ...))
+    local commit_message = (select(1, ...) .. " " .. select(1, ...))
     return vim.fn.system(("git commit --amend -m \"" .. commit_message .. "\""))
   else
     return M.ShowError("VCS not supported")
@@ -317,9 +319,9 @@ local function _60_()
   local full_name = ""
   local filetype = vim.bo.filetype
   if (filetype == "oil") then
-    full_name = get_oil_file_path()
+    full_name = M.GetOilFilePath()
   elseif (filetype == "NvimTree") then
-    full_name = get_nvim_tree_file_path()
+    full_name = M.GetNvimTreeFilePath()
   else
     full_name = vim.fn.expand("%:p")
   end
@@ -328,10 +330,11 @@ local function _60_()
   if (vcs_name == "git") then
     cmd = ("git add " .. full_name)
   elseif (vcs_name == "svn") then
-    if (arg[0] == 0) then
+    local changelist = vim.fn.input("Changelist name (optional): ")
+    if (changelist == "") then
       cmd = ("svn add " .. full_name)
     else
-      cmd = ("svn changelist " .. arg[1] .. " " .. full_name)
+      cmd = ("svn changelist " .. changelist .. " " .. full_name)
     end
   else
     M.ShowMessage("Is this file in a repository?")
@@ -341,16 +344,17 @@ local function _60_()
   return M.ShowMessage(cmd)
 end
 M.VcsAddFile = _60_
-local function _64_(...)
+local function _64_()
   local cmd = ""
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
     cmd = "git add *"
   elseif (vcs_name == "svn") then
-    if (select(1, ...) == 0) then
+    local changelist = vim.fn.input("Changelist name (optional): ")
+    if (changelist == "") then
       cmd = "svn add *"
     else
-      cmd = ("svn changelist " .. select(1, ...) .. " *")
+      cmd = ("svn changelist " .. changelist .. " *")
     end
   else
     M.ShowMessage("Is this file in a repository?")
@@ -373,17 +377,18 @@ local function _67_()
   return M.ShowMessage(cmd)
 end
 M.VcsShowBranches = _67_
-local function _69_(...)
+local function _69_()
   local filepath = vim.fn.expand("%:p")
   local cmd = ""
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
     cmd = ("git rm " .. filepath)
   elseif (vcs_name == "svn") then
-    if (select(1, ...) == 0) then
+    local changelist = vim.fn.input("Changelist name (optional): ")
+    if (changelist == "") then
       cmd = ("svn rm " .. filepath)
     else
-      cmd = ("svn changelist " .. select(1, ...) .. " " .. filepath)
+      cmd = ("svn changelist " .. changelist .. " " .. filepath)
     end
   else
     M.ShowMessage("Is this file in a repository?")
@@ -403,7 +408,7 @@ local function _72_()
 end
 M.VcsBlameLine = _72_
 local function _74_()
-  local r = table.concat(vim.fn.systemlist(("git -C " .. vim.fn.shellescape(vim.fn.expand("%:p:h")) .. " blame -L <line1>,<line2> " .. vim.fn.expand("%:t"))), "\n")
+  local r = table.concat(vim.fn.systemlist(("git -C " .. vim.fn.shellescape(vim.fn.expand("%:p:h")) .. " blame -L " .. vim.fn.line(".") .. "," .. vim.fn.line(".") .. " " .. vim.fn.expand("%:t"))), "\n")
   return M.ShowMessage(r)
 end
 M.VcsBlameLineGit = _74_
@@ -449,20 +454,23 @@ end
 M.VcsLogFile = _81_
 local function _83_()
   local file_path = vim.fn.expand("%:p")
-  local cmd = ("git log --pretty=oneline -- filename " .. file_path)
+  local cmd = ("git log --pretty=oneline -- " .. file_path)
   M.ShowMessage(cmd)
   local result = vim.fn.system(cmd)
   result = vim.split(result, "\n")
   local list = {}
   for _, item in ipairs(result) do
-    local dic = {filename = "", text = item}
-    table.insert(list, dic)
+    if (#item > 0) then
+      local dic = {filename = "", text = item}
+      table.insert(list, dic)
+    else
+    end
   end
   vim.fn.setqflist(list)
   return vim.cmd("bel copen 10")
 end
 M.VcsLogFileGit = _83_
-local function _84_()
+local function _85_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
     return M.VcsLogProjectGit()
@@ -472,36 +480,42 @@ local function _84_()
     return M.ShowError("VCS not supported")
   end
 end
-M.VcsLogProject = _84_
-local function _86_()
+M.VcsLogProject = _85_
+local function _87_()
   local cmd = "git log --pretty=oneline"
   M.ShowMessage(cmd)
   local result = vim.fn.system(cmd)
   result = vim.split(result, "\n")
   local list = {}
   for _, item in ipairs(result) do
-    local dic = {filename = "", text = item}
-    table.insert(list, dic)
+    if (#item > 0) then
+      local dic = {filename = "", text = item}
+      table.insert(list, dic)
+    else
+    end
   end
   vim.fn.setqflist(list)
   return vim.cmd("bel copen 10")
 end
-M.VcsLogProjectGit = _86_
-local function _87_()
+M.VcsLogProjectGit = _87_
+local function _89_()
   local cmd = "svn log"
   M.ShowMessage(cmd)
   local result = vim.fn.system(cmd)
   result = vim.split(result, "\n")
   local list = {}
   for _, item in ipairs(result) do
-    local dic = {filename = "", text = item}
-    table.insert(list, dic)
+    if (#item > 0) then
+      local dic = {filename = "", text = item}
+      table.insert(list, dic)
+    else
+    end
   end
   vim.fn.setqflist(list)
   return vim.cmd("bel copen 10")
 end
-M.VcsLogProjectSvn = _87_
-local function _88_()
+M.VcsLogProjectSvn = _89_
+local function _91_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
     return M.VcsLogFileGraphGit()
@@ -509,23 +523,26 @@ local function _88_()
     return M.ShowError("VCS not supported")
   end
 end
-M.VcsLogFileGraph = _88_
-local function _90_()
+M.VcsLogFileGraph = _91_
+local function _93_()
   local file_path = vim.fn.expand("%:p")
-  local cmd = ("git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -- filename " .. file_path)
+  local cmd = ("git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -- " .. file_path)
   M.ShowMessage(cmd)
   local result = vim.fn.system(cmd)
   result = vim.split(result, "\n")
   local list = {}
   for _, item in ipairs(result) do
-    local dic = {filename = "", text = item}
-    table.insert(list, dic)
+    if (#item > 0) then
+      local dic = {filename = "", text = item}
+      table.insert(list, dic)
+    else
+    end
   end
   vim.fn.setqflist(list)
   return vim.cmd("bel copen 10")
 end
-M.VcsLogFileGraphGit = _90_
-local function _91_()
+M.VcsLogFileGraphGit = _93_
+local function _95_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
     return M.VcsLogProjectGitGraph()
@@ -533,22 +550,25 @@ local function _91_()
     return M.ShowError("VCS not supported")
   end
 end
-M.VcsLogProjectGraph = _91_
-local function _93_()
+M.VcsLogProjectGraph = _95_
+local function _97_()
   local cmd = "git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
   M.ShowMessage(cmd)
   local result = vim.fn.system(cmd)
   result = vim.split(result, "\n")
   local list = {}
   for _, item in ipairs(result) do
-    local dic = {filename = "", text = item}
-    table.insert(list, dic)
+    if (#item > 0) then
+      local dic = {filename = "", text = item}
+      table.insert(list, dic)
+    else
+    end
   end
   vim.fn.setqflist(list)
   return vim.cmd("bel copen 10")
 end
-M.VcsLogProjectGitGraph = _93_
-local function _94_()
+M.VcsLogProjectGitGraph = _97_
+local function _99_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
     return M.VcsUndoLastCommitGit()
@@ -556,14 +576,14 @@ local function _94_()
     return M.ShowError("VCS not supported")
   end
 end
-M.VcsUndoLastCommit = _94_
-local function _96_()
+M.VcsUndoLastCommit = _99_
+local function _101_()
   local cmd = "git reset --soft HEAD~1"
   M.ShowMessage(cmd)
   return vim.fn.system(cmd)
 end
-M.VcsUndoLastCommitGit = _96_
-local function _97_()
+M.VcsUndoLastCommitGit = _101_
+local function _102_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
     return M.VcsRevertLastCommitGit()
@@ -571,14 +591,14 @@ local function _97_()
     return M.ShowError("VCS not supported")
   end
 end
-M.VcsRevertLastCommit = _97_
-local function _99_()
+M.VcsRevertLastCommit = _102_
+local function _104_()
   local cmd = "git revert HEAD"
   M.ShowMessage(cmd)
   return vim.fn.system(cmd)
 end
-M.VcsRevertLastCommitGit = _99_
-local function _100_()
+M.VcsRevertLastCommitGit = _104_
+local function _105_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
     return M.VcsStatusGit()
@@ -588,8 +608,8 @@ local function _100_()
     return M.ShowError("VCS not supported")
   end
 end
-M.VcsStatus = _100_
-local function _102_()
+M.VcsStatus = _105_
+local function _107_()
   local cmd = "git status --porcelain"
   M.ShowMessage(cmd)
   local flist = vim.split(vim.fn.system(cmd), "\n")
@@ -609,8 +629,8 @@ local function _102_()
     return nil
   end
 end
-M.VcsStatusGit = _102_
-local function _105_()
+M.VcsStatusGit = _107_
+local function _110_()
   local cmd = "svn status | awk '{print $1\" \"$2}'"
   M.ShowMessage(cmd)
   local flist = vim.fn.system(cmd)
@@ -628,8 +648,8 @@ local function _105_()
   end
   return vim.fn.setqflist(list)
 end
-M.VcsStatusSvn = _105_
-local function _107_()
+M.VcsStatusSvn = _110_
+local function _112_()
   local filename = vim.api.nvim_buf_get_name(0)
   local git_command = ("git ls-files --error-unmatch " .. vim.fn.shellescape(filename))
   local git_output = io.popen(git_command)
@@ -660,8 +680,8 @@ local function _107_()
   vim.api.nvim_command(("echo '" .. git_status_symbol .. "'"))
   return git_status_symbol
 end
-M.GetLocalFileChangesForGit = _107_
-local function _111_()
+M.GetLocalFileChangesForGit = _112_
+local function _116_()
   local vcs_name_path = M.VcsNamePath()
   if vim.tbl_isempty(vcs_name_path) then
     return ""
@@ -670,7 +690,7 @@ local function _111_()
   local vcs_name = vcs_name_path[1]
   local root_dir = vcs_name_path[2]
   local cd_root_dir = ("cd " .. root_dir)
-  local hunkline = __fnl_global__Get_2dlocal_2dfile_2dchanges_2dfor_2dgit()
+  local hunkline = M.GetLocalFileChangesForGit()
   local mark_conflits = "\226\137\160"
   local light_line_vcs_conflits = ""
   if (vcs_name == "git") then
@@ -746,14 +766,14 @@ local function _111_()
   end
   return (mark_vcs .. " " .. hunkline .. light_line_vcs_conflits .. " " .. light_line_vcs_status_local .. light_line_vcs_status_behind .. light_line_vcs_repository_conflits .. " " .. vcs_name_branch)
 end
-M.VcsStatusLine = _111_
-local function _123_()
+M.VcsStatusLine = _116_
+local function _128_()
   local annotation = "\\%([0-9A-Za-z_.:]+\\)\\?"
   local pattern = ("^\\%(\\%(<\\{7} " .. annotation .. "\\)\\|\\%(=\\{7\\}\\)\\|\\%(>\\{7\\} " .. annotation .. "\\)\\)$")
   return vim.fn.search(pattern, "nw")
 end
-M.VcsGitConflictMarker = _123_
-local function _124_()
+M.VcsGitConflictMarker = _128_
+local function _129_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
     return M.VcsUpdateSendGit()
@@ -761,14 +781,14 @@ local function _124_()
     return M.ShowError("VCS not supported")
   end
 end
-M.VcsUpdateSend = _124_
-local function _126_()
+M.VcsUpdateSend = _129_
+local function _131_()
   local cmd = "git push"
   M.ShowMessage(cmd)
   return vim.fn.system(cmd)
 end
-M.VcsUpdateSendGit = _126_
-local function _127_()
+M.VcsUpdateSendGit = _131_
+local function _132_()
   local vcs_name = M.VcsName()
   if (vcs_name == "git") then
     return M.VcsUpdateReceiveGit()
@@ -778,8 +798,8 @@ local function _127_()
     return M.ShowError("VCS not supported")
   end
 end
-M.VcsUpdateReceive = _127_
-local function _129_()
+M.VcsUpdateReceive = _132_
+local function _134_()
   M.ShowMessage("First pull")
   do
     local cmd = "git pull -p"
@@ -791,27 +811,27 @@ local function _129_()
   M.ShowMessage(cmd)
   return vim.fn.system(cmd)
 end
-M.VcsUpdateReceiveGit = _129_
-local function _130_()
+M.VcsUpdateReceiveGit = _134_
+local function _135_()
   local cmd = "svn update"
   M.ShowMessage(cmd)
   return vim.fn.system(cmd)
 end
-M.VcsUpdateReceiveSvn = _130_
-local function _131_()
+M.VcsUpdateReceiveSvn = _135_
+local function _136_()
   M.VcsUpdateReceive()
   return M.VcsUpdateSend()
 end
-M.VcsReload = _131_
-local function _132_()
+M.VcsReload = _136_
+local function _137_()
   return require("gitsigns").preview_hunk()
 end
-M.VcsHunkDiff = _132_
-local function _133_()
+M.VcsHunkDiff = _137_
+local function _138_()
   return require("gitsigns").reset_hunk()
 end
-M.VcsHunkUndo = _133_
-local function _134_()
+M.VcsHunkUndo = _138_
+local function _139_()
   print("VCS Help:")
   print("- <leader>v  - this help")
   print("- <leader>va - add file")
@@ -839,108 +859,108 @@ local function _134_()
   print("- <leader>vx - remove file")
   return print("- <leader>vX - revert last commit")
 end
-M.VcsHelp = _134_
+M.VcsHelp = _139_
 M.setup = function()
-  local function _135_()
+  local function _140_()
     return M.VcsHelp()
   end
-  vim.keymap.set("n", "<leader>vh", _135_, {silent = true, desc = "Show VCS help"})
-  local function _136_()
-    return M.VcsAddFile("")
+  vim.keymap.set("n", "<leader>vh", _140_, {silent = true, desc = "Show VCS help"})
+  local function _141_()
+    return M.VcsAddFile()
   end
-  vim.keymap.set("n", "<leader>va", _136_, {desc = "Add file to VCS"})
-  local function _137_()
-    return M.VcsAddFiles("", "")
+  vim.keymap.set("n", "<leader>va", _141_, {desc = "Add file to VCS"})
+  local function _142_()
+    return M.VcsAddFiles()
   end
-  vim.keymap.set("n", "<leader>vA", _137_, {silent = true, desc = "Add all files to VCS"})
-  local function _138_()
+  vim.keymap.set("n", "<leader>vA", _142_, {silent = true, desc = "Add all files to VCS"})
+  local function _143_()
     return M.VcsBlameLine()
   end
-  vim.keymap.set("n", "<leader>vb", _138_, {silent = true, desc = "Blame current line"})
-  local function _139_()
+  vim.keymap.set("n", "<leader>vb", _143_, {silent = true, desc = "Blame current line"})
+  local function _144_()
     return M.VcsBlameFile()
   end
-  vim.keymap.set("n", "<leader>vB", _139_, {silent = true, desc = "Blame current file"})
-  local function _140_()
-    return M.VcsCommit("", "")
+  vim.keymap.set("n", "<leader>vB", _144_, {silent = true, desc = "Blame current file"})
+  local function _145_()
+    return M.VcsCommit()
   end
-  vim.keymap.set("n", "<leader>vc", _140_, {desc = "Commit changes"})
-  local function _141_()
+  vim.keymap.set("n", "<leader>vc", _145_, {desc = "Commit changes"})
+  local function _146_()
     return M.VcsAmend("")
   end
-  vim.keymap.set("n", "<leader>vC", _141_, {desc = "Amend commit"})
-  local function _142_()
+  vim.keymap.set("n", "<leader>vC", _146_, {desc = "Amend commit"})
+  local function _147_()
     return M.VcsHunkDiff()
   end
-  vim.keymap.set("n", "<leader>vd", _142_, {silent = true, desc = "Show hunk diff"})
-  local function _143_()
+  vim.keymap.set("n", "<leader>vd", _147_, {silent = true, desc = "Show hunk diff"})
+  local function _148_()
     return M.VcsDiff("")
   end
-  vim.keymap.set("n", "<leader>vD", _143_, {desc = "Show file diff"})
-  local function _144_()
+  vim.keymap.set("n", "<leader>vD", _148_, {desc = "Show file diff"})
+  local function _149_()
     return M.VcsLogFile()
   end
-  vim.keymap.set("n", "<leader>vl", _144_, {silent = true, desc = "Show file log"})
-  local function _145_()
+  vim.keymap.set("n", "<leader>vl", _149_, {silent = true, desc = "Show file log"})
+  local function _150_()
     return M.VcsLogProject()
   end
-  vim.keymap.set("n", "<leader>vL", _145_, {silent = true, desc = "Show project log"})
-  local function _146_()
+  vim.keymap.set("n", "<leader>vL", _150_, {silent = true, desc = "Show project log"})
+  local function _151_()
     return M.VcsResolve()
   end
-  vim.keymap.set("n", "<leader>vm", _146_, {silent = true, desc = "Mark conflict resolved"})
-  local function _147_()
+  vim.keymap.set("n", "<leader>vm", _151_, {silent = true, desc = "Mark conflict resolved"})
+  local function _152_()
     return M.VcsNextHunk()
   end
-  vim.keymap.set("n", "<leader>vn", _147_, {silent = true, desc = "Next hunk"})
-  local function _148_()
+  vim.keymap.set("n", "<leader>vn", _152_, {silent = true, desc = "Next hunk"})
+  local function _153_()
     return M.VcsPrevHunk()
   end
-  vim.keymap.set("n", "<leader>vN", _148_, {silent = true, desc = "Previous hunk"})
-  local function _149_()
+  vim.keymap.set("n", "<leader>vN", _153_, {silent = true, desc = "Previous hunk"})
+  local function _154_()
     return M.VcsOpenLineUrl()
   end
-  vim.keymap.set("n", "<leader>vo", _149_, {silent = true, desc = "Open current line URL"})
-  local function _150_()
+  vim.keymap.set("n", "<leader>vo", _154_, {silent = true, desc = "Open current line URL"})
+  local function _155_()
     return M.VcsOpenUrl()
   end
-  vim.keymap.set("n", "<leader>vO", _150_, {silent = true, desc = "Open repository URL"})
-  local function _151_()
+  vim.keymap.set("n", "<leader>vO", _155_, {silent = true, desc = "Open repository URL"})
+  local function _156_()
     return M.VcsReload()
   end
-  vim.keymap.set("n", "<leader>vr", _151_, {silent = true, desc = "Reload changes from remote"})
-  local function _152_()
+  vim.keymap.set("n", "<leader>vr", _156_, {silent = true, desc = "Reload changes from remote"})
+  local function _157_()
     return M.VcsStatus()
   end
-  vim.keymap.set("n", "<leader>vs", _152_, {silent = true, desc = "Show VCS status"})
-  local function _153_()
+  vim.keymap.set("n", "<leader>vs", _157_, {silent = true, desc = "Show VCS status"})
+  local function _158_()
     return M.VcsUpdateReceive()
   end
-  vim.keymap.set("n", "<leader>vp", _153_, {silent = true, desc = "Pull changes from remote"})
-  local function _154_()
+  vim.keymap.set("n", "<leader>vp", _158_, {silent = true, desc = "Pull changes from remote"})
+  local function _159_()
     return M.VcsUpdateSend()
   end
-  vim.keymap.set("n", "<leader>vP", _154_, {silent = true, desc = "Push changes to remote"})
-  local function _155_()
+  vim.keymap.set("n", "<leader>vP", _159_, {silent = true, desc = "Push changes to remote"})
+  local function _160_()
     return M.VcsShowBranches()
   end
-  vim.keymap.set("n", "<leader>vt", _155_, {desc = "Show branches"})
-  local function _156_()
+  vim.keymap.set("n", "<leader>vt", _160_, {desc = "Show branches"})
+  local function _161_()
     return M.VcsHunkUndo()
   end
-  vim.keymap.set("n", "<leader>vu", _156_, {silent = true, desc = "Undo hunk"})
-  local function _157_()
+  vim.keymap.set("n", "<leader>vu", _161_, {silent = true, desc = "Undo hunk"})
+  local function _162_()
     return M.VcsUndoLastCommit()
   end
-  vim.keymap.set("n", "<leader>vU", _157_, {silent = true, desc = "Undo last commit"})
-  local function _158_()
-    return M.VcsRmFile("")
+  vim.keymap.set("n", "<leader>vU", _162_, {silent = true, desc = "Undo last commit"})
+  local function _163_()
+    return M.VcsRmFile()
   end
-  vim.keymap.set("n", "<leader>vx", _158_, {desc = "Remove file from VCS"})
-  local function _159_()
+  vim.keymap.set("n", "<leader>vx", _163_, {desc = "Remove file from VCS"})
+  local function _164_()
     return M.VcsRevertLastCommit()
   end
-  vim.keymap.set("n", "<leader>vX", _159_, {silent = true, desc = "Revert last commit"})
+  vim.keymap.set("n", "<leader>vX", _164_, {silent = true, desc = "Revert last commit"})
   vim.g.loaded_neovcs = 1
   return nil
 end
