@@ -841,31 +841,106 @@ local function _134_()
 end
 M.VcsHelp = _134_
 M.setup = function()
-  vim.api.nvim_set_keymap("n", "<leader>vh", ":lua require('neovcs').VcsHelp()<CR>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>va", ":lua require('neovcs').VcsAddFile(\"\")<left><left>", {})
-  vim.api.nvim_set_keymap("n", "<leader>vA", ":lua require('neovcs').VcsAddFiles(\"\",\"\")<left><left><left><left><left>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>vb", ":lua require('neovcs').VcsBlameLine()<CR>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>vB", ":lua require('neovcs').VcsBlameFile()<CR>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>vc", ":lua require('neovcs').VcsCommit(\"\",\"\")<left><left><left><left><left>", {})
-  vim.api.nvim_set_keymap("n", "<leader>vC", ":lua require('neovcs').VcsAmend(\"\")<left><left><left>", {})
-  vim.api.nvim_set_keymap("n", "<leader>vd", ":lua require('neovcs').VcsHunkDiff()<CR>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>vD", ":lua require('neovcs').VcsDiff(\"\")<left><left>", {})
-  vim.api.nvim_set_keymap("n", "<leader>vl", ":lua require('neovcs').VcsLogFile()<CR>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>vL", ":lua require('neovcs').VcsLogProject()<CR>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>vm", ":lua require('neovcs').VcsResolve()<CR>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>vn", ":lua require('neovcs').VcsNextHunk()<CR>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>vN", ":lua require('neovcs').VcsPrevHunk()<CR>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>vo", ":lua require('neovcs').VcsOpenLineUrl()<CR>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>vO", ":lua require('neovcs').VcsOpenUrl()<CR>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>vr", ":lua require('neovcs').VcsReload()<CR>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>vs", ":lua require('neovcs').VcsStatus()<CR>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>vp", ":lua require('neovcs').VcsUpdateReceive()<CR>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>vP", ":lua require('neovcs').VcsUpdateSend()<CR>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>vt", ":lua require('neovcs').VcsShowBranchs()<CR>", {})
-  vim.api.nvim_set_keymap("n", "<leader>vu", ":lua require('neovcs').VcsHunkUndo()<CR>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>vU", ":lua require('neovcs').VcsUndoLastCommit()<CR>", {silent = true})
-  vim.api.nvim_set_keymap("n", "<leader>vx", ":lua require('neovcs').VcsRmFile(\"\")<left><left>", {})
-  vim.api.nvim_set_keymap("n", "<leader>vX", ":lua require('neovcs').VcsRevertLastCommit()<CR>", {silent = true})
+  local function _135_()
+    return M.VcsHelp()
+  end
+  vim.keymap.set("n", "<leader>vh", _135_, {silent = true, desc = "Show VCS help"})
+  local function _136_()
+    return M.VcsAddFile("")
+  end
+  vim.keymap.set("n", "<leader>va", _136_, {desc = "Add file to VCS"})
+  local function _137_()
+    return M.VcsAddFiles("", "")
+  end
+  vim.keymap.set("n", "<leader>vA", _137_, {silent = true, desc = "Add all files to VCS"})
+  local function _138_()
+    return M.VcsBlameLine()
+  end
+  vim.keymap.set("n", "<leader>vb", _138_, {silent = true, desc = "Blame current line"})
+  local function _139_()
+    return M.VcsBlameFile()
+  end
+  vim.keymap.set("n", "<leader>vB", _139_, {silent = true, desc = "Blame current file"})
+  local function _140_()
+    return M.VcsCommit("", "")
+  end
+  vim.keymap.set("n", "<leader>vc", _140_, {desc = "Commit changes"})
+  local function _141_()
+    return M.VcsAmend("")
+  end
+  vim.keymap.set("n", "<leader>vC", _141_, {desc = "Amend commit"})
+  local function _142_()
+    return M.VcsHunkDiff()
+  end
+  vim.keymap.set("n", "<leader>vd", _142_, {silent = true, desc = "Show hunk diff"})
+  local function _143_()
+    return M.VcsDiff("")
+  end
+  vim.keymap.set("n", "<leader>vD", _143_, {desc = "Show file diff"})
+  local function _144_()
+    return M.VcsLogFile()
+  end
+  vim.keymap.set("n", "<leader>vl", _144_, {silent = true, desc = "Show file log"})
+  local function _145_()
+    return M.VcsLogProject()
+  end
+  vim.keymap.set("n", "<leader>vL", _145_, {silent = true, desc = "Show project log"})
+  local function _146_()
+    return M.VcsResolve()
+  end
+  vim.keymap.set("n", "<leader>vm", _146_, {silent = true, desc = "Mark conflict resolved"})
+  local function _147_()
+    return M.VcsNextHunk()
+  end
+  vim.keymap.set("n", "<leader>vn", _147_, {silent = true, desc = "Next hunk"})
+  local function _148_()
+    return M.VcsPrevHunk()
+  end
+  vim.keymap.set("n", "<leader>vN", _148_, {silent = true, desc = "Previous hunk"})
+  local function _149_()
+    return M.VcsOpenLineUrl()
+  end
+  vim.keymap.set("n", "<leader>vo", _149_, {silent = true, desc = "Open current line URL"})
+  local function _150_()
+    return M.VcsOpenUrl()
+  end
+  vim.keymap.set("n", "<leader>vO", _150_, {silent = true, desc = "Open repository URL"})
+  local function _151_()
+    return M.VcsReload()
+  end
+  vim.keymap.set("n", "<leader>vr", _151_, {silent = true, desc = "Reload changes from remote"})
+  local function _152_()
+    return M.VcsStatus()
+  end
+  vim.keymap.set("n", "<leader>vs", _152_, {silent = true, desc = "Show VCS status"})
+  local function _153_()
+    return M.VcsUpdateReceive()
+  end
+  vim.keymap.set("n", "<leader>vp", _153_, {silent = true, desc = "Pull changes from remote"})
+  local function _154_()
+    return M.VcsUpdateSend()
+  end
+  vim.keymap.set("n", "<leader>vP", _154_, {silent = true, desc = "Push changes to remote"})
+  local function _155_()
+    return M.VcsShowBranches()
+  end
+  vim.keymap.set("n", "<leader>vt", _155_, {desc = "Show branches"})
+  local function _156_()
+    return M.VcsHunkUndo()
+  end
+  vim.keymap.set("n", "<leader>vu", _156_, {silent = true, desc = "Undo hunk"})
+  local function _157_()
+    return M.VcsUndoLastCommit()
+  end
+  vim.keymap.set("n", "<leader>vU", _157_, {silent = true, desc = "Undo last commit"})
+  local function _158_()
+    return M.VcsRmFile("")
+  end
+  vim.keymap.set("n", "<leader>vx", _158_, {desc = "Remove file from VCS"})
+  local function _159_()
+    return M.VcsRevertLastCommit()
+  end
+  vim.keymap.set("n", "<leader>vX", _159_, {silent = true, desc = "Revert last commit"})
   vim.g.loaded_neovcs = 1
   return nil
 end

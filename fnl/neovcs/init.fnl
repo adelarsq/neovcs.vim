@@ -689,52 +689,81 @@
                  (print "- <leader>vX - revert last commit")))
 
 (fn M.setup []
-  (vim.api.nvim_set_keymap :n :<leader>vh ":lua require('neovcs').VcsHelp()<CR>" {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>va ":lua require('neovcs').VcsAddFile(\"\")<left><left>"
-                           {})
-  (vim.api.nvim_set_keymap :n :<leader>vA
-                           ":lua require('neovcs').VcsAddFiles(\"\",\"\")<left><left><left><left><left>"
-                           {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>vb ":lua require('neovcs').VcsBlameLine()<CR>"
-                           {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>vB ":lua require('neovcs').VcsBlameFile()<CR>"
-                           {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>vc
-                            ":lua require('neovcs').VcsCommit(\"\",\"\")<left><left><left><left><left>"
-                            {})
-  (vim.api.nvim_set_keymap :n :<leader>vC
-                           ":lua require('neovcs').VcsAmend(\"\")<left><left><left>" {})
-  (vim.api.nvim_set_keymap :n :<leader>vd ":lua require('neovcs').VcsHunkDiff()<CR>"
-                           {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>vD ":lua require('neovcs').VcsDiff(\"\")<left><left>" {})
-  (vim.api.nvim_set_keymap :n :<leader>vl ":lua require('neovcs').VcsLogFile()<CR>"
-                           {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>vL ":lua require('neovcs').VcsLogProject()<CR>"
-                           {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>vm ":lua require('neovcs').VcsResolve()<CR>"
-                           {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>vn ":lua require('neovcs').VcsNextHunk()<CR>"
-                           {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>vN ":lua require('neovcs').VcsPrevHunk()<CR>"
-                           {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>vo ":lua require('neovcs').VcsOpenLineUrl()<CR>"
-                           {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>vO ":lua require('neovcs').VcsOpenUrl()<CR>"
-                           {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>vr ":lua require('neovcs').VcsReload()<CR>" {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>vs ":lua require('neovcs').VcsStatus()<CR>" {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>vp ":lua require('neovcs').VcsUpdateReceive()<CR>"
-                           {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>vP ":lua require('neovcs').VcsUpdateSend()<CR>"
-                           {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>vt ":lua require('neovcs').VcsShowBranchs()<CR>" {})
-  (vim.api.nvim_set_keymap :n :<leader>vu ":lua require('neovcs').VcsHunkUndo()<CR>"
-                           {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>vU ":lua require('neovcs').VcsUndoLastCommit()<CR>"
-                           {:silent true})
-  (vim.api.nvim_set_keymap :n :<leader>vx ":lua require('neovcs').VcsRmFile(\"\")<left><left>" {})
-  (vim.api.nvim_set_keymap :n :<leader>vX ":lua require('neovcs').VcsRevertLastCommit()<CR>"
-                           {:silent true})
+  ;; Help - Show VCS help
+  (vim.keymap.set :n :<leader>vh #(M.VcsHelp) {:silent true :desc "Show VCS help"})
+  
+  ;; Add file to VCS
+  (vim.keymap.set :n :<leader>va #(M.VcsAddFile "") {:desc "Add file to VCS"})
+  
+  ;; Add all files to VCS
+  (vim.keymap.set :n :<leader>vA #(M.VcsAddFiles "" "") {:silent true :desc "Add all files to VCS"})
+  
+  ;; Blame current line
+  (vim.keymap.set :n :<leader>vb #(M.VcsBlameLine) {:silent true :desc "Blame current line"})
+  
+  ;; Blame current file
+  (vim.keymap.set :n :<leader>vB #(M.VcsBlameFile) {:silent true :desc "Blame current file"})
+  
+  ;; Commit changes
+  (vim.keymap.set :n :<leader>vc #(M.VcsCommit "" "") {:desc "Commit changes"})
+  
+  ;; Amend commit
+  (vim.keymap.set :n :<leader>vC #(M.VcsAmend "") {:desc "Amend commit"})
+  
+  ;; Show hunk diff
+  (vim.keymap.set :n :<leader>vd #(M.VcsHunkDiff) {:silent true :desc "Show hunk diff"})
+  
+  ;; Show file diff
+  (vim.keymap.set :n :<leader>vD #(M.VcsDiff "") {:desc "Show file diff"})
+  
+  ;; Show file log
+  (vim.keymap.set :n :<leader>vl #(M.VcsLogFile) {:silent true :desc "Show file log"})
+  
+  ;; Show project log
+  (vim.keymap.set :n :<leader>vL #(M.VcsLogProject) {:silent true :desc "Show project log"})
+  
+  ;; Mark conflict as resolved
+  (vim.keymap.set :n :<leader>vm #(M.VcsResolve) {:silent true :desc "Mark conflict resolved"})
+  
+  ;; Next hunk
+  (vim.keymap.set :n :<leader>vn #(M.VcsNextHunk) {:silent true :desc "Next hunk"})
+  
+  ;; Previous hunk
+  (vim.keymap.set :n :<leader>vN #(M.VcsPrevHunk) {:silent true :desc "Previous hunk"})
+  
+  ;; Open current line URL
+  (vim.keymap.set :n :<leader>vo #(M.VcsOpenLineUrl) {:silent true :desc "Open current line URL"})
+  
+  ;; Open repository URL
+  (vim.keymap.set :n :<leader>vO #(M.VcsOpenUrl) {:silent true :desc "Open repository URL"})
+  
+  ;; Reload changes from remote
+  (vim.keymap.set :n :<leader>vr #(M.VcsReload) {:silent true :desc "Reload changes from remote"})
+  
+  ;; Show status
+  (vim.keymap.set :n :<leader>vs #(M.VcsStatus) {:silent true :desc "Show VCS status"})
+  
+  ;; Pull changes from remote
+  (vim.keymap.set :n :<leader>vp #(M.VcsUpdateReceive) {:silent true :desc "Pull changes from remote"})
+  
+  ;; Push changes to remote
+  (vim.keymap.set :n :<leader>vP #(M.VcsUpdateSend) {:silent true :desc "Push changes to remote"})
+  
+  ;; Show branches
+  (vim.keymap.set :n :<leader>vt #(M.VcsShowBranches) {:desc "Show branches"})
+  
+  ;; Undo hunk
+  (vim.keymap.set :n :<leader>vu #(M.VcsHunkUndo) {:silent true :desc "Undo hunk"})
+  
+  ;; Undo last commit
+  (vim.keymap.set :n :<leader>vU #(M.VcsUndoLastCommit) {:silent true :desc "Undo last commit"})
+  
+  ;; Remove file from VCS
+  (vim.keymap.set :n :<leader>vx #(M.VcsRmFile "") {:desc "Remove file from VCS"})
+  
+  ;; Revert last commit
+  (vim.keymap.set :n :<leader>vX #(M.VcsRevertLastCommit) {:silent true :desc "Revert last commit"})
+  
   (set vim.g.loaded_neovcs 1))
 
-M	
+M
