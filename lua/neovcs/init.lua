@@ -705,13 +705,13 @@ end
 
 -- Get current entry path from quickfix window
 local function qf_current_path()
-    local qf = vim.fn.getqflist({ idx = 0, items = 0 })
-    local idx = qf.idx
-    if idx < 1 or idx > #qf.items then
+    local idx = vim.fn.getqflist({ idx = 0 }).idx
+    if not idx or idx < 1 then
         return nil
     end
-    local item = qf.items[idx]
-    if not item.filename or item.filename == "" then
+    local items = vim.fn.getqflist()
+    local item = items[idx]
+    if not item or not item.filename or item.filename == "" then
         return nil
     end
     return item.filename
@@ -863,10 +863,6 @@ M.VcsStatusGit = function(focus_path)
     vim.fn.setqflist(list)
     vim.cmd("bel copen 10")
 
-    -- Set buffer-local keymaps in the quickfix window
-    local qf_buf = vim.api.nvim_get_current_buf()
-    local opts = { buffer = qf_buf, silent = true, noremap = true }
-
     vim.keymap.set("n", "<leader>v+", function()
         local p = qf_current_path()
         if not p then return end
@@ -927,7 +923,9 @@ M.VcsStatusGit = function(focus_path)
             local items = vim.fn.getqflist()
             for i, item in ipairs(items) do
                 if item.filename == focus_path then
+
                     vim.fn.setqflist({}, "r", { idx = i })
+
                     break
                 end
             end
@@ -1286,38 +1284,58 @@ function M.setup()
     vim.keymap.set("n", "<leader>vX", function() M.VcsRevertLastCommit() end,
         { silent = true, desc = "Revert last commit" })
 
-    -- Attach stage/unstage keymaps whenever a quickfix buffer opens
+
+        -- Attach stage/unstage keymaps whenever a quickfix buffer opens
     vim.api.nvim_create_autocmd("FileType", {
         pattern = "qf",
         group = vim.api.nvim_create_augroup("NeovcsQfKeymaps", { clear = true }),
         callback = function(args)
             local buf = args.buf
-            local opts = { buffer = buf, silent = true, noremap = true, nowait = true }
 
-            vim.keymap.set("n", "<leader>v+", function()
+            local function map(lhs, fn, desc)
+                vim.keymap.set("n", lhs, fn, {
+                    buffer = buf,
+                    silent = true,
+                    noremap = true,
+                    nowait = true,
+                    desc = desc,
+                })
+            end
+
+            map("<C-s>", function()
                 M.VcsStageCurrent()
-            end, vim.tbl_extend("force", opts, { desc = "Stage file under cursor" }))
+            end, "Stage file under cursor")
 
-            vim.keymap.set("n", "<leader>v-", function()
+            map("<C-u>", function()
                 M.VcsUnstageCurrent()
-            end, vim.tbl_extend("force", opts, { desc = "Unstage file under cursor" }))
+            end, "Unstage file under cursor")
 
-            vim.keymap.set("n", "<leader>v=", function()
+            map("<Tab>", function()
                 M.VcsToggleStageCurrent()
-            end, vim.tbl_extend("force", opts, { desc = "Toggle stage/unstage" }))
+            end, "Toggle stage/unstage")
 
-            vim.keymap.set("n", "<leader>vS", function()
+            map("<C-a>", function()
                 M.VcsStageAll()
-            end, vim.tbl_extend("force", opts, { desc = "Stage all files" }))
+            end, "Stage all files")
 
-            vim.keymap.set("n", "<leader>vU", function()
+            map("<C-x>", function()
                 M.VcsUnstageAll()
-            end, vim.tbl_extend("force", opts, { desc = "Unstage all files" }))
+            end, "Unstage all files")
 
-            -- Optional: also make <Tab> toggle, and <CR> open the file
-            vim.keymap.set("n", "<Tab>", function()
-                M.VcsToggleStageCurrent()
-            end, vim.tbl_extend("force", opts, { desc = "Toggle stage/unstage" }))
+            map("<CR>", function()
+                local p = qf_current_path()
+                if not p then return end
+                vim.cmd("wincmd p")
+                vim.cmd("edit " .. vim.fn.fnameescape(p))
+            end, "Open file in previous window")
+
+            map("<leader>v+", function()
+                M.VcsStageCurrent()
+            end, "Stage file")
+
+            map("<leader>v-", function()
+                M.VcsUnstageCurrent()
+            end, "Unstage file")
         end,
     })
 
