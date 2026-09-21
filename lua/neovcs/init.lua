@@ -687,7 +687,115 @@ M.VcsStatus = function()
   end
 end
 
-M.VcsStatusGit = function()
+-- Helper: run git command and refresh quickfix
+local function git_run_and_refresh(cmd, msg)
+  local result = vim.fn.system(cmd)
+  if vim.v.shell_error ~= 0 then
+    M.ShowError("Failed: " .. result)
+    return false
+  end
+  M.ShowMessage(msg or cmd)
+  return true
+end
+
+-- Get current entry path from quickfix window
+local function qf_current_path()
+  local qf = vim.fn.getqflist({ idx = 0, items = 0 })
+  local idx = qf.idx
+  if idx < 1 or idx > #qf.items then
+    return nil
+  end
+  local item = qf.items[idx]
+  if not item.filename or item.filename == "" then
+    return nil
+  end
+  return item.filename
+end
+
+-- Stage current quickfix entry
+M.VcsStageCurrent = function()
+  local path = qf_current_path()
+  if not path then
+    M.ShowError("No file under cursor")
+    return
+  end
+  if git_run_and_refresh("git add " .. vim.fn.shellescape(path), "Staged: " .. path) then
+    -- Remember cursor path so we can re-focus after refresh
+    local last_path = path
+    vim.schedule(function()
+      M.VcsStatusGit(last_path)
+    end)
+  end
+end
+
+-- Unstage current quickfix entry
+M.VcsUnstageCurrent = function()
+  local path = qf_current_path()
+  if not path then
+    M.ShowError("No file under cursor")
+    return
+  end
+  -- Check if there's a HEAD (repo has commits)
+  local has_head = vim.fn.systemlist("git rev-parse --verify HEAD")[1] ~= ""
+  local cmd
+  if has_head then
+    cmd = "git restore --staged " .. vim.fn.shellescape(path)
+  else
+    cmd = "git rm --cached " .. vim.fn.shellescape(path)
+  end
+  if git_run_and_refresh(cmd, "Unstaged: " .. path) then
+    local last_path = path
+    vim.schedule(function()
+      M.VcsStatusGit(last_path)
+    end)
+  end
+end
+
+-- Toggle: if staged -> unstage, else stage
+M.VcsToggleStageCurrent = function()
+  local path = qf_current_path()
+  if not path then
+    M.ShowError("No file under cursor")
+    return
+  end
+  -- Determine if the file is currently staged
+  local out = vim.fn.systemlist("git status --porcelain -- " .. vim.fn.shellescape(path))
+  if #out == 0 then
+    M.ShowError("No status for: " .. path)
+    return
+  end
+  local x = out[1]:sub(1, 1)
+  local staged = x ~= " " and x ~= "?"
+  if staged then
+    M.VcsUnstageCurrent()
+  else
+    M.VcsStageCurrent()
+  end
+end
+
+-- Stage all files
+M.VcsStageAll = function()
+  if git_run_and_refresh("git add -A", "Staged all files") then
+    vim.schedule(function() M.VcsStatusGit() end)
+  end
+end
+
+-- Unstage all files
+M.VcsUnstageAll = function()
+  local has_head = vim.fn.systemlist("git rev-parse --verify HEAD")[1] ~= ""
+  local cmd
+  if has_head then
+    cmd = "git reset HEAD"
+  else
+    cmd = "git rm -r --cached ."
+  end
+  if git_run_and_refresh(cmd, "Unstaged all files") then
+    vim.schedule(function() M.VcsStatusGit() end)
+  end
+end
+
+-- Optional: pass a path to focus on after refresh
+M.VcsStatusGit = function(focus_path)
   local cmd = "git status --porcelain"
   M.ShowMessage(cmd)
 
@@ -708,29 +816,20 @@ M.VcsStatusGit = function()
       local y = line:sub(2, 2) -- unstaged status
       local path = line:sub(4)
 
-      -- Handle renames like "R  old -> new"
       local rename_target = path:match("%-> (.+)$")
       if rename_target then
         path = rename_target
       end
 
-      -- Conflict markers: both staged and unstaged changes in unmerged states
       if x == "U" or y == "U" or (x == "A" and y == "A") or (x == "D" and y == "D") then
         table.insert(conflicted, { filename = path, text = "UU " .. path })
       else
-        -- Staged changes (X != ' ' and X != '?')
         if x ~= " " and x ~= "?" then
-          local symbol = x
-          if symbol == "A" then symbol = "A " end
           table.insert(staged, { filename = path, text = string.format("%-2s %s", x, path) })
         end
-
-        -- Untracked files
         if x == "?" and y == "?" then
           table.insert(untracked, { filename = path, text = "?? " .. path })
         end
-
-        -- Unstaged changes (Y != ' ' and Y != '?')
         if y ~= " " and y ~= "?" then
           table.insert(unstaged, { filename = path, text = string.format("%2s %s", y, path) })
         end
@@ -739,32 +838,95 @@ M.VcsStatusGit = function()
   end
 
   local list = {}
-
-  if #conflicted > 0 then
-    table.insert(list, { filename = "", text = "=== Conflicted ===" })
-    for _, item in ipairs(conflicted) do table.insert(list, item) end
+  local function add_section(title, items)
+    if #items > 0 then
+      table.insert(list, { filename = "", text = title })
+      for _, item in ipairs(items) do table.insert(list, item) end
+    end
   end
 
-  if #staged > 0 then
-    table.insert(list, { filename = "", text = "=== Staged ===" })
-    for _, item in ipairs(staged) do table.insert(list, item) end
-  end
+  add_section("=== Conflicted ===", conflicted)
+  add_section("=== Staged (use <leader>v- to unstage) ===", staged)
+  add_section("=== Unstaged (use <leader>v+ to stage) ===", unstaged)
+  add_section("=== Untracked (use <leader>v+ to stage) ===", untracked)
 
-  if #unstaged > 0 then
-    table.insert(list, { filename = "", text = "=== Unstaged ===" })
-    for _, item in ipairs(unstaged) do table.insert(list, item) end
-  end
-
-  if #untracked > 0 then
-    table.insert(list, { filename = "", text = "=== Untracked ===" })
-    for _, item in ipairs(untracked) do table.insert(list, item) end
-  end
-
-  if #list > 0 then
-    vim.fn.setqflist(list)
-    vim.cmd("bel copen 10")
-  else
+  if #list == 0 then
     M.ShowMessage("no changes")
+    return
+  end
+
+  vim.fn.setqflist(list)
+  vim.cmd("bel copen 10")
+
+  -- Set buffer-local keymaps in the quickfix window
+  local qf_buf = vim.api.nvim_get_current_buf()
+  local opts = { buffer = qf_buf, silent = true, noremap = true }
+
+  vim.keymap.set("n", "<leader>v+", function()
+    local p = qf_current_path()
+    if not p then return end
+    if git_run_and_refresh("git add " .. vim.fn.shellescape(p), "Staged: " .. p) then
+      vim.schedule(function() M.VcsStatusGit(p) end)
+    end
+  end, vim.tbl_extend("force", opts, { desc = "Stage file" }))
+
+  vim.keymap.set("n", "<leader>v-", function()
+    local p = qf_current_path()
+    if not p then return end
+    local has_head = vim.fn.systemlist("git rev-parse --verify HEAD")[1] ~= ""
+    local cmd = has_head
+      and ("git restore --staged " .. vim.fn.shellescape(p))
+      or  ("git rm --cached " .. vim.fn.shellescape(p))
+    if git_run_and_refresh(cmd, "Unstaged: " .. p) then
+      vim.schedule(function() M.VcsStatusGit(p) end)
+    end
+  end, vim.tbl_extend("force", opts, { desc = "Unstage file" }))
+
+  vim.keymap.set("n", "<leader>v=", function()
+    local p = qf_current_path()
+    if not p then return end
+    local out = vim.fn.systemlist("git status --porcelain -- " .. vim.fn.shellescape(p))
+    if #out == 0 then
+      M.ShowError("No status for: " .. p)
+      return
+    end
+    local x = out[1]:sub(1, 1)
+    local staged = x ~= " " and x ~= "?"
+    local cmd = staged
+      and (vim.fn.systemlist("git rev-parse --verify HEAD")[1] ~= ""
+            and ("git restore --staged " .. vim.fn.shellescape(p))
+            or  ("git rm --cached " .. vim.fn.shellescape(p)))
+      or  ("git add " .. vim.fn.shellescape(p))
+    if git_run_and_refresh(cmd, (staged and "Unstaged: " or "Staged: ") .. p) then
+      vim.schedule(function() M.VcsStatusGit(p) end)
+    end
+  end, vim.tbl_extend("force", opts, { desc = "Toggle stage/unstage" }))
+
+  vim.keymap.set("n", "<leader>vS", function()
+    if git_run_and_refresh("git add -A", "Staged all") then
+      vim.schedule(function() M.VcsStatusGit() end)
+    end
+  end, vim.tbl_extend("force", opts, { desc = "Stage all files" }))
+
+  vim.keymap.set("n", "<leader>vU", function()
+    local has_head = vim.fn.systemlist("git rev-parse --verify HEAD")[1] ~= ""
+    local cmd = has_head and "git reset HEAD" or "git rm -r --cached ."
+    if git_run_and_refresh(cmd, "Unstaged all") then
+      vim.schedule(function() M.VcsStatusGit() end)
+    end
+  end, vim.tbl_extend("force", opts, { desc = "Unstage all files" }))
+
+  -- Refocus the entry on the same file after refresh
+  if focus_path and focus_path ~= "" then
+    vim.schedule(function()
+      local items = vim.fn.getqflist()
+      for i, item in ipairs(items) do
+        if item.filename == focus_path then
+          vim.fn.setqflist({}, "r", { idx = i })
+          break
+        end
+      end
+    end)
   end
 end
 
@@ -786,7 +948,6 @@ M.VcsStatusSvn = function()
 
   for _, line in ipairs(output) do
     if #line > 0 then
-      -- SVN format: first column is status char, rest is path (after optional columns)
       local status = line:sub(1, 1)
       local path = vim.trim(line:sub(2))
 
@@ -805,31 +966,18 @@ M.VcsStatusSvn = function()
   end
 
   local list = {}
-
-  if #conflicted > 0 then
-    table.insert(list, { filename = "", text = "=== Conflicted ===" })
-    for _, item in ipairs(conflicted) do table.insert(list, item) end
+  local function add_section(title, items)
+    if #items > 0 then
+      table.insert(list, { filename = "", text = title })
+      for _, item in ipairs(items) do table.insert(list, item) end
+    end
   end
 
-  if #added > 0 then
-    table.insert(list, { filename = "", text = "=== Added (staged for commit) ===" })
-    for _, item in ipairs(added) do table.insert(list, item) end
-  end
-
-  if #modified > 0 then
-    table.insert(list, { filename = "", text = "=== Modified ===" })
-    for _, item in ipairs(modified) do table.insert(list, item) end
-  end
-
-  if #deleted > 0 then
-    table.insert(list, { filename = "", text = "=== Deleted ===" })
-    for _, item in ipairs(deleted) do table.insert(list, item) end
-  end
-
-  if #untracked > 0 then
-    table.insert(list, { filename = "", text = "=== Untracked ===" })
-    for _, item in ipairs(untracked) do table.insert(list, item) end
-  end
+  add_section("=== Conflicted ===", conflicted)
+  add_section("=== Added ===", added)
+  add_section("=== Modified ===", modified)
+  add_section("=== Deleted ===", deleted)
+  add_section("=== Untracked ===", untracked)
 
   if #list > 0 then
     vim.fn.setqflist(list)
