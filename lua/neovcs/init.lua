@@ -690,14 +690,76 @@ end
 M.VcsStatusGit = function()
   local cmd = "git status --porcelain"
   M.ShowMessage(cmd)
-  local flist = vim.split(vim.fn.system(cmd), "\n")
-  local list = {}
-  for _, line in ipairs(flist) do
-    local trimmed = vim.trim(line)
-    if #trimmed > 0 then
-      table.insert(list, { filename = vim.split(trimmed, " ")[2], text = vim.split(trimmed, " ")[1] })
+
+  local output = vim.fn.systemlist(cmd)
+  if vim.v.shell_error ~= 0 then
+    M.ShowError("git status failed")
+    return
+  end
+
+  local staged = {}
+  local unstaged = {}
+  local untracked = {}
+  local conflicted = {}
+
+  for _, line in ipairs(output) do
+    if #line > 0 then
+      local x = line:sub(1, 1) -- staged status
+      local y = line:sub(2, 2) -- unstaged status
+      local path = line:sub(4)
+
+      -- Handle renames like "R  old -> new"
+      local rename_target = path:match("%-> (.+)$")
+      if rename_target then
+        path = rename_target
+      end
+
+      -- Conflict markers: both staged and unstaged changes in unmerged states
+      if x == "U" or y == "U" or (x == "A" and y == "A") or (x == "D" and y == "D") then
+        table.insert(conflicted, { filename = path, text = "UU " .. path })
+      else
+        -- Staged changes (X != ' ' and X != '?')
+        if x ~= " " and x ~= "?" then
+          local symbol = x
+          if symbol == "A" then symbol = "A " end
+          table.insert(staged, { filename = path, text = string.format("%-2s %s", x, path) })
+        end
+
+        -- Untracked files
+        if x == "?" and y == "?" then
+          table.insert(untracked, { filename = path, text = "?? " .. path })
+        end
+
+        -- Unstaged changes (Y != ' ' and Y != '?')
+        if y ~= " " and y ~= "?" then
+          table.insert(unstaged, { filename = path, text = string.format("%2s %s", y, path) })
+        end
+      end
     end
   end
+
+  local list = {}
+
+  if #conflicted > 0 then
+    table.insert(list, { filename = "", text = "=== Conflicted ===" })
+    for _, item in ipairs(conflicted) do table.insert(list, item) end
+  end
+
+  if #staged > 0 then
+    table.insert(list, { filename = "", text = "=== Staged ===" })
+    for _, item in ipairs(staged) do table.insert(list, item) end
+  end
+
+  if #unstaged > 0 then
+    table.insert(list, { filename = "", text = "=== Unstaged ===" })
+    for _, item in ipairs(unstaged) do table.insert(list, item) end
+  end
+
+  if #untracked > 0 then
+    table.insert(list, { filename = "", text = "=== Untracked ===" })
+    for _, item in ipairs(untracked) do table.insert(list, item) end
+  end
+
   if #list > 0 then
     vim.fn.setqflist(list)
     vim.cmd("bel copen 10")
@@ -707,21 +769,74 @@ M.VcsStatusGit = function()
 end
 
 M.VcsStatusSvn = function()
-  local cmd = "svn status | awk '{print $1\" \"$2}'"
+  local cmd = "svn status"
   M.ShowMessage(cmd)
-  local flist = vim.fn.system(cmd)
-  flist = vim.split(flist, "\n")
-  local list = {}
-  for _, f in ipairs(flist) do
-    local glist = vim.split(f, " ")
-    if #glist == 2 then
-      local a = glist[1]
-      local b = glist[2]
-      local dic = { filename = b, text = a }
-      table.insert(list, dic)
+
+  local output = vim.fn.systemlist(cmd)
+  if vim.v.shell_error ~= 0 then
+    M.ShowError("svn status failed")
+    return
+  end
+
+  local added = {}
+  local modified = {}
+  local deleted = {}
+  local untracked = {}
+  local conflicted = {}
+
+  for _, line in ipairs(output) do
+    if #line > 0 then
+      -- SVN format: first column is status char, rest is path (after optional columns)
+      local status = line:sub(1, 1)
+      local path = vim.trim(line:sub(2))
+
+      if status == "A" then
+        table.insert(added, { filename = path, text = "A  " .. path })
+      elseif status == "M" then
+        table.insert(modified, { filename = path, text = "M  " .. path })
+      elseif status == "D" then
+        table.insert(deleted, { filename = path, text = "D  " .. path })
+      elseif status == "?" then
+        table.insert(untracked, { filename = path, text = "?  " .. path })
+      elseif status == "C" then
+        table.insert(conflicted, { filename = path, text = "C  " .. path })
+      end
     end
   end
-  vim.fn.setqflist(list)
+
+  local list = {}
+
+  if #conflicted > 0 then
+    table.insert(list, { filename = "", text = "=== Conflicted ===" })
+    for _, item in ipairs(conflicted) do table.insert(list, item) end
+  end
+
+  if #added > 0 then
+    table.insert(list, { filename = "", text = "=== Added (staged for commit) ===" })
+    for _, item in ipairs(added) do table.insert(list, item) end
+  end
+
+  if #modified > 0 then
+    table.insert(list, { filename = "", text = "=== Modified ===" })
+    for _, item in ipairs(modified) do table.insert(list, item) end
+  end
+
+  if #deleted > 0 then
+    table.insert(list, { filename = "", text = "=== Deleted ===" })
+    for _, item in ipairs(deleted) do table.insert(list, item) end
+  end
+
+  if #untracked > 0 then
+    table.insert(list, { filename = "", text = "=== Untracked ===" })
+    for _, item in ipairs(untracked) do table.insert(list, item) end
+  end
+
+  if #list > 0 then
+    vim.fn.setqflist(list)
+    vim.cmd("bel copen 10")
+  else
+    M.ShowMessage("no changes")
+  end
 end
 
 M.GetLocalFileChangesForGit = function()
