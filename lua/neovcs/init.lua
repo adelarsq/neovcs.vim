@@ -1268,6 +1268,13 @@ function M.setup()
   -- Revert last commit
   vim.keymap.set("n", "<leader>vX", function() M.VcsRevertLastCommit() end, { silent = true, desc = "Revert last commit" })
 
+  -- Stage/unstage from quickfix (only active when cursor is on a file entry)
+    vim.keymap.set("n", "<leader>v+", function() M.VcsStageCurrent() end, { desc = "Stage current file" })
+    vim.keymap.set("n", "<leader>v-", function() M.VcsUnstageCurrent() end, { desc = "Unstage current file" })
+    vim.keymap.set("n", "<leader>v=", function() M.VcsToggleStageCurrent() end, { desc = "Toggle stage/unstage" })
+    vim.keymap.set("n", "<leader>vS", function() M.VcsStageAll() end, { desc = "Stage all files" })
+    vim.keymap.set("n", "<leader>vU", function() M.VcsUnstageAll() end, { desc = "Unstage all files" })
+
   vim.g.loaded_neovcs = 1
 end
 
